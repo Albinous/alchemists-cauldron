@@ -44,6 +44,22 @@ Task description: [Alchemist's Cauldron — RS School](https://github.com/rollin
 - HTML / CSS (icons and shapes are made with CSS, SVG or text symbols)
 - No frameworks, game engines or third-party libraries in the game code
 
+## 📁 Project structure
+
+```
+src/
+├── data/      # static game data: ingredients, recipes, difficulty settings, reactions
+├── logic/     # game rules as pure functions (no DOM access)
+├── state/     # game state object and functions that update it
+├── storage/   # localStorage helpers: save / continue, leaderboard
+├── ui/        # DOM rendering and event handlers
+├── styles/    # CSS styles and animations
+├── assets/    # static assets (fonts, SVG) if needed
+└── main.ts    # entry point: connects modules and starts the game
+```
+
+Game logic (`logic/`, `state/`, `data/`) is kept separate from rendering (`ui/`), so the rules can be changed and checked without touching the markup.
+
 ## 🚀 How to run
 
 _TBD_

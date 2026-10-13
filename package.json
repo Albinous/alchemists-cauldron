@@ -15,11 +15,7 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{ts,js}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md,scss,css,html}": "prettier --write"
+    "*": "prettier --write --ignore-unknown"
   },
   "repository": {
     "type": "git",

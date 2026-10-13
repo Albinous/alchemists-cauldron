@@ -1,0 +1,47 @@
+{
+  "name": "alchemists-cauldron",
+  "version": "1.0.0",
+  "description": "A browser puzzle game built with **TypeScript** without frameworks or libraries.\r Mix ingredients from the shelf, hit three target ranges of a recipe, and brew potions before the time or your lives run out.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "type-check": "tsc",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*": "prettier --write --ignore-unknown"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Albinous/alchemists-cauldron.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Albinous/alchemists-cauldron/issues"
+  },
+  "homepage": "https://github.com/Albinous/alchemists-cauldron#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.13.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.10",
+    "sass": "^1.105.1",
+    "typescript": "~6.0.0",
+    "typescript-eslint": "^8.71.2",
+    "vite": "^8.3.4"
+  }
+}

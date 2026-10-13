@@ -1,4 +1,4 @@
-import { IRecipe } from '../types';
+import { IRecipe } from '@/types';
 
 export const recipes: readonly IRecipe[] = [
   // Easy

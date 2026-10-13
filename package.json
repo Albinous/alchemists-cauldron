@@ -4,7 +4,9 @@
   "description": "A browser puzzle game built with **TypeScript** without frameworks or libraries.\r Mix ingredients from the shelf, hit three target ranges of a recipe, and brew potions before the time or your lives run out.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "repository": {
     "type": "git",
@@ -13,12 +15,14 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/Albinous/alchemists-cauldron/issues"
   },
   "homepage": "https://github.com/Albinous/alchemists-cauldron#readme",
   "devDependencies": {
-    "typescript": "^7.0.2"
+    "sass": "^1.105.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4"
   }
 }

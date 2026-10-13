@@ -1,0 +1,130 @@
+// =============================================
+// Design tokens — Alchemist's Cauldron (variant H)
+// =============================================
+
+// ---------- Fonts ----------
+$font-display: 'Cinzel', Georgia, serif;
+$font-accent: 'Cormorant Garamond', Georgia, serif;
+
+$fw-semibold: 600;
+$fw-bold: 700;
+$fw-extrabold: 800;
+
+$fs-xs: 11px;
+$fs-sm: 13px;
+$fs-md: 15px;
+$fs-lg: 17px;
+$fs-xl: 24px;
+$fs-2xl: 34px;
+$fs-title: 38px;
+
+// ---------- Base colors ----------
+$color-bg: #07090d;
+$color-bg-top: #10141b;
+
+$color-text: #e9d9b4;
+$color-text-light: #f2ead3;
+$color-text-muted: #9c927c;
+$color-text-disabled: #8c826e;
+$color-text-inactive: #6e7a62;
+
+// ---------- Brass frames (header plaque, panels, round buttons) ----------
+$color-panel-top: #171b23;
+$color-panel-bottom: #0d1015;
+$color-brass: #6b5a3a;
+$color-brass-light: #8c7448;
+$color-brass-dark: #3b3222;
+$color-brass-dim: #4a3e28;
+$color-gold: #c9a45a;
+
+// ---------- Magic green (accent) ----------
+$color-accent: #7cff4f;
+$color-accent-bright: #9bff5c;
+$color-accent-soft: #8be84a;
+$color-title: #a8f06a;
+$color-title-shadow: #1f3a12;
+$color-accent-dark: #1a2a12;
+$color-accent-darker: #0b1208;
+$color-in-range: #5fa83a;
+
+// ---------- Wooden cabinet (ingredient shelf) ----------
+$color-wood-top: #3a2716;
+$color-wood-bottom: #22160c;
+$color-wood-border: #5a3e22;
+$color-wood-plank: #4a321c;
+$color-wood-inner: #1a120a;
+$color-stock-badge-border: #8bcb4a;
+$color-stock-badge-bg: #0e120b;
+
+// ---------- Parchment (recipe card) ----------
+$color-parchment-top: #f1e4c4;
+$color-parchment-bottom: #d9c394;
+$color-ink: #3a2a1a;
+$color-ink-muted: #6b5038;
+$color-seal: #2e7a3e;
+$color-seal-dark: #174a24;
+
+// ---------- Cauldron parameters ----------
+// on dark background (bars, chips on cards)
+$color-temperature: #ff6b5b;
+$color-density: #6fa8ff;
+$color-magic: #c99bff;
+
+// on parchment (recipe ranges)
+$color-temperature-ink: #a8281e;
+$color-density-ink: #23508f;
+$color-magic-ink: #5b2e8c;
+
+// ---------- Bars ----------
+$bar-height: 14px;
+$bar-track: #1b1f27;
+$bar-target: rgba(124, 255, 79, 0.35);
+$bar-tolerance: rgba(124, 255, 79, 0.12);
+$bar-zero-line: rgba(233, 217, 180, 0.4);
+$bar-marker: #f2ead3;
+$bar-marker-size: 16px;
+
+// ---------- Lives ----------
+$color-heart: #c81e33;
+$color-heart-stroke: #5e0b16;
+$color-heart-lost: #5a5246;
+
+// ---------- Glow / shadows ----------
+$glow-accent: 0 0 14px rgba(124, 255, 79, 0.55);
+$glow-text: 0 0 18px rgba(124, 255, 79, 0.55);
+$shadow-panel: 0 16px 30px rgba(0, 0, 0, 0.55);
+$shadow-plaque-inset:
+  inset 0 0 0 4px $color-panel-bottom,
+  inset 0 0 0 5px $color-brass-dark;
+
+// ---------- Spacing ----------
+$space-xs: 4px;
+$space-sm: 8px;
+$space-md: 12px;
+$space-lg: 16px;
+$space-xl: 24px;
+$space-2xl: 32px;
+
+// ---------- Radius ----------
+$radius-sm: 6px;
+$radius-md: 10px;
+$radius-lg: 12px;
+$radius-round: 50%;
+$radius-pill: 999px;
+
+// ---------- Sizes ----------
+$container-max-width: 1280px;
+$touch-target: 44px;
+$round-button-size: 64px;
+$cauldron-slots-width: 280px;
+
+// ---------- Breakpoints ----------
+$bp-mobile: 375px;
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+
+// ---------- Animation ----------
+$duration-fast: 0.15s;
+$duration-base: 0.3s;
+$duration-slow: 0.6s;
+$easing: ease-out;

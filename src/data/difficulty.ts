@@ -1,4 +1,4 @@
-import { Difficulty, IDifficultySettings } from '@/types';
+import type { Difficulty, IDifficultySettings } from '@/types';
 
 export const difficultySettings: Readonly<Record<Difficulty, IDifficultySettings>> = {
   easy: {

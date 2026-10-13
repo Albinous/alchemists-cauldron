@@ -1,4 +1,4 @@
-import { IIngredient } from '@/types';
+import type { IIngredient } from '@/types';
 
 export const ingredients: readonly IIngredient[] = [
   {

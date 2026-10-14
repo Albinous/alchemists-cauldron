@@ -1,5 +1,6 @@
 import type { ILayoutElements } from '@/types';
-import { createElement, createZone } from './dom';
+import { createElement, createZone } from '../dom';
+import './layout.scss';
 
 export const createLayout = ({
   header,
@@ -17,7 +18,7 @@ export const createLayout = ({
   });
 
   const mainBoard = createElement('div', {
-    className: 'main-board',
+    className: 'main__board',
   });
 
   const shelfZone = createZone('section', 'shelf', 'Ingredient shelf', shelf);

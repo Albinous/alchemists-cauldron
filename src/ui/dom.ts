@@ -35,3 +35,10 @@ export function createElement<K extends keyof HTMLElementTagNameMap>(
 
   return element;
 }
+
+export function createContainer(className: string, children?: Node[]): HTMLDivElement {
+  return createElement('div', {
+    className: className,
+    children: children,
+  });
+}

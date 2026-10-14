@@ -1,0 +1,44 @@
+@use '../../../styles/tokens' as *;
+
+$title-offset: 18px;
+$slot-min-height: 84px;
+$plank-width: 6px;
+
+.shelf {
+  flex: 1 1 100px;
+  position: relative;
+  margin-top: $title-offset;
+  padding: ($title-offset * 2) $space-md $space-md;
+  background: linear-gradient(180deg, $color-wood-top, $color-wood-bottom);
+  border: 3px solid $color-wood-border;
+  border-radius: $radius-md;
+  box-shadow: $shadow-panel;
+
+  &__title {
+    position: absolute;
+    top: -$title-offset;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: $space-s $space-xl;
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    color: $color-text;
+    background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
+    border: 2px solid $color-brass-light;
+    border-radius: $radius-sm;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    background: $color-wood-inner;
+  }
+
+  &__item {
+    min-height: $slot-min-height;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.3));
+    border-bottom: $plank-width solid $color-wood-top;
+  }
+}

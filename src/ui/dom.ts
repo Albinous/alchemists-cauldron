@@ -42,3 +42,15 @@ export function createContainer(className: string, children?: Node[]): HTMLDivEl
     children: children,
   });
 }
+
+export const createZone = <K extends keyof HTMLElementTagNameMap>(
+  tag: K,
+  className: string,
+  label: string,
+  content?: HTMLElement,
+): HTMLElementTagNameMap[K] =>
+  createElement(tag, {
+    className,
+    attributes: { 'aria-label': label },
+    children: content ? [content] : [],
+  });

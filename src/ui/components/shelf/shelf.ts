@@ -6,6 +6,7 @@ const EMPTY_SHELF_COUNT = 6;
 export class Shelf {
   private readonly shelf = createElement('section', {
     className: 'shelf',
+    attributes: { 'aria-label': 'Ingredients shelf' },
   });
   private readonly shelfList = createElement('ul', {
     className: 'shelf__list',

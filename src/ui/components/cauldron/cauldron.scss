@@ -1,0 +1,60 @@
+@use '../../../styles/tokens' as *;
+
+$pot-max-width: 400px;
+$intro-max-width: 460px;
+$intro-font-size: 21px;
+$idle-liquid: #0b0d10;
+$idle-emblem: #3e5a33;
+
+.cauldron {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-lg;
+  padding-top: $space-sm;
+
+  &__imahe {
+    position: relative;
+    width: 100%;
+    max-width: $pot-max-width;
+  }
+
+  &__image {
+    width: 100%;
+    height: auto;
+  }
+
+  &__intro {
+    max-width: $intro-max-width;
+    font-family: $font-accent;
+    font-size: $intro-font-size;
+    font-style: italic;
+    font-weight: $fw-semibold;
+    line-height: 1.4;
+    text-align: center;
+    color: $color-text-soft;
+  }
+}
+
+// ---------- initial state ----------
+.cauldron:not(.cauldron--active) {
+  .cauldron-svg__glow,
+  .cauldron-svg__steam,
+  .cauldron-svg__bubbles,
+  .cauldron-svg__shadow {
+    display: none;
+  }
+
+  .cauldron-svg__liquid {
+    fill: $idle-liquid;
+  }
+
+  .cauldron-svg__emblem {
+    color: $idle-emblem;
+  }
+}
+
+// ---------- game ----------
+.cauldron--active .cauldron-svg__emblem {
+  filter: drop-shadow(0 0 6px $color-accent);
+}

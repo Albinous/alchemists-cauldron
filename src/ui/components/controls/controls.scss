@@ -1,4 +1,5 @@
 @use '../../../styles/tokens' as *;
+@use '../../../styles/mixins' as *;
 
 $main-height: 82px;
 $main-width: 400px;
@@ -20,31 +21,22 @@ $main-font-size: 32px;
 }
 
 .controls {
-  display: flex;
+  @include space-between;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
   gap: $space-lg;
 
   &__round {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    @include flex-direction-horizontal;
     gap: $space-xs;
-    padding: 0;
-    font-family: $font-display;
     font-size: 12px;
     font-weight: $fw-bold;
     letter-spacing: 0.08em;
     color: $color-text;
     background: transparent;
-    border: 0;
   }
 
   &__round-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-center;
     width: $round-button-size;
     height: $round-button-size;
     background: radial-gradient(circle at 50% 35%, #2a2f38, $color-panel-bottom);
@@ -68,19 +60,14 @@ $main-font-size: 32px;
     width: min(#{$main-width}, 100%);
     min-width: $main-min-width;
     height: $main-height;
-    padding: 0;
     background: $color-accent;
-    border: 0;
     clip-path: hexagon($main-cut);
   }
 
   &__main-label {
     position: absolute;
     inset: $main-border;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: $font-display;
+    @include flex-center;
     font-size: $main-font-size;
     font-weight: $fw-extrabold;
     letter-spacing: 0.04em;

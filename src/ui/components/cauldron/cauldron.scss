@@ -1,4 +1,5 @@
 @use '../../../styles/tokens' as *;
+@use '../../../styles/mixins' as *;
 
 $pot-max-width: 400px;
 $intro-max-width: 460px;
@@ -7,9 +8,7 @@ $idle-liquid: #0b0d10;
 $idle-emblem: #3e5a33;
 
 .cauldron {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include flex-direction-horizontal;
   gap: $space-lg;
   padding-top: $space-sm;
 
@@ -17,11 +16,6 @@ $idle-emblem: #3e5a33;
     position: relative;
     width: 100%;
     max-width: $pot-max-width;
-  }
-
-  &__image {
-    width: 100%;
-    height: auto;
   }
 
   &__intro {

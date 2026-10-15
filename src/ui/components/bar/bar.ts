@@ -2,6 +2,8 @@ import type { IBarConfig } from '@/types';
 import { createContainer, createElement, createSvgFromString } from '@/ui/dom';
 import { formatNumber } from '@/utils';
 
+import './bar.scss';
+
 const INITIAL_VALUE = 0;
 const SCALE_MIN = -80;
 const SCALE_MAX = 80;

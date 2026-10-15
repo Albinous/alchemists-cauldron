@@ -31,7 +31,7 @@
   }
 
   &__item {
-    @include flex-direction-center;
+    @include flex-direction-vertical;
     padding: $space-md $space-xl;
     gap: $space-xs;
     justify-content: flex-start;

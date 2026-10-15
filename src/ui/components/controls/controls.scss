@@ -1,0 +1,107 @@
+@use '../../../styles/tokens' as *;
+
+$main-height: 82px;
+$main-width: 400px;
+$main-min-width: 300px;
+$main-cut: 30px;
+$main-border: 3px;
+$main-font-size: 32px;
+
+// start game's figure form
+@function hexagon($cut) {
+  @return polygon(
+    $cut 0,
+    calc(100% - #{$cut}) 0,
+    100% 50%,
+    calc(100% - #{$cut}) 100%,
+    $cut 100%,
+    0 50%
+  );
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-lg;
+
+  &__round {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-xs;
+    padding: 0;
+    font-family: $font-display;
+    font-size: 12px;
+    font-weight: $fw-bold;
+    letter-spacing: 0.08em;
+    color: $color-text;
+    background: transparent;
+    border: 0;
+  }
+
+  &__round-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $round-button-size;
+    height: $round-button-size;
+    background: radial-gradient(circle at 50% 35%, #2a2f38, $color-panel-bottom);
+    border: 3px solid $color-brass-light;
+    border-radius: $radius-round;
+    box-shadow: 0 0 0 2px #2a2318;
+    transition: border-color $duration-fast $easing;
+  }
+
+  &__round:hover &__round-icon {
+    border-color: $color-gold;
+  }
+
+  &__main-glow {
+    filter: drop-shadow($glow-accent);
+  }
+
+  &__main {
+    position: relative;
+    display: block;
+    width: min(#{$main-width}, 100%);
+    min-width: $main-min-width;
+    height: $main-height;
+    padding: 0;
+    background: $color-accent;
+    border: 0;
+    clip-path: hexagon($main-cut);
+  }
+
+  &__main-label {
+    position: absolute;
+    inset: $main-border;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: $font-display;
+    font-size: $main-font-size;
+    font-weight: $fw-extrabold;
+    letter-spacing: 0.04em;
+    color: $color-accent-bright;
+    text-shadow: 0 0 12px rgba(124, 255, 79, 0.8);
+    background: linear-gradient(180deg, $color-accent-dark, $color-accent-darker);
+    clip-path: hexagon($main-cut - 2px);
+    transition: background $duration-fast $easing;
+  }
+
+  &__main:hover &__main-label,
+  &__main:focus-visible &__main-label {
+    background: linear-gradient(180deg, #24391a, $color-accent-dark);
+  }
+}
+
+@media (max-width: $bp-tablet) {
+  .controls__main-glow {
+    order: -1;
+    flex-basis: 100%;
+    display: flex;
+    justify-content: center;
+  }
+}

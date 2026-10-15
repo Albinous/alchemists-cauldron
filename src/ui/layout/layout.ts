@@ -1,5 +1,5 @@
 import type { ILayoutElements } from '@/types';
-import { createContainer, createElement, createZone } from '../dom';
+import { createContainer, createElement } from '../dom';
 import './layout.scss';
 
 export const createLayout = ({
@@ -13,8 +13,6 @@ export const createLayout = ({
 }: ILayoutElements): DocumentFragment => {
   const fragment = document.createDocumentFragment();
 
-  const controlsZone = createZone('section', 'controls', 'Game controls', controls);
-
   const mainBoard = createElement('div', {
     className: 'main__board',
     children: [shelf, cauldron, recipe],
@@ -22,7 +20,7 @@ export const createLayout = ({
 
   const main = createElement('main', {
     className: 'main',
-    children: [createContainer('container', [mainBoard, bars, controlsZone])],
+    children: [createContainer('container', [mainBoard, bars, controls])],
   });
 
   fragment.append(header, main, footer);

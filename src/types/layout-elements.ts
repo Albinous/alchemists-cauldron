@@ -4,6 +4,6 @@ export interface ILayoutElements {
   cauldron: HTMLElement;
   recipe: HTMLElement;
   bars: HTMLElement;
-  controls?: HTMLElement;
+  controls: HTMLElement;
   footer: HTMLElement;
 }

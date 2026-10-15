@@ -60,7 +60,6 @@ html {
 body {
   display: flex;
   flex-direction: column;
-  gap: $space-xl;
   min-width: $bp-mobile;
   min-height: 100vh;
   padding: $space-xl 0 $space-2xl;
@@ -74,6 +73,10 @@ body {
     linear-gradient(180deg, $color-bg-top, $color-bg);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
+}
+
+section {
+  padding: $space-2xl 0;
 }
 
 // ---------- Container ----------

@@ -21,7 +21,7 @@ $main-font-size: 32px;
 }
 
 .controls {
-  @include space-between;
+  @include flex-between;
   flex-wrap: wrap;
   gap: $space-lg;
 

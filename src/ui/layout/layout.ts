@@ -13,7 +13,6 @@ export const createLayout = ({
 }: ILayoutElements): DocumentFragment => {
   const fragment = document.createDocumentFragment();
 
-  const barsZone = createZone('section', 'Bars', 'bars', bars);
   const controlsZone = createZone('section', 'controls', 'Game controls', controls);
 
   const mainBoard = createElement('div', {
@@ -23,7 +22,7 @@ export const createLayout = ({
 
   const main = createElement('main', {
     className: 'main',
-    children: [createContainer('container', [mainBoard, barsZone, controlsZone])],
+    children: [createContainer('container', [mainBoard, bars, controlsZone])],
   });
 
   fragment.append(header, main, footer);

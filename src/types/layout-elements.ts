@@ -3,7 +3,7 @@ export interface ILayoutElements {
   shelf: HTMLElement;
   cauldron: HTMLElement;
   recipe: HTMLElement;
-  bars?: HTMLElement;
+  bars: HTMLElement;
   controls?: HTMLElement;
   footer: HTMLElement;
 }

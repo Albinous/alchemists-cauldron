@@ -68,9 +68,9 @@ $track-radius: 7px;
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 50%;
     width: 2px;
     background: $bar-zero-line;
+    transform: translateX(-50%);
   }
 
   &__marker {
@@ -83,14 +83,21 @@ $track-radius: 7px;
     border: 3px solid $bar-track;
     border-radius: $radius-round;
     transform: translate(-50%, -50%);
-    transition: left $duration-base $easing; // плавность для US 1.2
+    transition: left $duration-base $easing;
   }
 
-  &__range-ticks {
-    display: flex;
-    justify-content: space-between;
-    font-size: $fs-xs;
-    font-variant-numeric: tabular-nums;
-    color: $color-text-muted;
+  &__range {
+    &-ticks {
+      position: relative;
+      height: 1.2em;
+    }
+
+    &-tick {
+      position: absolute;
+      transform: translateX(-50%);
+      font-size: $fs-xs;
+      font-variant-numeric: tabular-nums;
+      color: $color-text-muted;
+    }
   }
 }

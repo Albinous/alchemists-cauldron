@@ -13,13 +13,12 @@ export const createLayout = ({
 }: ILayoutElements): DocumentFragment => {
   const fragment = document.createDocumentFragment();
 
-  const recipeZone = createZone('section', 'recipes', 'Recipes', recipe);
   const barsZone = createZone('section', 'Bars', 'bars', bars);
   const controlsZone = createZone('section', 'controls', 'Game controls', controls);
 
   const mainBoard = createElement('div', {
     className: 'main__board',
-    children: [shelf, cauldron, recipeZone],
+    children: [shelf, cauldron, recipe],
   });
 
   const main = createElement('main', {

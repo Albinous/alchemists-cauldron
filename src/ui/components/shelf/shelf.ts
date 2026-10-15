@@ -13,12 +13,16 @@ export class Shelf {
   });
 
   constructor() {
+    this.buildStructure();
+    this.renderEmpty();
+  }
+
+  private buildStructure(): void {
     const title = createElement('h2', {
       className: 'shelf__title',
       text: 'Ingredients',
     });
     this.shelf.append(title, this.shelfList);
-    this.renderEmpty();
   }
 
   private renderEmpty(): void {

@@ -13,7 +13,7 @@ $idle-emblem: #3e5a33;
   gap: $space-lg;
   padding-top: $space-sm;
 
-  &__imahe {
+  &__pot {
     position: relative;
     width: 100%;
     max-width: $pot-max-width;
@@ -36,7 +36,7 @@ $idle-emblem: #3e5a33;
   }
 }
 
-// ---------- initial state ----------
+// ---------- Start screen ----------
 .cauldron:not(.cauldron--active) {
   .cauldron-svg__glow,
   .cauldron-svg__steam,

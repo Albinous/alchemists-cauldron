@@ -16,11 +16,11 @@ export class Cauldron {
   private readonly content = createElement('div', { className: 'cauldron__content' });
 
   constructor() {
-    this.buildSection();
+    this.buildStructure();
     this.renderIdle();
   }
 
-  private buildSection(): void {
+  private buildStructure(): void {
     const pot = createContainer('cauldron__pot', [this.img, this.potFloating]);
     this.cauldron.append(pot, this.content);
   }

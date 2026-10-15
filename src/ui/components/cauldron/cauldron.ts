@@ -11,7 +11,7 @@ export class Cauldron {
     className: 'cauldron',
     attributes: { 'aria-label': 'Cauldron' },
   });
-  private readonly cauldronImage = createSvgFromString(cauldronSvg, 'cauldron__image');
+  private readonly img = createSvgFromString(cauldronSvg, 'cauldron__image');
   private readonly potFloating = createContainer('cauldron__floating');
   private readonly content = createElement('div', { className: 'cauldron__content' });
 
@@ -21,7 +21,7 @@ export class Cauldron {
   }
 
   private buildSection(): void {
-    const pot = createContainer('cauldron__pot', [this.cauldronImage, this.potFloating]);
+    const pot = createContainer('cauldron__pot', [this.img, this.potFloating]);
     this.cauldron.append(pot, this.content);
   }
 

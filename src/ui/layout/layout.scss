@@ -1,0 +1,33 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.main {
+  &__board {
+    @include flex-between;
+    flex-wrap: wrap;
+    gap: $space-xl;
+    align-items: flex-start;
+    > .shelf {
+      flex: 1 1 290px;
+      min-width: 0;
+      max-width: 360px;
+    }
+  }
+}
+
+.cauldron {
+  flex: 2 1 380px;
+}
+
+.recipe {
+  flex: 1 1 280px;
+}
+
+.bars {
+  flex-wrap: wrap;
+  gap: $space-xl;
+}
+
+.controls {
+  @include flex-between;
+}

@@ -1,0 +1,103 @@
+@use '../../../styles/tokens' as *;
+
+$bar-min-width: 300px;
+$track-radius: 7px;
+
+.bar {
+  display: flex;
+  flex: 1 1 $bar-min-width;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: $space-md $space-lg;
+  background: linear-gradient(180deg, #141821, #0c0f14);
+  border: 2px solid $color-brass-dim;
+  border-radius: $radius-md;
+
+  &--temperature {
+    --bar-color: #{$color-temperature};
+  }
+  &--density {
+    --bar-color: #{$color-density};
+  }
+  &--magic {
+    --bar-color: #{$color-magic};
+  }
+
+  &__icon {
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: $space-sm;
+    min-width: 0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  &__label {
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    letter-spacing: 0.04em;
+    color: var(--bar-color);
+  }
+
+  &__value {
+    font-size: 16px;
+    font-weight: $fw-bold;
+    font-variant-numeric: tabular-nums;
+    color: $color-text-disabled;
+  }
+
+  &__range-track {
+    position: relative;
+    height: $bar-height;
+    background: $bar-track;
+    border: 1px solid $color-brass-dark;
+    border-radius: $track-radius;
+  }
+
+  &__zero {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: $bar-zero-line;
+    transform: translateX(-50%);
+  }
+
+  &__marker {
+    position: absolute;
+    top: 50%;
+    left: var(--marker-position, 50%);
+    width: $bar-marker-size;
+    height: $bar-marker-size;
+    background: $color-text-inactive;
+    border: 3px solid $bar-track;
+    border-radius: $radius-round;
+    transform: translate(-50%, -50%);
+    transition: left $duration-base $easing;
+  }
+
+  &__range {
+    &-ticks {
+      position: relative;
+      height: 1.2em;
+    }
+
+    &-tick {
+      position: absolute;
+      transform: translateX(-50%);
+      font-size: $fs-xs;
+      font-variant-numeric: tabular-nums;
+      color: $color-text-muted;
+    }
+  }
+}

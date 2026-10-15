@@ -1,0 +1,19 @@
+@use '../../../styles/tokens' as *;
+
+.heart {
+  width: 28px;
+  height: 26px;
+
+  path {
+    fill: $color-heart;
+    stroke: $color-heart-stroke;
+    stroke-width: 1;
+    transition: fill $duration-base $easing;
+  }
+
+  &--lost path {
+    fill: transparent;
+    stroke: $color-heart-lost;
+    stroke-width: 1.5;
+  }
+}

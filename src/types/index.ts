@@ -6,3 +6,6 @@ export * from './ingredient';
 export * from './reaction';
 export * from './recipe';
 export * from './recipe-range';
+export * from './layout-elements';
+export * from './bar';
+export * from './controls';

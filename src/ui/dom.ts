@@ -54,3 +54,19 @@ export const createZone = <K extends keyof HTMLElementTagNameMap>(
     attributes: { 'aria-label': label },
     children: content ? [content] : [],
   });
+
+export function createSvgFromString(svg: string, className?: string): SVGSVGElement {
+  const document = new DOMParser().parseFromString(svg, 'image/svg+xml');
+  const element = document.documentElement;
+
+  if (!(element instanceof SVGSVGElement)) {
+    throw new TypeError('Invalid SVG markup');
+  }
+
+  if (className) {
+    element.classList.add(className);
+  }
+  element.setAttribute('aria-hidden', 'true');
+
+  return element;
+}

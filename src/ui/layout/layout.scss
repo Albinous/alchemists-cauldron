@@ -6,6 +6,12 @@
     @include flex-between;
     flex-wrap: wrap;
     gap: $space-xl;
+    align-items: flex-start;
+    > .shelf {
+      flex: 1 1 290px;
+      min-width: 0;
+      max-width: 360px;
+    }
   }
 }
 
@@ -13,7 +19,7 @@
   flex: 2 1 380px;
 }
 
-.recipe {
+.recipes {
   flex: 1 1 280px;
 }
 

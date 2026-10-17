@@ -1,5 +1,6 @@
+import { isCauldronFull } from '@/logic';
 import { addIngredient, canAddIngredient } from '@/logic/add-ingredient';
-import { createInitialState, createNewGame } from '@/logic/game-state';
+import { createInitialState, createNewGame, getShelfIngredients } from '@/logic/game-state';
 import type { IIngredient } from '@/types';
 import { Bars, createElement, Cauldron, createLayout, Header, Recipe, Shelf, Controls } from '@/ui';
 
@@ -21,13 +22,28 @@ export class App {
 
   private handleMain(): void {
     if (this.state.status === 'menu') {
-      createNewGame();
+      this.state = createNewGame();
+      this.renderGame();
+    } else {
+      createInitialState();
     }
   }
 
   private handleSelect(ingredient: IIngredient): void {
     if (!canAddIngredient(this.state, ingredient)) return;
     addIngredient(this.state, ingredient);
+
+    this.renderGame();
+  }
+
+  private renderGame(): void {
+    const { shelfStock, status } = this.state;
+    const isPlaying = status === 'playing';
+    this.header.setActive(isPlaying);
+    this.controls.setPlaying(isPlaying);
+
+    const ingredients = getShelfIngredients();
+    this.shelf.renderIngredients(ingredients, shelfStock, isCauldronFull(this.state));
   }
 
   public start(): void {

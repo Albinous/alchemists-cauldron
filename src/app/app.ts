@@ -1,3 +1,4 @@
+import { MAX_CAULDRON_COUNT } from '@/data';
 import { isCauldronFull } from '@/logic';
 import { addIngredient, canAddIngredient } from '@/logic/add-ingredient';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/logic/game-state';
@@ -44,6 +45,7 @@ export class App {
 
     const ingredients = getShelfIngredients();
     this.shelf.renderIngredients(ingredients, shelfStock, isCauldronFull(this.state));
+    this.cauldron.renderIngredients(this.state.cauldronIngredients, MAX_CAULDRON_COUNT);
   }
 
   public start(): void {

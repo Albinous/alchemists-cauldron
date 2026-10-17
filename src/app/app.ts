@@ -13,6 +13,7 @@ export class App {
   private readonly recipe = new Recipe();
   private readonly bars = new Bars();
   private readonly controls = new Controls(handlers);
+
   public start(): void {
     const layout = createLayout({
       header: this.header.render(),

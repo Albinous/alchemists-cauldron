@@ -44,8 +44,10 @@ export class App {
     this.controls.setPlaying(isPlaying);
 
     const ingredients = getShelfIngredients();
+    const cauldronIngredients = this.state.cauldronIngredients;
     this.shelf.renderIngredients(ingredients, shelfStock, isCauldronFull(this.state));
-    this.cauldron.renderIngredients(this.state.cauldronIngredients, MAX_CAULDRON_COUNT);
+    this.cauldron.renderIngredients(cauldronIngredients, MAX_CAULDRON_COUNT);
+    this.recipe.setIngredientCount(cauldronIngredients.length, MAX_CAULDRON_COUNT);
   }
 
   public start(): void {

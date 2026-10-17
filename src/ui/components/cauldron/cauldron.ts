@@ -65,7 +65,7 @@ export class Cauldron {
 
     const ingredientsList = createElement('ol', {
       className: 'cauldron__list',
-      children: [...slots],
+      children: slots,
     });
 
     this.content.replaceChildren(ingredientsList);

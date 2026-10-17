@@ -29,7 +29,7 @@ $parchment-edge: polygon(
   transform: rotate(1deg);
 
   &__label {
-    font-size: 12px;
+    font-size: $fs-xs;
     font-weight: $fw-bold;
     letter-spacing: $letter-spacing;
     text-align: center;
@@ -37,7 +37,7 @@ $parchment-edge: polygon(
   }
 
   &__title {
-    font-size: 32px;
+    font-size: $fs-2xl;
     font-weight: $fw-extrabold;
     line-height: 1.05;
     text-align: center;
@@ -50,12 +50,56 @@ $parchment-edge: polygon(
 
   &__hint {
     font-family: $font-accent;
-    font-size: 19px;
+    font-size: $fs-lg;
     font-style: italic;
     font-weight: $fw-semibold;
     line-height: 1.4;
     text-align: center;
     color: $color-ink-soft;
+  }
+
+  // ---------- Ingredients counter ----------
+  $dot-size: 18px;
+
+  &__ingredients {
+    @include flex-direction-horizontal;
+    gap: $space-sm;
+    padding-top: $space-sm;
+    border-top: 1px solid rgba(58, 42, 26, 0.35); // ink line, as in the design
+  }
+
+  &__counter {
+    display: flex;
+    align-items: baseline; // align label and big number by text baseline
+    gap: $space-sm;
+  }
+
+  &__counter-label {
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+  }
+
+  &__counter-value {
+    font-size: $fs-xl;
+    font-weight: $fw-extrabold;
+    font-variant-numeric: tabular-nums; // digits don't jump when the count changes
+  }
+
+  &__dots {
+    display: flex;
+    gap: $space-sm;
+  }
+
+  &__dot {
+    width: $dot-size;
+    height: $dot-size;
+    border: 2px solid #8a7a66;
+    border-radius: $radius-round;
+
+    &--filled {
+      background: $color-seal;
+      border-color: $color-seal;
+    }
   }
 }
 

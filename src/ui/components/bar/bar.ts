@@ -1,4 +1,4 @@
-import type { IBarConfig } from '@/types';
+import type { IBarConfig, IRecipeRange } from '@/types';
 import { createContainer, createElement, createSvgFromString } from '@/ui/dom';
 import { clamp, formatNumber } from '@/utils';
 
@@ -6,17 +6,29 @@ import './bar.scss';
 
 const INITIAL_VALUE = 0;
 const TICKS_COUNT = 5;
+const MIN_PERCENT = 0;
+const MAX_PERCENT = 100;
 
 export class Bar {
-  private config: IBarConfig;
+  private readonly config: IBarConfig;
   private readonly bar = createContainer('bar');
   private readonly min: number;
   private readonly max: number;
+  private readonly track = createElement('div', {
+    className: 'bar__range-track',
+  });
   private readonly value = createElement('span', {
     className: 'bar__value',
   });
   private readonly marker = createElement('span', {
     className: 'bar__marker',
+  });
+  private readonly barZone = createElement('span', {
+    className: 'bar__zone',
+  });
+  private readonly barStatusLabel = createElement('span', {
+    className: 'bar__status-label',
+    text: 'In range',
   });
 
   constructor(config: IBarConfig) {
@@ -51,18 +63,25 @@ export class Bar {
       className: 'bar__label',
       text: this.config.label,
     });
-    container.append(labelName, this.value);
+    const barStatus = createContainer('bar__status', [this.barStatusLabel, this.value]);
+    container.append(labelName, barStatus);
 
     return container;
   }
 
   private createRange(): HTMLElement {
     const zeroLine = this.createZeroLine();
-    const range = createContainer('bar__range-track', [zeroLine, this.marker]);
+
+    this.track.setAttribute('role', 'meter');
+    this.track.setAttribute('aria-label', this.config.label);
+    this.track.setAttribute('aria-valuemin', String(this.min));
+    this.track.setAttribute('aria-valuemax', String(this.max));
+    this.track.append(this.barZone, zeroLine, this.marker);
+
     const ticksArray = this.createTicksValues();
     const ticks = ticksArray.map((tickValue) => this.createTick(tickValue));
     const ticksContainer = createContainer('bar__range-ticks', [...ticks]);
-    const container = createContainer('bar__range', [range, ticksContainer]);
+    const container = createContainer('bar__range', [this.track, ticksContainer]);
 
     return container;
   }
@@ -98,16 +117,33 @@ export class Bar {
   }
 
   public setValue(value: number): void {
+    this.track.setAttribute('aria-valuenow', String(value));
     this.value.textContent = formatNumber(value);
-    const position =
-      value > this.max || value < this.min
-        ? clamp(value, this.min, this.max)
-        : this.toPercent(value);
+    const position = clamp(this.toPercent(value), MIN_PERCENT, MAX_PERCENT);
     this.marker.style.setProperty('--marker-position', `${position}%`);
+  }
+
+  public setTarget(range: IRecipeRange | undefined): void {
+    if (range === undefined) {
+      this.barZone.hidden = true;
+      return;
+    }
+    const start = clamp(this.toPercent(range.min), MIN_PERCENT, MAX_PERCENT);
+    const end = clamp(this.toPercent(range.max), MIN_PERCENT, MAX_PERCENT);
+    this.barZone.style.left = `${start}%`;
+    this.barZone.style.width = `${end - start}%`;
+
+    this.barZone.hidden = false;
+  }
+
+  public setInRange(isInRange: boolean): void {
+    this.bar.classList.toggle('bar--in-range', isInRange);
   }
 
   public reset(): void {
     this.setValue(INITIAL_VALUE);
+    this.setTarget(undefined);
+    this.setInRange(false);
   }
 
   public render(): HTMLElement {

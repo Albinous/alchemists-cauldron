@@ -1,13 +1,13 @@
 import { createElement } from '@/ui/dom';
 import { Bar } from '../bar/bar';
 import { densitySvg, magicSvg, temperatureSvg } from '@/assets';
-import './bars.scss';
+import type { ICauldronValues, IRecipe } from '@/types';
+import { BAR_SCALES } from '@/data';
 
-export const BAR_SCALES = {
-  temperature: { min: -80, max: 80 },
-  density: { min: -60, max: 60 },
-  magic: { min: 0, max: 80 },
-} as const;
+import './bars.scss';
+import { isInRange } from '@/logic/is-in-range';
+
+const PARAMETER_KEYS: readonly (keyof ICauldronValues)[] = ['temperature', 'density', 'magicPower'];
 
 export class Bars {
   private readonly temperature = new Bar({
@@ -25,18 +25,41 @@ export class Bars {
     modifier: 'density',
   });
   private readonly magic = new Bar({
-    min: BAR_SCALES.magic.min,
-    max: BAR_SCALES.magic.max,
+    min: BAR_SCALES.magicPower.min,
+    max: BAR_SCALES.magicPower.max,
     icon: magicSvg,
-    label: 'Magic',
+    label: 'Magic Power',
     modifier: 'magic',
   });
+  private readonly barComponents = {
+    temperature: this.temperature,
+    density: this.density,
+    magicPower: this.magic,
+  };
   private readonly bars = createElement('section', {
     className: 'bars',
   });
 
   constructor() {
     this.bars.append(this.temperature.render(), this.density.render(), this.magic.render());
+  }
+
+  public update(values: ICauldronValues, recipe: IRecipe | undefined): void {
+    this.bars.classList.add('bars--active');
+    for (const key of PARAMETER_KEYS) {
+      const bar = this.barComponents[key];
+      bar.setValue(values[key]);
+      bar.setTarget(recipe?.[key]);
+      bar.setInRange(recipe !== undefined && isInRange(values[key], recipe[key]));
+    }
+  }
+
+  public reset(): void {
+    this.bars.classList.remove('bars--active');
+    for (const key of PARAMETER_KEYS) {
+      const bar = this.barComponents[key];
+      bar.reset();
+    }
   }
 
   public render(): HTMLElement {

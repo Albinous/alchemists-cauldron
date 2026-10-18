@@ -45,6 +45,7 @@ export class Bars {
   }
 
   public update(values: ICauldronValues, recipe: IRecipe | undefined): void {
+    this.bars.classList.add('bars--active');
     for (const key of PARAMETER_KEYS) {
       const bar = this.barComponents[key];
       bar.setValue(values[key]);
@@ -54,6 +55,7 @@ export class Bars {
   }
 
   public reset(): void {
+    this.bars.classList.remove('bars--active');
     for (const key of PARAMETER_KEYS) {
       const bar = this.barComponents[key];
       bar.reset();

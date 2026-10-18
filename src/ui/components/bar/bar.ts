@@ -23,6 +23,10 @@ export class Bar {
   private readonly barZone = createElement('span', {
     className: 'bar__zone',
   });
+  private readonly barStatusLabel = createElement('span', {
+    className: 'bar__status-label',
+    text: 'In range',
+  });
 
   constructor(config: IBarConfig) {
     this.config = config;
@@ -56,7 +60,8 @@ export class Bar {
       className: 'bar__label',
       text: this.config.label,
     });
-    container.append(labelName, this.value);
+    const barStatus = createContainer('bar__status', [this.barStatusLabel, this.value]);
+    container.append(labelName, barStatus);
 
     return container;
   }

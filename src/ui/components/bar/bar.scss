@@ -13,6 +13,9 @@ $track-radius: 7px;
   background: linear-gradient(180deg, #141821, #0c0f14);
   border: 2px solid $color-brass-dim;
   border-radius: $radius-md;
+  transition:
+    border-color $duration-base $easing,
+    box-shadow $duration-base $easing;
 
   &--temperature {
     --bar-color: #{$color-temperature};
@@ -64,6 +67,21 @@ $track-radius: 7px;
     border-radius: $track-radius;
   }
 
+  &__status {
+    display: flex;
+    gap: $space-md;
+    align-items: center;
+
+    &-label {
+      display: none;
+      font-size: $fs-xs;
+      font-weight: $fw-bold;
+      letter-spacing: 0.08em;
+      color: $color-accent-bright;
+      text-shadow: 0 0 8px rgba(124, 255, 79, 0.7);
+    }
+  }
+
   &__zero {
     position: absolute;
     top: 0;
@@ -71,6 +89,8 @@ $track-radius: 7px;
     width: 2px;
     background: $bar-zero-line;
     transform: translateX(-50%);
+    border-right: 2px solid $color-accent-bright;
+    border-left: 2px solid $color-accent-bright;
   }
 
   &__marker {
@@ -103,6 +123,7 @@ $track-radius: 7px;
       color: $color-text-muted;
     }
   }
+
   &__zone {
     position: absolute;
     top: 0;
@@ -116,8 +137,15 @@ $track-radius: 7px;
 
   // ---------- Value inside the target zone ----------
   &--in-range {
+    border-color: $color-in-range;
+    box-shadow: 0 0 18px rgba(124, 255, 79, 0.25);
+
     .bar__range-track {
       box-shadow: $glow-accent;
+    }
+
+    .bar__status-label {
+      display: inline;
     }
 
     .bar__zone {
@@ -127,5 +155,17 @@ $track-radius: 7px;
     .bar__marker {
       background: $color-accent;
     }
+  }
+}
+
+// ---------- Game is running ----------
+.bars--active {
+  .bar__value {
+    color: $color-text-light;
+  }
+
+  .bar__marker {
+    background: $color-text-light;
+    border-color: var(--bar-color);
   }
 }

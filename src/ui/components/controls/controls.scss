@@ -28,7 +28,7 @@ $main-font-size: 32px;
   &__round {
     @include flex-direction-horizontal;
     gap: $space-xs;
-    font-size: 12px;
+    font-size: $fs-sm;
     font-weight: $fw-bold;
     letter-spacing: 0.08em;
     color: $color-text;

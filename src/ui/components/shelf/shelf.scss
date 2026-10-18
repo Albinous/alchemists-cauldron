@@ -79,7 +79,7 @@ $badge-size: 32px;
   &__info {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: $space-s;
     min-width: 0;
   }
 

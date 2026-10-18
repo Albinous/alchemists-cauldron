@@ -7,7 +7,7 @@ $track-radius: 7px;
   display: flex;
   flex: 1 1 $bar-min-width;
   align-items: center;
-  gap: 14px;
+  gap: $space-lg;
   min-width: 0;
   padding: $space-md $space-lg;
   background: linear-gradient(180deg, #141821, #0c0f14);
@@ -50,7 +50,7 @@ $track-radius: 7px;
   }
 
   &__value {
-    font-size: 16px;
+    font-size: $fs-md;
     font-weight: $fw-bold;
     font-variant-numeric: tabular-nums;
     color: $color-text-disabled;
@@ -87,6 +87,9 @@ $track-radius: 7px;
   }
 
   &__range {
+    display: flex;
+    flex-direction: column;
+    gap: $space-xs;
     &-ticks {
       position: relative;
       height: 1.2em;

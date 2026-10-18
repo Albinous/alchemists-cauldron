@@ -105,7 +105,7 @@ $parchment-edge: polygon(
 
 // ---------- Start screen ----------
 .recipe--sealed .recipe__title {
-  font-size: 26px;
+  font-size: $fs-xl;
   line-height: 1.1;
   color: $color-ink-faded;
 }

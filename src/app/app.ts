@@ -1,6 +1,7 @@
 import { MAX_CAULDRON_COUNT } from '@/data';
 import { isCauldronFull } from '@/logic';
 import { addIngredient, canAddIngredient } from '@/logic/add-ingredient';
+import { calculateCauldron } from '@/logic/cauldron-values';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/logic/game-state';
 import type { IIngredient } from '@/types';
 import { Bars, createElement, Cauldron, createLayout, Header, Recipe, Shelf, Controls } from '@/ui';
@@ -27,6 +28,7 @@ export class App {
       this.renderGame();
     } else {
       createInitialState();
+      this.bars.reset();
     }
   }
 
@@ -48,6 +50,10 @@ export class App {
     this.shelf.renderIngredients(ingredients, shelfStock, isCauldronFull(this.state));
     this.cauldron.renderIngredients(cauldronIngredients, MAX_CAULDRON_COUNT);
     this.recipe.setIngredientCount(cauldronIngredients.length, MAX_CAULDRON_COUNT);
+
+    const cauldronValues = calculateCauldron(this.state.cauldronIngredients);
+
+    this.bars.update(cauldronValues, this.state.activeRecipe);
   }
 
   public start(): void {

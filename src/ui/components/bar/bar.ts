@@ -1,4 +1,4 @@
-import type { IBarConfig } from '@/types';
+import type { IBarConfig, IRecipeRange } from '@/types';
 import { createContainer, createElement, createSvgFromString } from '@/ui/dom';
 import { clamp, formatNumber } from '@/utils';
 
@@ -6,6 +6,8 @@ import './bar.scss';
 
 const INITIAL_VALUE = 0;
 const TICKS_COUNT = 5;
+const MIN_PERCENT = 0;
+const MAX_PERCENT = 100;
 
 export class Bar {
   private config: IBarConfig;
@@ -17,6 +19,9 @@ export class Bar {
   });
   private readonly marker = createElement('span', {
     className: 'bar__marker',
+  });
+  private readonly barZone = createElement('span', {
+    className: 'bar__zone',
   });
 
   constructor(config: IBarConfig) {
@@ -58,7 +63,16 @@ export class Bar {
 
   private createRange(): HTMLElement {
     const zeroLine = this.createZeroLine();
-    const range = createContainer('bar__range-track', [zeroLine, this.marker]);
+    const range = createElement('div', {
+      className: 'bar__range-track',
+      attributes: {
+        role: 'meter',
+        'aria-label': this.config.label,
+        'aria-valuemin': String(this.config.min),
+        'aria-valuemax': String(this.config.max),
+      },
+      children: [this.barZone, zeroLine, this.marker],
+    });
     const ticksArray = this.createTicksValues();
     const ticks = ticksArray.map((tickValue) => this.createTick(tickValue));
     const ticksContainer = createContainer('bar__range-ticks', [...ticks]);
@@ -99,15 +113,36 @@ export class Bar {
 
   public setValue(value: number): void {
     this.value.textContent = formatNumber(value);
+    const minPercent = this.toPercent(this.min);
+    const maxPercent = this.toPercent(this.max);
     const position =
       value > this.max || value < this.min
-        ? clamp(value, this.min, this.max)
+        ? clamp(value, minPercent, maxPercent)
         : this.toPercent(value);
     this.marker.style.setProperty('--marker-position', `${position}%`);
   }
 
+  public setTarget(range: IRecipeRange | undefined): void {
+    if (range === undefined) {
+      this.barZone.hidden = true;
+      return;
+    }
+    const start = clamp(this.toPercent(range.min), MIN_PERCENT, MAX_PERCENT);
+    const end = clamp(this.toPercent(range.max), MIN_PERCENT, MAX_PERCENT);
+    this.barZone.style.left = `${start}%`;
+    this.barZone.style.width = `${end - start}%`;
+
+    this.barZone.hidden = false;
+  }
+
+  public setInRange(isInRange: boolean): void {
+    this.bar.classList.toggle('bar--in-range', isInRange);
+  }
+
   public reset(): void {
     this.setValue(INITIAL_VALUE);
+    this.setTarget(undefined);
+    this.setInRange(false);
   }
 
   public render(): HTMLElement {

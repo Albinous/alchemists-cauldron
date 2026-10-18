@@ -103,4 +103,29 @@ $track-radius: 7px;
       color: $color-text-muted;
     }
   }
+  &__zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: $bar-target;
+    border-radius: $track-radius;
+    transition:
+      left $duration-base $easing,
+      width $duration-base $easing;
+  }
+
+  // ---------- Value inside the target zone ----------
+  &--in-range {
+    .bar__range-track {
+      box-shadow: $glow-accent;
+    }
+
+    .bar__zone {
+      background: rgba(124, 255, 79, 0.55);
+    }
+
+    .bar__marker {
+      background: $color-accent;
+    }
+  }
 }

@@ -47,8 +47,10 @@ export class App {
 
     const ingredients = getShelfIngredients();
     const cauldronIngredients = this.state.cauldronIngredients;
+
     this.shelf.renderIngredients(ingredients, shelfStock, isCauldronFull(this.state));
     this.cauldron.renderIngredients(cauldronIngredients, MAX_CAULDRON_COUNT);
+    this.recipe.showRecipe(this.state.activeRecipe);
     this.recipe.setIngredientCount(cauldronIngredients.length, MAX_CAULDRON_COUNT);
 
     const cauldronValues = calculateCauldron(this.state.cauldronIngredients);

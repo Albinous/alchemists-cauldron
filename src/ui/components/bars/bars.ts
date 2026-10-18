@@ -2,12 +2,10 @@ import { createElement } from '@/ui/dom';
 import { Bar } from '../bar/bar';
 import { densitySvg, magicSvg, temperatureSvg } from '@/assets';
 import type { ICauldronValues, IRecipe } from '@/types';
-import { BAR_SCALES } from '@/data';
+import { BAR_SCALES, PARAMETER_KEYS } from '@/data';
 
 import './bars.scss';
 import { isInRange } from '@/logic/is-in-range';
-
-const PARAMETER_KEYS: readonly (keyof ICauldronValues)[] = ['temperature', 'density', 'magicPower'];
 
 export class Bars {
   private readonly temperature = new Bar({

@@ -10,10 +10,13 @@ const MIN_PERCENT = 0;
 const MAX_PERCENT = 100;
 
 export class Bar {
-  private config: IBarConfig;
+  private readonly config: IBarConfig;
   private readonly bar = createContainer('bar');
   private readonly min: number;
   private readonly max: number;
+  private readonly track = createElement('div', {
+    className: 'bar__range-track',
+  });
   private readonly value = createElement('span', {
     className: 'bar__value',
   });
@@ -68,20 +71,17 @@ export class Bar {
 
   private createRange(): HTMLElement {
     const zeroLine = this.createZeroLine();
-    const range = createElement('div', {
-      className: 'bar__range-track',
-      attributes: {
-        role: 'meter',
-        'aria-label': this.config.label,
-        'aria-valuemin': String(this.config.min),
-        'aria-valuemax': String(this.config.max),
-      },
-      children: [this.barZone, zeroLine, this.marker],
-    });
+
+    this.track.setAttribute('role', 'meter');
+    this.track.setAttribute('aria-label', this.config.label);
+    this.track.setAttribute('aria-valuemin', String(this.min));
+    this.track.setAttribute('aria-valuemax', String(this.max));
+    this.track.append(this.barZone, zeroLine, this.marker);
+
     const ticksArray = this.createTicksValues();
     const ticks = ticksArray.map((tickValue) => this.createTick(tickValue));
     const ticksContainer = createContainer('bar__range-ticks', [...ticks]);
-    const container = createContainer('bar__range', [range, ticksContainer]);
+    const container = createContainer('bar__range', [this.track, ticksContainer]);
 
     return container;
   }
@@ -117,13 +117,9 @@ export class Bar {
   }
 
   public setValue(value: number): void {
+    this.track.setAttribute('aria-valuenow', String(value));
     this.value.textContent = formatNumber(value);
-    const minPercent = this.toPercent(this.min);
-    const maxPercent = this.toPercent(this.max);
-    const position =
-      value > this.max || value < this.min
-        ? clamp(value, minPercent, maxPercent)
-        : this.toPercent(value);
+    const position = clamp(this.toPercent(value), MIN_PERCENT, MAX_PERCENT);
     this.marker.style.setProperty('--marker-position', `${position}%`);
   }
 

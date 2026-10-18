@@ -59,14 +59,6 @@ $track-radius: 7px;
     color: $color-text-disabled;
   }
 
-  &__range-track {
-    position: relative;
-    height: $bar-height;
-    background: $bar-track;
-    border: 1px solid $color-brass-dark;
-    border-radius: $track-radius;
-  }
-
   &__status {
     display: flex;
     gap: $space-md;
@@ -89,8 +81,6 @@ $track-radius: 7px;
     width: 2px;
     background: $bar-zero-line;
     transform: translateX(-50%);
-    border-right: 2px solid $color-accent-bright;
-    border-left: 2px solid $color-accent-bright;
   }
 
   &__marker {
@@ -110,6 +100,14 @@ $track-radius: 7px;
     display: flex;
     flex-direction: column;
     gap: $space-xs;
+    &-track {
+      position: relative;
+      height: $bar-height;
+      background: $bar-track;
+      border: 1px solid $color-brass-dark;
+      border-radius: $track-radius;
+      box-shadow: $glow-accent;
+    }
     &-ticks {
       position: relative;
       height: 1.2em;
@@ -130,6 +128,8 @@ $track-radius: 7px;
     bottom: 0;
     background: $bar-target;
     border-radius: $track-radius;
+    border-right: 2px solid $color-accent-bright;
+    border-left: 2px solid $color-accent-bright;
     transition:
       left $duration-base $easing,
       width $duration-base $easing;
@@ -140,18 +140,9 @@ $track-radius: 7px;
     border-color: $color-in-range;
     box-shadow: 0 0 18px rgba(124, 255, 79, 0.25);
 
-    .bar__range-track {
-      box-shadow: $glow-accent;
-    }
-
     .bar__status-label {
       display: inline;
     }
-
-    .bar__zone {
-      background: rgba(124, 255, 79, 0.55);
-    }
-
     .bar__marker {
       background: $color-accent;
     }

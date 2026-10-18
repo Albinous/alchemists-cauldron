@@ -5,4 +5,5 @@ export interface IIngredient {
   temperature: number;
   density: number;
   magicPower: number;
+  color: string;
 }

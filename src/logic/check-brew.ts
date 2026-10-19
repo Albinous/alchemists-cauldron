@@ -4,10 +4,12 @@ import { isInRange } from './is-in-range';
 
 export const isBrewSuccessful = (
   values: ICauldronValues,
-  recipe: IRecipe,
+  recipe: IRecipe | undefined,
   tolerance: number,
 ): boolean => {
-  return PARAMETER_KEYS.every((parameter) =>
-    isInRange(values[parameter], recipe[parameter], tolerance),
-  );
+  return recipe === undefined
+    ? false
+    : PARAMETER_KEYS.every((parameter) =>
+        isInRange(values[parameter], recipe[parameter], tolerance),
+      );
 };

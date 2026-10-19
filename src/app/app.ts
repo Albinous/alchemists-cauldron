@@ -1,6 +1,7 @@
 import { MAX_CAULDRON_COUNT } from '@/data';
 import { isCauldronFull } from '@/logic';
 import { addIngredient, canAddIngredient } from '@/logic/add-ingredient';
+import { canBrew } from '@/logic/can-brew';
 import { calculateCauldron } from '@/logic/cauldron-values';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/logic/game-state';
 import type { IIngredient } from '@/types';
@@ -44,6 +45,9 @@ export class App {
     const isPlaying = status === 'playing';
     this.header.setActive(isPlaying);
     this.controls.setPlaying(isPlaying);
+
+    const isMainEnabled = this.state.status === 'menu' || canBrew(this.state);
+    this.controls.setMainEnabled(isMainEnabled);
 
     const ingredients = getShelfIngredients();
     const cauldronIngredients = this.state.cauldronIngredients;

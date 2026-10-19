@@ -62,6 +62,13 @@ $main-font-size: 32px;
     height: $main-height;
     background: $color-accent;
     clip-path: hexagon($main-cut);
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+      filter: grayscale(0.6);
+      box-shadow: none;
+    }
   }
 
   &__main-label {
@@ -78,7 +85,7 @@ $main-font-size: 32px;
     transition: background $duration-fast $easing;
   }
 
-  &__main:hover &__main-label,
+  &__main:not(:disabled):hover &__main-label,
   &__main:focus-visible &__main-label {
     background: linear-gradient(180deg, #24391a, $color-accent-dark);
   }

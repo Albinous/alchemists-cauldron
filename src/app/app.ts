@@ -34,6 +34,40 @@ export class App {
   private endTime = 0;
   private timerId: ReturnType<typeof setInterval> | undefined = undefined;
 
+  private handleMain(): void {
+    if (this.state.status === 'menu') {
+      this.startNewGame();
+    } else if (this.state.status === 'playing') {
+      if (canBrew(this.state)) {
+        applyBrew(this.state);
+        this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
+        this.endTime = getEndTime(this.state.timeLeft, Date.now());
+
+        this.checkGameOver();
+      }
+
+      this.renderGame();
+    }
+  }
+
+  private handleSelect(ingredient: IIngredient): void {
+    if (!canAddIngredient(this.state, ingredient)) return;
+    addIngredient(this.state, ingredient);
+
+    this.renderGame();
+  }
+
+  private handleTick(): void {
+    this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
+
+    this.header.setTimer(
+      this.state.timeLeft,
+      difficultySettings[this.state.difficulty].startTimeSec,
+    );
+
+    this.checkGameOver();
+  }
+
   private startNewGame(): void {
     this.state = createNewGame();
     this.startTimer();
@@ -62,40 +96,6 @@ export class App {
   private stopTimer(): void {
     clearInterval(this.timerId);
     this.timerId = undefined;
-  }
-
-  private handleTick(): void {
-    this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
-
-    this.header.setTimer(
-      this.state.timeLeft,
-      difficultySettings[this.state.difficulty].startTimeSec,
-    );
-
-    this.checkGameOver();
-  }
-
-  private handleMain(): void {
-    if (this.state.status === 'menu') {
-      this.startNewGame();
-    } else if (this.state.status === 'playing') {
-      if (canBrew(this.state)) {
-        applyBrew(this.state);
-        this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
-        this.endTime = getEndTime(this.state.timeLeft, Date.now());
-
-        this.checkGameOver();
-      }
-
-      this.renderGame();
-    }
-  }
-
-  private handleSelect(ingredient: IIngredient): void {
-    if (!canAddIngredient(this.state, ingredient)) return;
-    addIngredient(this.state, ingredient);
-
-    this.renderGame();
   }
 
   private renderGame(): void {

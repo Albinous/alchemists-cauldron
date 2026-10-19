@@ -11,3 +11,4 @@ export * from './bar';
 export * from './controls';
 export * from './cauldron-values';
 export * from './brew-result';
+export * from './game-over';

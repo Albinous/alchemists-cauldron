@@ -6,12 +6,15 @@ import {
   canAddIngredient,
   canBrew,
   getEndTime,
+  getGameOverReason,
   getTimeLeft,
   isCauldronFull,
 } from '@/logic';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
 import type { IIngredient } from '@/types';
 import { Bars, createElement, Cauldron, createLayout, Header, Recipe, Shelf, Controls } from '@/ui';
+
+const TICK_INTERVAL_MS = 250;
 
 export class App {
   private readonly header = new Header();
@@ -37,11 +40,23 @@ export class App {
     this.renderGame();
   }
 
+  private endGame(): void {
+    this.state.status = 'game-over';
+    this.stopTimer();
+    this.renderGame();
+  }
+
+  private checkGameOver(): void {
+    const gameOverReason = getGameOverReason(this.state);
+    if (gameOverReason === undefined) return;
+    this.endGame();
+  }
+
   private startTimer(): void {
     if (this.timerId !== undefined) return;
     this.endTime = getEndTime(this.state.timeLeft, Date.now());
 
-    this.timerId = setInterval(() => this.handleTick(), 250);
+    this.timerId = setInterval(() => this.handleTick(), TICK_INTERVAL_MS);
   }
 
   private stopTimer(): void {
@@ -56,6 +71,8 @@ export class App {
       this.state.timeLeft,
       difficultySettings[this.state.difficulty].startTimeSec,
     );
+
+    this.checkGameOver();
   }
 
   private handleMain(): void {
@@ -64,13 +81,13 @@ export class App {
     } else if (this.state.status === 'playing') {
       if (canBrew(this.state)) {
         applyBrew(this.state);
+        this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
         this.endTime = getEndTime(this.state.timeLeft, Date.now());
+
+        this.checkGameOver();
       }
 
       this.renderGame();
-    } else {
-      createInitialState();
-      this.bars.reset();
     }
   }
 
@@ -93,7 +110,7 @@ export class App {
 
     this.controls.setPlaying(isPlaying);
 
-    const isMainEnabled = this.state.status === 'menu' || canBrew(this.state);
+    const isMainEnabled = status === 'menu' || canBrew(this.state);
     this.controls.setMainEnabled(isMainEnabled);
 
     const ingredients = getShelfIngredients(settings.ingredientsOnShelf);
@@ -102,7 +119,7 @@ export class App {
     this.shelf.renderIngredients(
       ingredients,
       shelfStock,
-      isCauldronFull(this.state, settings.maxIngredients),
+      isCauldronFull(this.state, settings.maxIngredients) || !isPlaying,
     );
     this.cauldron.renderIngredients(cauldronIngredients, settings.maxIngredients);
     this.recipe.showRecipe(this.state.activeRecipe);

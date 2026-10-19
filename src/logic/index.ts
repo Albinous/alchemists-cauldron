@@ -8,3 +8,4 @@ export * from './cauldron-values';
 export * from './is-in-range';
 export * from './can-brew';
 export * from './timer';
+export * from './game-over-reason';

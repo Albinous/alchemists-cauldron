@@ -97,7 +97,7 @@ export class Header {
     this.timerValue.textContent = formatTime(timeLeft);
     this.timeBarFill.style.width = `${(timeLeft / maxTime) * 100}%`;
 
-    this.timer.classList.toggle('stats__item-time--low', timeLeft <= DANGER_TIME);
+    this.timer.classList.toggle('stats__item-time--low', timeLeft <= DANGER_TIME && timeLeft > 0);
   }
 
   public setLives(lives: number, maxLives: number): void {

@@ -64,6 +64,7 @@ export class App {
     } else if (this.state.status === 'playing') {
       if (canBrew(this.state)) {
         applyBrew(this.state);
+        this.endTime = getEndTime(this.state.timeLeft, Date.now());
       }
 
       this.renderGame();

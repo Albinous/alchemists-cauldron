@@ -36,8 +36,41 @@
     gap: $space-xs;
     justify-content: flex-start;
 
-    &--time {
+    &-time {
       min-width: $time-min-width;
+
+      &--low {
+        .stats__item-value {
+          color: $color-danger;
+          text-shadow: 0 0 10px $color-danger-glow;
+          animation: timer-pulse 1s ease-in-out infinite;
+        }
+
+        .stats__bar-fill {
+          background: $color-danger;
+          box-shadow: 0 0 8px $color-danger-glow;
+        }
+      }
+
+      @keyframes timer-pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+
+        50% {
+          transform: scale(1.12);
+          opacity: 0.75;
+        }
+      }
+
+      // respect users who turn off animations in the OS
+      @media (prefers-reduced-motion: reduce) {
+        .header__timer--low .header__timer-value {
+          animation: none;
+        }
+      }
     }
 
     &-hearts {
@@ -77,5 +110,12 @@
       background-color: $color-accent;
       transition: width $duration-base $easing;
     }
+  }
+}
+
+// respect users who turn off animations in the OS
+@media (prefers-reduced-motion: reduce) {
+  .header__timer--low .header__timer-value {
+    animation: none;
   }
 }

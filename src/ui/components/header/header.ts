@@ -5,6 +5,7 @@ import { formatTime } from '@/utils';
 
 const INITIAL_SCORE_VALUE = 0;
 const INITIAL_TIMER_VALUE = '00:00';
+const DANGER_TIME = 15;
 
 export class Header {
   private readonly stats = createElement('div', {
@@ -25,6 +26,7 @@ export class Header {
     className: 'stats__item-value stats__item-hearts',
     text: '—',
   });
+  private readonly timer = this.createStat('Time', this.timerValue, 'time');
 
   private createHeader(): HTMLElement {
     const title = createElement('h1', {
@@ -53,10 +55,10 @@ export class Header {
     });
 
     const score = this.createStat('Score', this.scoreValue);
-    const timer = this.createStat('Time', this.timerValue, 'time', statsBar);
     const lives = this.createStat('Lives', this.livesValue, 'lives');
 
-    this.stats.append(score, this.createStatDivider(), timer, this.createStatDivider(), lives);
+    this.timer.append(statsBar);
+    this.stats.append(score, this.createStatDivider(), this.timer, this.createStatDivider(), lives);
 
     return this.stats;
   }
@@ -65,10 +67,9 @@ export class Header {
     label: string,
     valueElement: Element,
     additionalClass?: string,
-    extra?: HTMLElement,
   ): HTMLDivElement {
     const container = createContainer(
-      additionalClass ? `stats__item stats__item--${additionalClass}` : 'stats__item',
+      additionalClass ? `stats__item stats__item-${additionalClass}` : 'stats__item',
     );
     const statsLabel = createElement('span', {
       className: 'stats__item-label',
@@ -76,10 +77,6 @@ export class Header {
     });
 
     container.append(statsLabel, valueElement);
-
-    if (extra) {
-      container.append(extra);
-    }
 
     return container;
   }
@@ -99,6 +96,8 @@ export class Header {
   public setTimer(timeLeft: number, maxTime: number): void {
     this.timerValue.textContent = formatTime(timeLeft);
     this.timeBarFill.style.width = `${(timeLeft / maxTime) * 100}%`;
+
+    this.timer.classList.toggle('stats__item-time--low', timeLeft <= DANGER_TIME);
   }
 
   public setLives(lives: number, maxLives: number): void {

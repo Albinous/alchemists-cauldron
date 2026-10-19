@@ -12,6 +12,12 @@ const PAUSE_LABEL = 'Pause';
 
 export class Controls {
   private readonly controls = createContainer('controls');
+  private readonly mainButton = createElement('button', {
+    className: 'controls__main',
+    attributes: {
+      type: 'button',
+    },
+  });
   private readonly mainLabel = createElement('span', {
     className: 'controls__main-label',
   });
@@ -46,16 +52,10 @@ export class Controls {
   }
 
   private createMainGlow(handlers: IControlsHandlers): HTMLElement {
-    const mainButton = createElement('button', {
-      className: 'controls__main',
-      attributes: {
-        type: 'button',
-      },
-      children: [this.mainLabel],
-    });
-    const mainGlow = createContainer('controls__main-glow', [mainButton]);
+    this.mainButton.append(this.mainLabel);
+    const mainGlow = createContainer('controls__main-glow', [this.mainButton]);
 
-    mainButton.addEventListener('click', handlers.onMain);
+    this.mainButton.addEventListener('click', handlers.onMain);
 
     return mainGlow;
   }
@@ -68,6 +68,10 @@ export class Controls {
     });
 
     return [icon, spanLabel];
+  }
+
+  public setMainEnabled(isEnabled: boolean): void {
+    this.mainButton.disabled = !isEnabled;
   }
 
   public setPlaying(isPlaying: boolean): void {

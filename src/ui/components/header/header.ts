@@ -1,6 +1,7 @@
 import { createHeartIcon } from '@/ui/icons';
 import './header.scss';
 import { createContainer, createElement } from '@/ui/dom';
+import { formatTime } from '@/utils';
 
 const INITIAL_SCORE_VALUE = 0;
 const INITIAL_TIMER_VALUE = '00:00';
@@ -95,9 +96,9 @@ export class Header {
     this.scoreValue.textContent = String(score);
   }
 
-  public setTimer(time: string, barFill: number): void {
-    this.timerValue.textContent = time;
-    this.timeBarFill.style.width = `${barFill}%`;
+  public setTimer(timeLeft: number, maxTime: number): void {
+    this.timerValue.textContent = formatTime(timeLeft);
+    this.timeBarFill.style.width = `${(timeLeft / maxTime) * 100}%`;
   }
 
   public setLives(lives: number, maxLives: number): void {

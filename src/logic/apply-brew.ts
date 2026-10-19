@@ -1,0 +1,23 @@
+import { difficultySettings, MAX_TIME } from '@/data';
+import type { BrewResult, IGameState } from '@/types';
+import { getRandomRecipe } from './recipe-generator';
+import { isBrewSuccessful } from './check-brew';
+import { calculateCauldron } from './cauldron-values';
+
+export const applyBrew = (state: IGameState): BrewResult => {
+  const settings = difficultySettings[state.difficulty];
+  const cauldronValues = calculateCauldron(state.cauldronIngredients);
+  const isSuccess = isBrewSuccessful(cauldronValues, state.activeRecipe, settings.tolerance);
+
+  state.cauldronIngredients = [];
+
+  if (isSuccess) {
+    state.score += settings.scorePerBrew;
+    state.timeLeft = Math.min(state.timeLeft + settings.timeBonusSec, MAX_TIME);
+    state.activeRecipe = getRandomRecipe(state.difficulty);
+    return 'success';
+  }
+
+  state.lives -= 1;
+  return 'fail';
+};

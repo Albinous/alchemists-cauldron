@@ -58,6 +58,46 @@ $parchment-edge: polygon(
     color: $color-ink-soft;
   }
 
+  &__ranges {
+    display: flex;
+    flex-direction: column;
+    gap: $space-sm;
+  }
+
+  &__range {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: $space-sm;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed rgba(58, 42, 26, 0.4); // ink dashed line
+
+    &--temperature {
+      --range-color: #{$color-temperature-ink};
+    }
+
+    &--density {
+      --range-color: #{$color-density-ink};
+    }
+
+    &--magicPower {
+      --range-color: #{$color-magic-ink};
+    }
+
+    &-label {
+      font-size: $fs-md;
+      font-weight: $fw-bold;
+    }
+
+    &-value {
+      margin: 0; // browsers add a left margin to <dd>
+      font-size: $fs-xl;
+      font-weight: $fw-extrabold;
+      font-variant-numeric: tabular-nums;
+      color: var(--range-color);
+    }
+  }
+
   // ---------- Ingredients counter ----------
   $dot-size: 18px;
 
@@ -99,6 +139,18 @@ $parchment-edge: polygon(
     &--filled {
       background: $color-seal;
       border-color: $color-seal;
+    }
+  }
+
+  // ---------- Cauldron is full (4 / 4) ----------
+  &__ingredients--full {
+    .recipe__counter-value {
+      color: $color-temperature-ink;
+    }
+
+    .recipe__dot--filled {
+      background: $color-temperature-ink;
+      border-color: $color-temperature-ink;
     }
   }
 }

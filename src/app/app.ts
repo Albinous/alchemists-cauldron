@@ -1,8 +1,15 @@
-import { MAX_CAULDRON_COUNT } from '@/data';
-import { isCauldronFull } from '@/logic';
-import { addIngredient, canAddIngredient } from '@/logic/add-ingredient';
-import { calculateCauldron } from '@/logic/cauldron-values';
-import { createInitialState, createNewGame, getShelfIngredients } from '@/logic/game-state';
+import { difficultySettings, MAX_CAULDRON_COUNT, MAX_TIME } from '@/data';
+import {
+  addIngredient,
+  applyBrew,
+  calculateCauldron,
+  canAddIngredient,
+  canBrew,
+  createInitialState,
+  createNewGame,
+  getShelfIngredients,
+  isCauldronFull,
+} from '@/logic';
 import type { IIngredient } from '@/types';
 import { Bars, createElement, Cauldron, createLayout, Header, Recipe, Shelf, Controls } from '@/ui';
 
@@ -26,6 +33,12 @@ export class App {
     if (this.state.status === 'menu') {
       this.state = createNewGame();
       this.renderGame();
+    } else if (this.state.status === 'playing') {
+      if (canBrew(this.state)) {
+        applyBrew(this.state);
+      }
+
+      this.renderGame();
     } else {
       createInitialState();
       this.bars.reset();
@@ -40,15 +53,27 @@ export class App {
   }
 
   private renderGame(): void {
+    const settings = difficultySettings[this.state.difficulty];
+
     const { shelfStock, status } = this.state;
     const isPlaying = status === 'playing';
     this.header.setActive(isPlaying);
+
+    this.header.setScore(this.state.score);
+    this.header.setTimer(this.state.timeLeft, MAX_TIME);
+    this.header.setLives(this.state.lives, settings.lives);
+
     this.controls.setPlaying(isPlaying);
+
+    const isMainEnabled = this.state.status === 'menu' || canBrew(this.state);
+    this.controls.setMainEnabled(isMainEnabled);
 
     const ingredients = getShelfIngredients();
     const cauldronIngredients = this.state.cauldronIngredients;
+
     this.shelf.renderIngredients(ingredients, shelfStock, isCauldronFull(this.state));
     this.cauldron.renderIngredients(cauldronIngredients, MAX_CAULDRON_COUNT);
+    this.recipe.showRecipe(this.state.activeRecipe);
     this.recipe.setIngredientCount(cauldronIngredients.length, MAX_CAULDRON_COUNT);
 
     const cauldronValues = calculateCauldron(this.state.cauldronIngredients);

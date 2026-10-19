@@ -5,6 +5,8 @@ import {
   calculateCauldron,
   canAddIngredient,
   canBrew,
+  getEndTime,
+  getTimeLeft,
   isCauldronFull,
 } from '@/logic';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
@@ -26,11 +28,39 @@ export class App {
   });
 
   private state = createInitialState();
+  private endTime = 0;
+  private timerId: ReturnType<typeof setInterval> | undefined = undefined;
+
+  private startNewGame(): void {
+    this.state = createNewGame();
+    this.startTimer();
+    this.renderGame();
+  }
+
+  private startTimer(): void {
+    if (this.timerId !== undefined) return;
+    this.endTime = getEndTime(this.state.timeLeft, Date.now());
+
+    this.timerId = setInterval(() => this.handleTick(), 250);
+  }
+
+  private stopTimer(): void {
+    clearInterval(this.timerId);
+    this.timerId = undefined;
+  }
+
+  private handleTick(): void {
+    this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
+
+    this.header.setTimer(
+      this.state.timeLeft,
+      difficultySettings[this.state.difficulty].startTimeSec,
+    );
+  }
 
   private handleMain(): void {
     if (this.state.status === 'menu') {
-      this.state = createNewGame();
-      this.renderGame();
+      this.startNewGame();
     } else if (this.state.status === 'playing') {
       if (canBrew(this.state)) {
         applyBrew(this.state);
@@ -52,7 +82,6 @@ export class App {
 
   private renderGame(): void {
     const settings = difficultySettings[this.state.difficulty];
-
     const { shelfStock, status } = this.state;
     const isPlaying = status === 'playing';
     this.header.setActive(isPlaying);

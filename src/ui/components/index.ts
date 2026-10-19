@@ -5,3 +5,4 @@ export * from './recipe';
 export * from './bar';
 export * from './bars';
 export * from './controls';
+export * from './game-over';

@@ -1,0 +1,10 @@
+@function hexagon($cut) {
+  @return polygon(
+    $cut 0,
+    calc(100% - #{$cut}) 0,
+    100% 50%,
+    calc(100% - #{$cut}) 100%,
+    $cut 100%,
+    0 50%
+  );
+}

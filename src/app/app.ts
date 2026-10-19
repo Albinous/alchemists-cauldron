@@ -11,8 +11,18 @@ import {
   isCauldronFull,
 } from '@/logic';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
-import type { IIngredient } from '@/types';
-import { Bars, createElement, Cauldron, createLayout, Header, Recipe, Shelf, Controls } from '@/ui';
+import type { GameOverReason, IIngredient } from '@/types';
+import {
+  Bars,
+  createElement,
+  Cauldron,
+  createLayout,
+  Header,
+  Recipe,
+  Shelf,
+  Controls,
+  GameOver,
+} from '@/ui';
 
 const TICK_INTERVAL_MS = 250;
 
@@ -29,6 +39,7 @@ export class App {
     onMain: () => this.handleMain(),
     onSecondary: () => {},
   });
+  private readonly gameOver = new GameOver(() => this.handlePlayAgain());
 
   private state = createInitialState();
   private endTime = 0;
@@ -40,7 +51,6 @@ export class App {
     } else if (this.state.status === 'playing') {
       if (canBrew(this.state)) {
         applyBrew(this.state);
-        this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
         this.endTime = getEndTime(this.state.timeLeft, Date.now());
 
         this.checkGameOver();
@@ -68,22 +78,28 @@ export class App {
     this.checkGameOver();
   }
 
+  private handlePlayAgain(): void {
+    this.gameOver.hide();
+    this.startNewGame();
+  }
+
   private startNewGame(): void {
     this.state = createNewGame();
     this.startTimer();
     this.renderGame();
   }
 
-  private endGame(): void {
+  private endGame(reason: GameOverReason): void {
     this.state.status = 'game-over';
     this.stopTimer();
+    this.gameOver.show(reason, this.state.score);
     this.renderGame();
   }
 
   private checkGameOver(): void {
     const gameOverReason = getGameOverReason(this.state);
     if (gameOverReason === undefined) return;
-    this.endGame();
+    this.endGame(gameOverReason);
   }
 
   private startTimer(): void {
@@ -139,6 +155,7 @@ export class App {
       bars: this.bars.render(),
       controls: this.controls.render(),
       footer: createElement('footer'),
+      gameOver: this.gameOver.render(),
     });
 
     document.body.prepend(layout);

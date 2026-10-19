@@ -3,3 +3,4 @@ export * from './ingredients';
 export * from './recipes';
 export * from './bar-scales';
 export * from './parameters';
+export * from './game-over';

@@ -8,18 +8,6 @@ $main-cut: 30px;
 $main-border: 3px;
 $main-font-size: 32px;
 
-// start game's figure form
-@function hexagon($cut) {
-  @return polygon(
-    $cut 0,
-    calc(100% - #{$cut}) 0,
-    100% 50%,
-    calc(100% - #{$cut}) 100%,
-    $cut 100%,
-    0 50%
-  );
-}
-
 .controls {
   @include flex-between;
   flex-wrap: wrap;
@@ -55,34 +43,11 @@ $main-font-size: 32px;
   }
 
   &__main {
-    position: relative;
-    display: block;
-    width: min(#{$main-width}, 100%);
-    min-width: $main-min-width;
-    height: $main-height;
-    background: $color-accent;
-    clip-path: hexagon($main-cut);
+    @include hex-button(30px);
 
-    &:disabled {
-      cursor: not-allowed;
-      opacity: 0.45;
-      filter: grayscale(0.6);
-      box-shadow: none;
-    }
-  }
-
-  &__main-label {
-    position: absolute;
-    inset: $main-border;
-    @include flex-center;
+    min-width: 300px;
+    min-height: 82px;
     font-size: $main-font-size;
-    font-weight: $fw-extrabold;
-    letter-spacing: 0.04em;
-    color: $color-accent-bright;
-    text-shadow: 0 0 12px rgba(124, 255, 79, 0.8);
-    background: linear-gradient(180deg, $color-accent-dark, $color-accent-darker);
-    clip-path: hexagon($main-cut - 2px);
-    transition: background $duration-fast $easing;
   }
 
   &__main:not(:disabled):hover &__main-label,

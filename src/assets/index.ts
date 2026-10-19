@@ -5,3 +5,4 @@ export { default as helpSvg } from './help.svg?raw';
 export { default as settingsSvg } from './settings.svg?raw';
 export { default as pauseSvg } from './pause.svg?raw';
 export { default as flaskSvg } from './flask.svg?raw';
+export { default as emblemSvg } from './flask-emblem.svg?raw';

@@ -90,6 +90,8 @@ export class Recipe {
 
     const counter = createContainer('recipe__counter', [counterLabel, counterValue]);
 
+    this.ingredientsCount.classList.toggle('recipe__ingredients--full', count === max);
+
     const counterDotsArray = Array.from({ length: max }, (_, index) =>
       this.createCounterDot(index < count),
     );

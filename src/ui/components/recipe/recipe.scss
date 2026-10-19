@@ -141,6 +141,18 @@ $parchment-edge: polygon(
       border-color: $color-seal;
     }
   }
+
+  // ---------- Cauldron is full (4 / 4) ----------
+  &__ingredients--full {
+    .recipe__counter-value {
+      color: $color-temperature-ink;
+    }
+
+    .recipe__dot--filled {
+      background: $color-temperature-ink;
+      border-color: $color-temperature-ink;
+    }
+  }
 }
 
 // ---------- Start screen ----------

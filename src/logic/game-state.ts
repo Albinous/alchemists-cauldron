@@ -1,5 +1,5 @@
-import { DEFAULT_DIFFICULTY, ingredients, LEVEL_1_SHELF_SIZE } from '@/data';
-import type { IGameState, IIngredient } from '@/types';
+import { DEFAULT_DIFFICULTY, difficultySettings, ingredients, LEVEL_1_SHELF_SIZE } from '@/data';
+import type { Difficulty, IGameState, IIngredient } from '@/types';
 import { createStock } from './create-stock';
 import { getRandomRecipe } from './recipe-generator';
 
@@ -16,9 +16,15 @@ export const createInitialState = (): IGameState => ({
   difficulty: DEFAULT_DIFFICULTY,
 });
 
-export const createNewGame = (): IGameState => ({
-  ...createInitialState(),
-  status: 'playing',
-  shelfStock: createStock(getShelfIngredients()),
-  activeRecipe: getRandomRecipe(DEFAULT_DIFFICULTY),
-});
+export const createNewGame = (difficulty: Difficulty = DEFAULT_DIFFICULTY): IGameState => {
+  const settings = difficultySettings[difficulty];
+  return {
+    ...createInitialState(),
+    status: 'playing',
+    difficulty,
+    shelfStock: createStock(getShelfIngredients()),
+    activeRecipe: getRandomRecipe(difficulty),
+    lives: settings.lives,
+    timeLeft: settings.startTimeSec,
+  };
+};

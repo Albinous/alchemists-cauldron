@@ -6,5 +6,6 @@ export * from './add-ingredient';
 export * from './apply-brew';
 export * from './cauldron-values';
 export * from './is-in-range';
-export * from './game-state';
 export * from './can-brew';
+export * from './timer';
+export * from './game-over-reason';

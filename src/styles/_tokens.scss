@@ -1,7 +1,3 @@
-// =============================================
-// Design tokens — Alchemist's Cauldron (variant H)
-// =============================================
-
 // ---------- Fonts ----------
 $font-display: 'Cinzel', Georgia, serif;
 $font-accent: 'Cormorant Garamond', Georgia, serif;
@@ -17,6 +13,8 @@ $fs-lg: 17px;
 $fs-xl: 24px;
 $fs-2xl: 34px;
 $fs-title: 38px;
+$fs-display: 52px;
+$fs-score: 64px;
 
 $letter-spacing: 0.14em;
 
@@ -30,6 +28,8 @@ $color-text-soft: #cdbf9e;
 $color-text-muted: #9c927c;
 $color-text-disabled: #8c826e;
 $color-text-inactive: #6e7a62;
+$color-danger: #ff5a4f;
+$color-danger-glow: rgba(255, 90, 79, 0.55);
 
 // ---------- Brass frames (header plaque, panels, round buttons) ----------
 $color-panel-top: #171b23;
@@ -46,6 +46,7 @@ $color-accent-bright: #9bff5c;
 $color-accent-soft: #8be84a;
 $color-title: #a8f06a;
 $color-title-shadow: #1f3a12;
+$color-title-glow: #a8f06a;
 $color-accent-dark: #1a2a12;
 $color-accent-darker: #0b1208;
 $color-in-range: #5fa83a;

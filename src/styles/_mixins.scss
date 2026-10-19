@@ -1,4 +1,5 @@
 @use 'tokens' as *;
+@use 'functions' as *;
 
 @mixin flex-center {
   display: flex;
@@ -25,6 +26,56 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+// Hexagon button: bright edge + dark inner fill.
+// $cut — how deep the side corners are; $edge — thickness of the bright edge.
+@mixin hex-button($cut: 24px, $edge: 3px) {
+  @include flex-center;
+
+  position: relative;
+  isolation: isolate; // keeps ::before behind the text, inside the button
+  box-sizing: border-box;
+  padding-inline: calc(#{$cut} + #{$space-lg});
+  border: 0;
+  background: $color-accent-bright; // the bright edge
+  clip-path: hexagon($cut);
+  font-family: inherit;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: $color-accent-bright;
+  text-shadow: 0 0 12px rgba(124, 255, 79, 0.8);
+  cursor: pointer;
+
+  // dark inner fill, $edge px inside the bright edge
+  &::before {
+    content: '';
+    position: absolute;
+    inset: $edge;
+    z-index: -1;
+    background: linear-gradient(180deg, #1a2a12, #0b1208);
+    clip-path: hexagon(calc(#{$cut} - #{$edge}));
+    transition: background 0.2s ease;
+  }
+
+  &:not(:disabled):hover::before,
+  &:focus-visible::before {
+    background: linear-gradient(180deg, #24391a, #0f180b);
+  }
+
+  // outline is clipped by clip-path, so focus is shown by the fill above
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    filter: grayscale(0.7) brightness(0.7);
+  }
+}
+
+@mixin hex-glow {
+  filter: drop-shadow(0 0 14px rgba(124, 255, 79, 0.55));
 }
 
 @mixin mobile {

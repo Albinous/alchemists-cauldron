@@ -6,4 +6,5 @@ export interface ILayoutElements {
   bars: HTMLElement;
   controls: HTMLElement;
   footer: HTMLElement;
+  gameOver: HTMLElement;
 }

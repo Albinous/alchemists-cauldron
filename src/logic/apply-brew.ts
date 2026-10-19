@@ -1,4 +1,4 @@
-import { difficultySettings, MAX_TIME } from '@/data';
+import { difficultySettings } from '@/data';
 import type { BrewResult, IGameState } from '@/types';
 import { getRandomRecipe } from './recipe-generator';
 import { isBrewSuccessful } from './check-brew';
@@ -13,7 +13,7 @@ export const applyBrew = (state: IGameState): BrewResult => {
 
   if (isSuccess) {
     state.score += settings.scorePerBrew;
-    state.timeLeft = Math.min(state.timeLeft + settings.timeBonusSec, MAX_TIME);
+    state.timeLeft = Math.min(state.timeLeft + settings.timeBonusSec, settings.startTimeSec);
     state.activeRecipe = getRandomRecipe(state.difficulty);
     return 'success';
   }

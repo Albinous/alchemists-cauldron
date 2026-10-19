@@ -1,15 +1,13 @@
-import { difficultySettings, MAX_CAULDRON_COUNT, MAX_TIME } from '@/data';
+import { difficultySettings } from '@/data';
 import {
   addIngredient,
   applyBrew,
   calculateCauldron,
   canAddIngredient,
   canBrew,
-  createInitialState,
-  createNewGame,
-  getShelfIngredients,
   isCauldronFull,
 } from '@/logic';
+import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
 import type { IIngredient } from '@/types';
 import { Bars, createElement, Cauldron, createLayout, Header, Recipe, Shelf, Controls } from '@/ui';
 
@@ -60,7 +58,7 @@ export class App {
     this.header.setActive(isPlaying);
 
     this.header.setScore(this.state.score);
-    this.header.setTimer(this.state.timeLeft, MAX_TIME);
+    this.header.setTimer(this.state.timeLeft, settings.startTimeSec);
     this.header.setLives(this.state.lives, settings.lives);
 
     this.controls.setPlaying(isPlaying);
@@ -68,13 +66,17 @@ export class App {
     const isMainEnabled = this.state.status === 'menu' || canBrew(this.state);
     this.controls.setMainEnabled(isMainEnabled);
 
-    const ingredients = getShelfIngredients();
+    const ingredients = getShelfIngredients(settings.ingredientsOnShelf);
     const cauldronIngredients = this.state.cauldronIngredients;
 
-    this.shelf.renderIngredients(ingredients, shelfStock, isCauldronFull(this.state));
-    this.cauldron.renderIngredients(cauldronIngredients, MAX_CAULDRON_COUNT);
+    this.shelf.renderIngredients(
+      ingredients,
+      shelfStock,
+      isCauldronFull(this.state, settings.maxIngredients),
+    );
+    this.cauldron.renderIngredients(cauldronIngredients, settings.maxIngredients);
     this.recipe.showRecipe(this.state.activeRecipe);
-    this.recipe.setIngredientCount(cauldronIngredients.length, MAX_CAULDRON_COUNT);
+    this.recipe.setIngredientCount(cauldronIngredients.length, settings.maxIngredients);
 
     const cauldronValues = calculateCauldron(this.state.cauldronIngredients);
 

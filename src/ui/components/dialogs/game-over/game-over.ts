@@ -1,9 +1,9 @@
 import { createContainer, createElement } from '@/ui/dom';
 import type { GameOverReason } from '@/types';
 import { GAME_OVER_REASON_LABELS } from '@/data';
+import { Modal } from '../modal';
 
 import './game-over.scss';
-import { Modal } from '../modal';
 
 const TITLE_TEXT = 'Game Over';
 const SCORE_LABEL = 'Final Score';

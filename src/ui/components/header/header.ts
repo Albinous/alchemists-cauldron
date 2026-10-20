@@ -5,6 +5,7 @@ import { formatTime } from '@/utils';
 
 const INITIAL_SCORE_VALUE = 0;
 const INITIAL_TIMER_VALUE = '00:00';
+const INITIAL_LIVES_VALUE = '—';
 const DANGER_TIME = 15;
 
 export class Header {
@@ -24,7 +25,10 @@ export class Header {
   });
   private readonly livesValue = createElement('div', {
     className: 'stats__item-value stats__item-hearts',
-    text: '—',
+    text: INITIAL_LIVES_VALUE,
+    attributes: {
+      'aria-label': 'Lives: —',
+    },
   });
   private readonly timer = this.createStat('Time', this.timerValue, 'time');
 
@@ -104,6 +108,14 @@ export class Header {
     const hearts = Array.from({ length: maxLives }, (_, index) => createHeartIcon(index >= lives));
     this.livesValue.replaceChildren(...hearts);
     this.livesValue.setAttribute('aria-label', `Lives: ${lives} of ${maxLives}`);
+  }
+
+  public renderIdle(): void {
+    this.scoreValue.textContent = String(INITIAL_SCORE_VALUE);
+    this.timerValue.textContent = INITIAL_TIMER_VALUE;
+    this.timeBarFill.style.width = '0';
+    this.livesValue.textContent = INITIAL_LIVES_VALUE;
+    this.livesValue.setAttribute('aria-label', 'Lives: —');
   }
 
   public render(): HTMLElement {

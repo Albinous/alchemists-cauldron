@@ -11,6 +11,7 @@ export const createLayout = ({
   controls,
   footer,
   gameOver,
+  pause,
 }: ILayoutElements): DocumentFragment => {
   const fragment = document.createDocumentFragment();
 
@@ -24,7 +25,7 @@ export const createLayout = ({
     children: [createContainer('container', [mainBoard, bars, controls])],
   });
 
-  fragment.append(header, main, footer, gameOver);
+  fragment.append(header, main, footer, gameOver, pause);
 
   return fragment;
 };

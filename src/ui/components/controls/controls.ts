@@ -83,6 +83,10 @@ export class Controls {
     this.secondaryButton.replaceChildren(...content);
   }
 
+  public setSecondaryEnabled(isEnabled: boolean): void {
+    this.secondaryButton.disabled = !isEnabled;
+  }
+
   public render(): HTMLElement {
     return this.controls;
   }

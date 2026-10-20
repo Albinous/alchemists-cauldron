@@ -1,0 +1,34 @@
+@use '@/styles/tokens' as *;
+@use '@/styles/mixins' as *;
+
+.pause {
+  &.modal::backdrop {
+    background: rgba(4, 6, 9, 0.8);
+    backdrop-filter: blur(10px);
+  }
+
+  &__resume,
+  &__exit {
+    @include hex-button(24px);
+
+    min-width: 280px;
+    min-height: 62px;
+    font-size: $fs-lg;
+  }
+
+  &__exit {
+    background: $color-brass;
+
+    &::before {
+      background: linear-gradient(180deg, #2a2318, #14100a);
+    }
+
+    color: $color-text-light;
+    text-shadow: none;
+
+    &:not(:disabled):hover::before,
+    &:focus-visible::before {
+      background: linear-gradient(180deg, #3a3020, #1c160d);
+    }
+  }
+}

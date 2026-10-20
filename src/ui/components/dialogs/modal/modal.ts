@@ -4,6 +4,8 @@ import { createContainer, createElement, createSvgFromString } from '@/ui/dom';
 
 import './modal.scss';
 
+const CLOSED_BY_CODE = 'code';
+
 const preventClose = (event: Event): void => {
   event.preventDefault();
 };
@@ -21,6 +23,15 @@ export class Modal {
     this.dialog.addEventListener('cancel', (event) => {
       preventClose(event);
       options.onCancel?.();
+    });
+    this.dialog.addEventListener('close', () => {
+      if (this.dialog.returnValue === CLOSED_BY_CODE) return;
+
+      if (options.onCancel) {
+        options.onCancel();
+      } else {
+        this.dialog.showModal();
+      }
     });
   }
 
@@ -56,13 +67,13 @@ export class Modal {
   }
 
   public show(): void {
-    if (!this.dialog.open) {
-      this.dialog.showModal();
-    }
+    if (this.dialog.open) return;
+    this.dialog.returnValue = '';
+    this.dialog.showModal();
   }
 
   public hide(): void {
-    this.dialog.close();
+    this.dialog.close(CLOSED_BY_CODE);
   }
 
   public render(): HTMLElement {

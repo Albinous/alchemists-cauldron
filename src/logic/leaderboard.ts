@@ -9,3 +9,13 @@ export const isTopScore = (entries: ILeaderboardEntry[], score: number): boolean
     score > 0
   );
 };
+
+export const addEntry = (
+  entries: ILeaderboardEntry[],
+  entry: ILeaderboardEntry,
+): ILeaderboardEntry[] => {
+  const sorted = [...entries, entry].toSorted((a, b) => {
+    return a.score === b.score ? a.date - b.date : b.score - a.score;
+  });
+  return sorted.slice(0, LEADERBOARD_SIZE);
+};

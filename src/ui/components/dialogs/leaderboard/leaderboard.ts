@@ -3,6 +3,7 @@ import { Modal } from '../modal';
 import type { ILeaderboardEntry } from '@/types';
 
 import './leaderboard.scss';
+import { formatDate } from '@/utils';
 
 const TITLE_TEXT = 'Top Alchemists';
 const TITLE_ID = 'leaderboard-title';
@@ -83,7 +84,7 @@ export class Leaderboard {
   }
 
   private createRow(entry: ILeaderboardEntry, index: number): HTMLTableRowElement {
-    const rowValues = [index + 1, entry.name, entry.score, entry.date];
+    const rowValues = [index + 1, entry.name, entry.score, formatDate(entry.date)];
     const tableData = rowValues.map((value, columnIndex) =>
       createElement('td', {
         className: `leaderboard__table-data leaderboard__table-data--${COLUMNS[columnIndex].modifier}`,

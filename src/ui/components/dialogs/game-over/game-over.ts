@@ -10,6 +10,14 @@ const SCORE_LABEL = 'Final Score';
 const PLAY_AGAIN_TEXT = 'Play again';
 const TITLE_ID = 'game-over-title';
 
+const FORM_LABEL = 'Enter your name';
+const NAME_HINT_TEXT = '2–15 characters: letters, digits, space, _ and -';
+const NAME_ERROR_TEXT = 'Use 2–15 characters: letters, digits, space, _ or -';
+const NAME_ID = 'game-over-name';
+const NAME_HINT_ID = 'game-over-name-hint';
+const NAME_ERROR_ID = 'game-over-name-error';
+const SUBMIT_TEXT = 'Submit Score';
+
 export class GameOver {
   private readonly reason = createElement('p', {
     className: 'game-over__reason',
@@ -18,16 +26,43 @@ export class GameOver {
     className: 'game-over__score-value',
   });
   private readonly modal: Modal;
-  private readonly onPlayAgain: () => void;
+  private readonly form = createElement('form', {
+    className: 'game-over__form',
+  });
+  private readonly input = createElement('input', {
+    className: 'game-over__input',
+    attributes: {
+      id: NAME_ID,
+      type: 'text',
+      maxlength: '15',
+      autocomplete: 'off',
+      'aria-describedby': `${NAME_HINT_ID} ${NAME_ERROR_ID}`,
+    },
+  });
+  private readonly formError = createElement('p', {
+    className: 'game-over__error',
+    text: NAME_ERROR_TEXT,
+    attributes: {
+      id: NAME_ERROR_ID,
+      role: 'alert',
+    },
+  });
+  private readonly submitButton = createElement('button', {
+    className: 'game-over__submit',
+    text: SUBMIT_TEXT,
+    attributes: {
+      type: 'submit',
+    },
+  });
 
-  constructor(onPlayAgain: () => void) {
-    this.onPlayAgain = onPlayAgain;
-
+  constructor(onSubmitName: (name: string) => void, onPlayAgain: () => void) {
     const finalScoreLabel = createElement('span', {
       className: 'game-over__score-label',
       text: SCORE_LABEL,
     });
     const finalScore = createContainer('game-over__score', [finalScoreLabel, this.finalScoreValue]);
+
+    this.createForm();
 
     const playAgainButton = createElement('button', {
       className: 'game-over__replay',
@@ -36,20 +71,70 @@ export class GameOver {
         type: 'button',
       },
     });
-    playAgainButton.addEventListener('click', this.onPlayAgain);
 
     this.modal = new Modal({
       className: 'game-over',
       titleId: TITLE_ID,
       title: TITLE_TEXT,
-      content: [this.reason, finalScore],
+      content: [this.reason, finalScore, this.form],
       actions: [playAgainButton],
+    });
+
+    playAgainButton.addEventListener('click', onPlayAgain);
+    this.form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      onSubmitName(this.input.value);
+    });
+    this.form.addEventListener('input', () => {
+      this.hideNameError();
     });
   }
 
-  public show(reason: GameOverReason, score: number): void {
+  private createForm(): void {
+    const label = createElement('label', {
+      className: 'game-over__label',
+      text: FORM_LABEL,
+      attributes: {
+        for: NAME_ID,
+      },
+    });
+    const hint = createElement('p', {
+      className: 'game-over__hint',
+      text: NAME_HINT_TEXT,
+      attributes: {
+        id: NAME_HINT_ID,
+      },
+    });
+    this.formError.hidden = true;
+
+    this.form.append(label, this.input, hint, this.formError, this.submitButton);
+  }
+
+  private hideNameError(): void {
+    this.formError.hidden = true;
+    this.input.removeAttribute('aria-invalid');
+  }
+
+  private resetForm(): void {
+    this.input.value = '';
+    this.hideNameError();
+  }
+
+  public hideForm(): void {
+    this.form.hidden = true;
+  }
+
+  public showNameError(): void {
+    this.formError.hidden = false;
+    this.input.setAttribute('aria-invalid', 'true');
+  }
+
+  public show(reason: GameOverReason, score: number, isTopScore: boolean): void {
+    this.resetForm();
     this.reason.textContent = GAME_OVER_REASON_LABELS[reason];
     this.finalScoreValue.textContent = String(score);
+
+    this.form.hidden = !isTopScore;
 
     this.modal.show();
   }

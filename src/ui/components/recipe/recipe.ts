@@ -70,7 +70,10 @@ export class Recipe {
   }
 
   public showRecipe(recipe: IRecipe | undefined): void {
-    if (recipe === undefined) return;
+    if (recipe === undefined) {
+      this.renderSealed();
+      return;
+    }
     this.title.textContent = recipe.name;
     const recipeRanges = this.createRanges(recipe);
     this.content.replaceChildren(recipeRanges);

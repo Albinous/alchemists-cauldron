@@ -27,17 +27,6 @@ export class Cauldron {
     const pot = createContainer('cauldron__pot', [this.img, this.potFloating]);
     this.cauldron.append(pot, this.content);
   }
-
-  private renderMain(): void {
-    const textIntro = createElement('p', {
-      className: 'cauldron__intro',
-      text: INTRO_TEXT,
-    });
-
-    this.content.replaceChildren(textIntro);
-    this.cauldron.classList.remove('cauldron--active');
-  }
-
   private createSlot(ingredient: IIngredient, position: number): HTMLElement {
     const isEmpty = ingredient === undefined;
     const slotNumber = createElement('span', {
@@ -69,6 +58,16 @@ export class Cauldron {
     });
 
     this.content.replaceChildren(ingredientsList);
+  }
+
+  public renderMain(): void {
+    const textIntro = createElement('p', {
+      className: 'cauldron__intro',
+      text: INTRO_TEXT,
+    });
+
+    this.content.replaceChildren(textIntro);
+    this.cauldron.classList.remove('cauldron--active');
   }
 
   public render(): HTMLElement {

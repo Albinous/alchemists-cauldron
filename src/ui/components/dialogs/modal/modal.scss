@@ -1,13 +1,12 @@
 @use '@/styles/tokens' as *;
 @use '@/styles/mixins' as *;
 
-.game-over {
-  // reset native <dialog> styles
+.modal {
   padding: 0;
   border: 0;
   background: transparent;
   color: $color-text-light;
-  overflow: visible; // the emblem sticks out above the panel
+  overflow: visible;
 
   &::backdrop {
     background: rgba(4, 6, 9, 0.72);
@@ -15,7 +14,7 @@
   }
 
   &[open] {
-    animation: game-over-appear 0.35s ease-out;
+    animation: modal-appear 0.35s ease-out;
   }
 
   &__panel {
@@ -25,7 +24,7 @@
     gap: $space-md;
     width: min(520px, calc(100vw - 32px));
     box-sizing: border-box;
-    margin-top: 38px; // room for the emblem
+    margin-top: 38px;
     padding: 64px 48px 44px;
     text-align: center;
     background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
@@ -82,7 +81,6 @@
     }
   }
 
-  // line — gem — line
   &__divider {
     @include flex-center;
 
@@ -110,54 +108,28 @@
     box-shadow: 0 0 8px rgba(124, 255, 79, 0.35);
   }
 
-  &__reason {
-    margin: 0;
-    font-family: $font-accent;
-    font-style: italic;
-    font-size: $fs-xl;
-    font-weight: 600;
-    line-height: 1.3;
-    color: #cdbf9e;
-  }
-
-  &__score {
+  // whatever each dialog puts between the divider and the buttons
+  &__content {
     @include flex-direction-horizontal;
 
-    gap: 4px;
-  }
+    gap: $space-md;
+    width: 100%;
 
-  &__score-label {
-    font-size: $fs-sm;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    color: #9c927c;
-  }
-
-  &__score-value {
-    font-size: $fs-score;
-    font-weight: 800;
-    line-height: 1.05;
-    font-variant-numeric: tabular-nums;
-    text-shadow: 0 0 20px rgba(124, 255, 79, 0.25);
+    &:empty {
+      display: none; // pause has no content — no extra gap
+    }
   }
 
   &__actions {
-    @include flex-center;
+    @include flex-direction-horizontal;
     @include hex-glow;
 
     gap: $space-md;
     margin-top: $space-sm;
   }
-
-  &__replay {
-    @include hex-button(24px);
-
-    min-height: 66px;
-    font-size: $fs-xl;
-  }
 }
 
-@keyframes game-over-appear {
+@keyframes modal-appear {
   from {
     opacity: 0;
     transform: translateY(16px) scale(0.96);
@@ -170,7 +142,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .game-over[open] {
+  .modal[open] {
     animation: none;
   }
 }

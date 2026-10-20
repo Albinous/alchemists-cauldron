@@ -8,4 +8,5 @@ export interface ILayoutElements {
   footer: HTMLElement;
   gameOver: HTMLElement;
   pause: HTMLElement;
+  leaderboard: HTMLElement;
 }

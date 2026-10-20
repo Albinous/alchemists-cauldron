@@ -1,0 +1,197 @@
+@use '@/styles/tokens' as *;
+@use '@/styles/mixins' as *;
+
+$medal-gold: (#f3d98a, #b8862e, #6b4a12);
+$medal-silver: (#e8eaee, #8f96a1, #4a505a);
+$medal-bronze: (#e3a774, #8c5226, #4e2a10);
+
+$danger-edge: #b5402f;
+$danger-text: #ff9a8c;
+
+// a round badge drawn as a background, so the <td> needs no extra element
+@mixin medal($colors) {
+  $light: nth($colors, 1);
+  $dark: nth($colors, 2);
+  $ring: nth($colors, 3);
+
+  background: radial-gradient(
+    circle at center,
+    $light 0,
+    $dark 12px,
+    $ring 12.5px,
+    $ring 15px,
+    transparent 15.5px
+  );
+  color: #1b140a;
+  font-weight: 800;
+}
+
+.leaderboard {
+  .modal__panel {
+    width: min(720px, calc(100vw - 32px));
+
+    @include mobile {
+      padding-inline: 16px;
+    }
+  }
+
+  .modal__emblem {
+    color: $color-gold;
+  }
+
+  .modal__actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__head-row {
+    background: linear-gradient(180deg, #2a2318, #1a150e);
+  }
+
+  &__table-title {
+    padding: 10px 12px;
+    border-bottom: 2px solid $color-brass;
+    font-size: $fs-xs;
+    font-weight: $fw-bold;
+    letter-spacing: 0.14em;
+    color: $color-gold;
+  }
+
+  &__table-row {
+    &:nth-child(odd) {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    &--active {
+      background: linear-gradient(90deg, rgba(124, 255, 79, 0.16), rgba(124, 255, 79, 0.04));
+      box-shadow: inset 3px 0 0 $color-accent-bright;
+    }
+
+    &--gold .leaderboard__table-data--rank {
+      @include medal($medal-gold);
+    }
+
+    &--silver .leaderboard__table-data--rank {
+      @include medal($medal-silver);
+    }
+
+    &--bronze .leaderboard__table-data--rank {
+      @include medal($medal-bronze);
+    }
+  }
+
+  &__table-data {
+    height: 40px;
+    padding: 6px 12px;
+    border-bottom: 1px solid #2a2318;
+  }
+
+  &__table-title--rank,
+  &__table-data--rank {
+    width: 64px;
+    text-align: center;
+  }
+
+  &__table-title--name,
+  &__table-data--name {
+    text-align: left;
+  }
+
+  &__table-title--score,
+  &__table-data--score {
+    width: 100px;
+    text-align: right;
+  }
+
+  &__table-title--date,
+  &__table-data--date {
+    width: 170px;
+    text-align: right;
+  }
+
+  &__table-data--rank {
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    color: #9c927c;
+  }
+
+  &__table-data--name {
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    letter-spacing: 0.03em;
+    color: $color-text-light;
+    overflow-wrap: anywhere; // long names without spaces don't break the layout
+  }
+
+  &__table-data--score {
+    font-size: $fs-md;
+    font-weight: 800;
+    color: $color-text-light;
+  }
+
+  &__table-data--date {
+    font-size: $fs-xs;
+    color: #9c927c;
+  }
+
+  &__empty {
+    margin: $space-md 0;
+    font-family: $font-accent;
+    font-style: italic;
+    font-size: $fs-xl;
+    font-weight: 600;
+    color: #9c927c;
+  }
+
+  &__clear {
+    @include hex-button(20px);
+
+    min-width: 250px;
+    min-height: 54px;
+    font-size: $fs-md;
+    background: $danger-edge;
+    color: $danger-text;
+    text-shadow: none;
+
+    &::before {
+      background: linear-gradient(180deg, #2e1512, #160a08);
+    }
+
+    &:not(:disabled):hover::before,
+    &:focus-visible::before {
+      background: linear-gradient(180deg, #44201a, #20100c);
+    }
+  }
+
+  &__back {
+    @include hex-button(20px);
+
+    min-width: 200px;
+    min-height: 54px;
+    font-size: $fs-lg;
+  }
+
+  @include mobile {
+    &__table-title,
+    &__table-data {
+      padding-inline: 6px;
+    }
+
+    &__table-title--score,
+    &__table-data--score {
+      width: auto;
+    }
+
+    &__table-title--date,
+    &__table-data--date {
+      width: 90px;
+    }
+  }
+}

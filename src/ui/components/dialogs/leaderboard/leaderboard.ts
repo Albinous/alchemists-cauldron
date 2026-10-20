@@ -1,9 +1,9 @@
 import { createElement } from '@/ui/dom';
 import { Modal } from '../modal';
 import type { ILeaderboardEntry } from '@/types';
+import { formatDate } from '@/utils';
 
 import './leaderboard.scss';
-import { formatDate } from '@/utils';
 
 const TITLE_TEXT = 'Top Alchemists';
 const TITLE_ID = 'leaderboard-title';

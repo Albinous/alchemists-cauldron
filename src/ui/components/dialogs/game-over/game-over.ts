@@ -1,9 +1,10 @@
-import { createContainer, createElement } from '@/ui/dom';
+import { createContainer, createElement, createSvgFromString } from '@/ui/dom';
 import type { GameOverReason } from '@/types';
 import { GAME_OVER_REASON_LABELS } from '@/data';
 import { Modal } from '../modal';
 
 import './game-over.scss';
+import { trophySvg } from '@/assets';
 
 const TITLE_TEXT = 'Game Over';
 const SCORE_LABEL = 'Final Score';
@@ -17,6 +18,7 @@ const NAME_ID = 'game-over-name';
 const NAME_HINT_ID = 'game-over-name-hint';
 const NAME_ERROR_ID = 'game-over-name-error';
 const SUBMIT_TEXT = 'Submit Score';
+const LEADERBOARD_TEXT = 'Leaderboard';
 
 export class GameOver {
   private readonly reason = createElement('p', {
@@ -55,7 +57,11 @@ export class GameOver {
     },
   });
 
-  constructor(onSubmitName: (name: string) => void, onPlayAgain: () => void) {
+  constructor(
+    onSubmitName: (name: string) => void,
+    onPlayAgain: () => void,
+    onLeaderboard: () => void,
+  ) {
     const finalScoreLabel = createElement('span', {
       className: 'game-over__score-label',
       text: SCORE_LABEL,
@@ -72,12 +78,22 @@ export class GameOver {
       },
     });
 
+    const leaderboardButton = createElement('button', {
+      className: 'game-over__leaderboard',
+      attributes: {
+        type: 'button',
+      },
+    });
+
+    const leaderboardIcon = createSvgFromString(trophySvg);
+    leaderboardButton.append(leaderboardIcon, LEADERBOARD_TEXT);
+
     this.modal = new Modal({
       className: 'game-over',
       titleId: TITLE_ID,
       title: TITLE_TEXT,
       content: [this.reason, finalScore, this.form],
-      actions: [playAgainButton],
+      actions: [playAgainButton, leaderboardButton],
     });
 
     playAgainButton.addEventListener('click', onPlayAgain);
@@ -88,6 +104,7 @@ export class GameOver {
     this.form.addEventListener('input', () => {
       this.hideNameError();
     });
+    leaderboardButton.addEventListener('click', onLeaderboard);
   }
 
   private createForm(): void {

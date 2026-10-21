@@ -4,5 +4,6 @@ export interface IModalOptions {
   title: string; // text of <h2>
   content: HTMLElement[]; // what goes between the divider and the buttons
   actions: HTMLElement[]; // buttons
-  onCancel?: () => void; // what Esc does; if absent, Esc does nothing
+  onCancel?: () => void; // what Esc does; if absent, Esc does nothing,
+  icon?: string;
 }

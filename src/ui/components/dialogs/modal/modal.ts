@@ -36,7 +36,7 @@ export class Modal {
   }
 
   private buildStructure(options: IModalOptions): void {
-    const emblemIcon = createSvgFromString(emblemSvg);
+    const emblemIcon = createSvgFromString(options.icon ?? emblemSvg);
     const emblem = createContainer('modal__emblem', [emblemIcon]);
     const title = createElement('h2', {
       className: 'modal__title',

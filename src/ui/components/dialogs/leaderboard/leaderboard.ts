@@ -4,6 +4,7 @@ import type { ILeaderboardEntry } from '@/types';
 import { formatDate } from '@/utils';
 
 import './leaderboard.scss';
+import { trophySvg } from '@/assets';
 
 const TITLE_TEXT = 'Top Alchemists';
 const TITLE_ID = 'leaderboard-title';
@@ -75,6 +76,7 @@ export class Leaderboard {
       content: [this.table, this.emptyText],
       actions: [clearButton, backButton],
       onCancel: onBack,
+      icon: trophySvg,
     });
 
     this.emptyText.hidden = true;

@@ -47,6 +47,7 @@ export class App {
   private readonly gameOver = new GameOver(
     (name: string) => this.handleSubmitForm(name),
     () => this.handlePlayAgain(),
+    () => this.handleLeaderboard(),
   );
   private readonly pause = new Pause(
     () => this.handleResume(),
@@ -118,6 +119,11 @@ export class App {
     this.leaderboard.show(entries, entries.indexOf(entry));
   }
 
+  private handleLeaderboard(): void {
+    this.gameOver.hideForm();
+    this.leaderboard.show(loadLeaderboard());
+  }
+
   private handleSecondary(): void {
     if (this.state.status === 'playing') {
       this.handlePause();
@@ -150,7 +156,9 @@ export class App {
   }
 
   private handleClearLeaderboard(): void {}
-  private handleBackLeaderboard(): void {}
+  private handleBackLeaderboard(): void {
+    this.leaderboard.hide();
+  }
 
   private startNewGame(): void {
     this.state = createNewGame();

@@ -219,7 +219,7 @@ export class Settings {
   }
 
   public setSelected(difficulty: Difficulty): void {
-    for (const [difficultyName, button] of Object.entries(this.levelButtons)) {
+    for (const [difficultyName, button] of this.levelButtons) {
       button.setAttribute('aria-pressed', String(difficultyName === difficulty));
     }
   }

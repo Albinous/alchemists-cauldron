@@ -15,7 +15,7 @@ import {
 } from '@/logic';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
 import { clearLeaderboard, loadLeaderboard, saveLeaderboard } from '@/storage';
-import type { GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
+import type { Difficulty, GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
 import {
   Bars,
   createElement,
@@ -30,6 +30,7 @@ import {
   Leaderboard,
   Confirm,
   Help,
+  Settings,
 } from '@/ui';
 
 const TICK_INTERVAL_MS = 250;
@@ -67,6 +68,15 @@ export class App {
   private readonly help = new Help(() => this.handleHelpClose());
 
   private state = createInitialState();
+  private readonly settings = new Settings({
+    onSelectDifficulty: (difficulty) => {
+      this.handleSelectDifficulty(difficulty);
+    },
+    onContinue: () => {},
+    onNewGame: () => this.handleNewGame(),
+    onLeaderboard: () => this.handleLeaderboard(),
+    onClose: () => this.handleCloseSettings(),
+  });
   private endTime = 0;
   private timerId: ReturnType<typeof setInterval> | undefined = undefined;
 
@@ -97,6 +107,9 @@ export class App {
   private handleSecondary(): void {
     if (this.state.status === 'playing') {
       this.handlePause();
+    } else {
+      this.settings.show(this.state.difficulty);
+      this.settings.setSelected(this.state.difficulty);
     }
   }
 
@@ -120,6 +133,20 @@ export class App {
 
   private handleHelpClose(): void {
     this.help.hide();
+  }
+
+  private handleSelectDifficulty(difficulty: Difficulty): void {
+    this.settings.setSelected(difficulty);
+    this.state.difficulty = difficulty;
+  }
+
+  private handleCloseSettings(): void {
+    this.settings.hide();
+  }
+
+  private handleNewGame(): void {
+    this.startNewGame();
+    this.settings.hide();
   }
 
   private handlePlayAgain(): void {
@@ -169,7 +196,7 @@ export class App {
   private handleExitMenu(): void {
     this.stopTimer();
     this.pause.hide();
-    this.state = createInitialState();
+    this.state = createInitialState(this.state.difficulty);
     this.renderGame();
   }
 
@@ -283,6 +310,7 @@ export class App {
       this.leaderboard.render(),
       this.clearConfirm.render(),
       this.help.render(),
+      this.settings.render(),
     );
 
     document.addEventListener('visibilitychange', () => {

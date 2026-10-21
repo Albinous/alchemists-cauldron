@@ -145,7 +145,6 @@ export class App {
   }
 
   private handleLeaderboard(): void {
-    this.gameOver.hideForm();
     this.leaderboard.show(loadLeaderboard());
   }
 

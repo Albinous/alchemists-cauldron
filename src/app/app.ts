@@ -191,7 +191,7 @@ export class App {
   }
 
   private startNewGame(): void {
-    this.state = createNewGame();
+    this.state = createNewGame(this.state.difficulty);
     this.startTimer();
     this.renderGame();
   }

@@ -9,3 +9,5 @@ export { default as emblemSvg } from './flask-emblem.svg?raw';
 export { default as trophySvg } from './trophy.svg?raw';
 export { default as trashSvg } from './trash.svg?raw';
 export { default as bookSvg } from './book.svg?raw';
+export { default as closeSvg } from './close.svg?raw';
+export { default as checkSvg } from './check.svg?raw';

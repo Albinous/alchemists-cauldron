@@ -164,15 +164,16 @@ export class App {
       name: trimmedName,
       score: this.state.score,
       date: Date.now(),
+      difficulty: this.state.difficulty,
     };
-    const entries = addEntry(loadLeaderboard(), entry);
-    saveLeaderboard(entries);
+    const entries = addEntry(loadLeaderboard(this.state.difficulty), entry);
+    saveLeaderboard(entries, this.state.difficulty);
     this.gameOver.hideForm();
     this.leaderboard.show(entries, entries.indexOf(entry));
   }
 
   private handleLeaderboard(): void {
-    this.leaderboard.show(loadLeaderboard());
+    this.leaderboard.show(loadLeaderboard(this.state.difficulty));
   }
 
   private handlePause(): void {
@@ -212,7 +213,7 @@ export class App {
   }
 
   private handleClear(): void {
-    clearLeaderboard();
+    clearLeaderboard(this.state.difficulty);
     this.clearConfirm.hide();
     this.leaderboard.show([]);
   }
@@ -226,7 +227,11 @@ export class App {
   private endGame(reason: GameOverReason): void {
     this.state.status = 'game-over';
     this.stopTimer();
-    this.gameOver.show(reason, this.state.score, isTopScore(loadLeaderboard(), this.state.score));
+    this.gameOver.show(
+      reason,
+      this.state.score,
+      isTopScore(loadLeaderboard(this.state.difficulty), this.state.score),
+    );
     this.renderGame();
   }
 

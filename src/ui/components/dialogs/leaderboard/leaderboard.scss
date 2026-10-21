@@ -159,6 +159,13 @@ $danger-text: #ff9a8c;
     background: $danger-edge;
     color: $danger-text;
     text-shadow: none;
+    gap: $space-sm;
+
+    svg {
+      flex-shrink: 0;
+      width: 17px;
+      height: 17px;
+    }
 
     &::before {
       background: linear-gradient(180deg, #2e1512, #160a08);

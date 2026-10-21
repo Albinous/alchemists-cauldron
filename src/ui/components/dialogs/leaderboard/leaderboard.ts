@@ -1,10 +1,10 @@
-import { createElement } from '@/ui/dom';
+import { createElement, createSvgFromString } from '@/ui/dom';
 import { Modal } from '../modal';
 import type { ILeaderboardEntry } from '@/types';
 import { formatDate } from '@/utils';
 
 import './leaderboard.scss';
-import { trophySvg } from '@/assets';
+import { trashSvg, trophySvg } from '@/assets';
 
 const TITLE_TEXT = 'Top Alchemists';
 const TITLE_ID = 'leaderboard-title';
@@ -55,11 +55,13 @@ export class Leaderboard {
 
     const clearButton = createElement('button', {
       className: 'leaderboard__clear',
-      text: CLEAR_BUTTON_TEXT,
       attributes: {
         type: 'button',
       },
     });
+
+    const clearIcon = createSvgFromString(trashSvg);
+    clearButton.append(clearIcon, CLEAR_BUTTON_TEXT);
 
     const backButton = createElement('button', {
       className: 'leaderboard__back',

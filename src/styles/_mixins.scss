@@ -74,6 +74,21 @@
   }
 }
 
+@mixin hex-danger {
+  background: #b5402f; // red edge
+  color: #ff9a8c;
+  text-shadow: none;
+
+  &::before {
+    background: linear-gradient(180deg, #2e1512, #160a08);
+  }
+
+  &:not(:disabled):hover::before,
+  &:focus-visible::before {
+    background: linear-gradient(180deg, #44201a, #20100c);
+  }
+}
+
 @mixin hex-glow {
   filter: drop-shadow(0 0 14px rgba(124, 255, 79, 0.55));
 }

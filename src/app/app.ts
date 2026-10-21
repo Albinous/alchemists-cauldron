@@ -13,7 +13,7 @@ import {
 } from '@/logic';
 import { addEntry, isTopScore } from '@/logic/leaderboard';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
-import { loadLeaderboard, saveLeaderboard } from '@/storage';
+import { clearLeaderboard, loadLeaderboard, saveLeaderboard } from '@/storage';
 import type { GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
 import {
   Bars,
@@ -28,6 +28,7 @@ import {
   Pause,
   Leaderboard,
 } from '@/ui';
+import { Confirm } from '@/ui/components/dialogs/confirm';
 
 const TICK_INTERVAL_MS = 250;
 
@@ -56,6 +57,10 @@ export class App {
   private readonly leaderboard = new Leaderboard(
     () => this.handleClearLeaderboard(),
     () => this.handleBackLeaderboard(),
+  );
+  private readonly clearConfirm = new Confirm(
+    () => this.handleCancelClear(),
+    () => this.handleClear(),
   );
 
   private state = createInitialState();
@@ -155,9 +160,21 @@ export class App {
     this.renderGame();
   }
 
-  private handleClearLeaderboard(): void {}
+  private handleClearLeaderboard(): void {
+    this.clearConfirm.show();
+  }
   private handleBackLeaderboard(): void {
     this.leaderboard.hide();
+  }
+
+  private handleCancelClear(): void {
+    this.clearConfirm.hide();
+  }
+
+  private handleClear(): void {
+    clearLeaderboard();
+    this.clearConfirm.hide();
+    this.leaderboard.show([]);
   }
 
   private startNewGame(): void {
@@ -244,12 +261,15 @@ export class App {
       bars: this.bars.render(),
       controls: this.controls.render(),
       footer: createElement('footer'),
-      gameOver: this.gameOver.render(),
-      pause: this.pause.render(),
-      leaderboard: this.leaderboard.render(),
     });
 
     document.body.prepend(layout);
+    document.body.append(
+      this.gameOver.render(),
+      this.pause.render(),
+      this.leaderboard.render(),
+      this.clearConfirm.render(),
+    );
 
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {

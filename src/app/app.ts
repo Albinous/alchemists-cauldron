@@ -10,8 +10,9 @@ import {
   getTimeLeft,
   isCauldronFull,
   isValidName,
+  addEntry,
+  isTopScore,
 } from '@/logic';
-import { addEntry, isTopScore } from '@/logic/leaderboard';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
 import { clearLeaderboard, loadLeaderboard, saveLeaderboard } from '@/storage';
 import type { GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
@@ -27,8 +28,9 @@ import {
   GameOver,
   Pause,
   Leaderboard,
+  Confirm,
+  Help,
 } from '@/ui';
-import { Confirm } from '@/ui/components/dialogs/confirm';
 
 const TICK_INTERVAL_MS = 250;
 
@@ -41,7 +43,7 @@ export class App {
   private readonly recipe = new Recipe();
   private readonly bars = new Bars();
   private readonly controls = new Controls({
-    onHelp: () => {},
+    onHelp: () => this.handleHelpOpen(),
     onMain: () => this.handleMain(),
     onSecondary: () => this.handleSecondary(),
   });
@@ -62,6 +64,7 @@ export class App {
     () => this.handleCancelClear(),
     () => this.handleClear(),
   );
+  private readonly help = new Help(() => this.handleHelpClose());
 
   private state = createInitialState();
   private endTime = 0;
@@ -84,6 +87,19 @@ export class App {
     }
   }
 
+  private handleHelpOpen(): void {
+    if (this.state.status === 'playing') {
+      this.handlePause();
+    }
+    this.help.show();
+  }
+
+  private handleSecondary(): void {
+    if (this.state.status === 'playing') {
+      this.handlePause();
+    }
+  }
+
   private handleSelect(ingredient: IIngredient): void {
     if (!canAddIngredient(this.state, ingredient)) return;
     addIngredient(this.state, ingredient);
@@ -100,6 +116,10 @@ export class App {
     );
 
     this.checkGameOver();
+  }
+
+  private handleHelpClose(): void {
+    this.help.hide();
   }
 
   private handlePlayAgain(): void {
@@ -125,14 +145,7 @@ export class App {
   }
 
   private handleLeaderboard(): void {
-    this.gameOver.hideForm();
     this.leaderboard.show(loadLeaderboard());
-  }
-
-  private handleSecondary(): void {
-    if (this.state.status === 'playing') {
-      this.handlePause();
-    }
   }
 
   private handlePause(): void {
@@ -269,6 +282,7 @@ export class App {
       this.pause.render(),
       this.leaderboard.render(),
       this.clearConfirm.render(),
+      this.help.render(),
     );
 
     document.addEventListener('visibilitychange', () => {

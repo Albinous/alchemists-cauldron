@@ -14,7 +14,7 @@ export const difficultySettings: Readonly<Record<Difficulty, IDifficultySettings
   medium: {
     ingredientsOnShelf: 6,
     maxIngredients: 4,
-    startTimeSec: 20,
+    startTimeSec: 150,
     tolerance: 8,
     lives: 3,
     scorePerBrew: 200,

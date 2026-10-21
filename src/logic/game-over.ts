@@ -1,5 +1,9 @@
 import type { GameOverReason, IGameState } from '@/types';
 
+const NAME_PATTERN = /^[\p{L}\d _-]{2,15}$/u;
+
+export const isValidName = (name: string): boolean => NAME_PATTERN.test(name);
+
 export const getGameOverReason = (state: IGameState): GameOverReason | undefined => {
   if (state.timeLeft <= 0) {
     return 'time-up';

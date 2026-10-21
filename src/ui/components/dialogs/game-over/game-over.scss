@@ -1,13 +1,23 @@
 @use '@/styles/tokens' as *;
 @use '@/styles/mixins' as *;
 
+$danger: #ff6b5b;
+
 .game-over {
+  .modal__actions {
+    flex-direction: row;
+    justify-content: center;
+    @include tablet {
+      flex-wrap: wrap;
+    }
+  }
+
   &__reason {
     margin: 0;
     font-family: $font-accent;
     font-style: italic;
     font-size: $fs-xl;
-    font-weight: 600;
+    font-weight: $fw-semibold;
     line-height: 1.3;
     color: #cdbf9e;
   }
@@ -15,29 +25,156 @@
   &__score {
     @include flex-direction-horizontal;
 
-    gap: 4px;
+    gap: 2px;
   }
 
   &__score-label {
     font-size: $fs-sm;
-    font-weight: 700;
+    font-weight: $fw-bold;
     letter-spacing: 0.16em;
     color: #9c927c;
   }
 
   &__score-value {
     font-size: $fs-score;
-    font-weight: 800;
+    font-weight: $fw-extrabold;
     line-height: 1.05;
     font-variant-numeric: tabular-nums;
     text-shadow: 0 0 20px rgba(124, 255, 79, 0.25);
   }
 
-  &__replay {
-    @include hex-button(24px);
+  &__form {
+    @include flex-direction-horizontal;
+
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 24px 28px 26px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid $color-brass-dark;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px rgba(140, 116, 72, 0.15);
+
+    @include mobile {
+      padding: 18px 16px 20px;
+    }
+  }
+
+  &__label {
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    letter-spacing: 0.08em;
+    color: $color-text-light;
+    cursor: pointer;
+  }
+
+  &__input {
+    width: 100%;
+    height: 58px;
+    box-sizing: border-box;
+    padding: 0 18px;
+    background: #0b0d11;
+    border: 2px solid $color-brass;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: $fs-xl;
+    font-weight: $fw-bold;
+    letter-spacing: 0.05em;
+    text-align: center;
+    color: $color-text-light;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.65);
+    transition:
+      border-color $duration-fast $easing,
+      box-shadow $duration-fast $easing;
+
+    &::placeholder {
+      color: #5c5446;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $color-accent-bright;
+      box-shadow:
+        inset 0 2px 8px rgba(0, 0, 0, 0.65),
+        0 0 0 3px rgba(124, 255, 79, 0.18);
+    }
+
+    &[aria-invalid='true'] {
+      border-color: $danger;
+      box-shadow:
+        inset 0 2px 8px rgba(0, 0, 0, 0.65),
+        0 0 0 3px rgba(255, 107, 91, 0.2);
+    }
+  }
+
+  &__hint {
+    margin: 0;
+    font-family: $font-accent;
+    font-style: italic;
+    font-size: $fs-lg;
+    font-weight: $fw-semibold;
+    color: #9c927c;
+  }
+
+  &__error {
+    margin: 0;
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    letter-spacing: 0.04em;
+    color: $danger;
+  }
+
+  &__submit {
+    @include hex-button(22px);
 
     min-width: 280px;
-    min-height: 66px;
+    min-height: 60px;
+    margin-top: 6px;
     font-size: $fs-xl;
+  }
+
+  // the glow for Submit: drop-shadow on the parent, because clip-path cuts box-shadow
+  &__form {
+    filter: none;
+  }
+
+  &__submit-wrap {
+    @include hex-glow;
+  }
+
+  // --- bottom buttons ---
+  &__replay,
+  &__leaderboard {
+    @include hex-button(20px);
+
+    min-width: 200px;
+    min-height: 54px;
+    font-size: $fs-lg;
+  }
+
+  // Leaderboard is always a secondary (golden) button
+  &__leaderboard,
+  // while the form is visible, Submit is the main action — Play again steps back too
+  &:has(.game-over__form:not([hidden])) &__replay {
+    background: $color-brass;
+    color: $color-text-light;
+    text-shadow: none;
+    gap: $space-sm;
+
+    svg {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      color: $color-gold;
+    }
+
+    &::before {
+      background: linear-gradient(180deg, #2a2318, #14100a);
+    }
+
+    &:not(:disabled):hover::before,
+    &:focus-visible::before {
+      background: linear-gradient(180deg, #3a3020, #1c160d);
+    }
   }
 }

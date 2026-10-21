@@ -9,9 +9,12 @@ import {
   getGameOverReason,
   getTimeLeft,
   isCauldronFull,
+  isValidName,
 } from '@/logic';
+import { addEntry, isTopScore } from '@/logic/leaderboard';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
-import type { GameOverReason, IIngredient } from '@/types';
+import { clearLeaderboard, loadLeaderboard, saveLeaderboard } from '@/storage';
+import type { GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
 import {
   Bars,
   createElement,
@@ -23,7 +26,9 @@ import {
   Controls,
   GameOver,
   Pause,
+  Leaderboard,
 } from '@/ui';
+import { Confirm } from '@/ui/components/dialogs/confirm';
 
 const TICK_INTERVAL_MS = 250;
 
@@ -40,10 +45,22 @@ export class App {
     onMain: () => this.handleMain(),
     onSecondary: () => this.handleSecondary(),
   });
-  private readonly gameOver = new GameOver(() => this.handlePlayAgain());
+  private readonly gameOver = new GameOver(
+    (name: string) => this.handleSubmitForm(name),
+    () => this.handlePlayAgain(),
+    () => this.handleLeaderboard(),
+  );
   private readonly pause = new Pause(
     () => this.handleResume(),
     () => this.handleExitMenu(),
+  );
+  private readonly leaderboard = new Leaderboard(
+    () => this.handleClearLeaderboard(),
+    () => this.handleBackLeaderboard(),
+  );
+  private readonly clearConfirm = new Confirm(
+    () => this.handleCancelClear(),
+    () => this.handleClear(),
   );
 
   private state = createInitialState();
@@ -90,6 +107,28 @@ export class App {
     this.startNewGame();
   }
 
+  private handleSubmitForm(name: string): void {
+    const trimmedName = name.trim();
+    if (!isValidName(trimmedName)) {
+      this.gameOver.showNameError();
+      return;
+    }
+    const entry: ILeaderboardEntry = {
+      name: trimmedName,
+      score: this.state.score,
+      date: Date.now(),
+    };
+    const entries = addEntry(loadLeaderboard(), entry);
+    saveLeaderboard(entries);
+    this.gameOver.hideForm();
+    this.leaderboard.show(entries, entries.indexOf(entry));
+  }
+
+  private handleLeaderboard(): void {
+    this.gameOver.hideForm();
+    this.leaderboard.show(loadLeaderboard());
+  }
+
   private handleSecondary(): void {
     if (this.state.status === 'playing') {
       this.handlePause();
@@ -121,6 +160,23 @@ export class App {
     this.renderGame();
   }
 
+  private handleClearLeaderboard(): void {
+    this.clearConfirm.show();
+  }
+  private handleBackLeaderboard(): void {
+    this.leaderboard.hide();
+  }
+
+  private handleCancelClear(): void {
+    this.clearConfirm.hide();
+  }
+
+  private handleClear(): void {
+    clearLeaderboard();
+    this.clearConfirm.hide();
+    this.leaderboard.show([]);
+  }
+
   private startNewGame(): void {
     this.state = createNewGame();
     this.startTimer();
@@ -130,7 +186,7 @@ export class App {
   private endGame(reason: GameOverReason): void {
     this.state.status = 'game-over';
     this.stopTimer();
-    this.gameOver.show(reason, this.state.score);
+    this.gameOver.show(reason, this.state.score, isTopScore(loadLeaderboard(), this.state.score));
     this.renderGame();
   }
 
@@ -205,11 +261,15 @@ export class App {
       bars: this.bars.render(),
       controls: this.controls.render(),
       footer: createElement('footer'),
-      gameOver: this.gameOver.render(),
-      pause: this.pause.render(),
     });
 
     document.body.prepend(layout);
+    document.body.append(
+      this.gameOver.render(),
+      this.pause.render(),
+      this.leaderboard.render(),
+      this.clearConfirm.render(),
+    );
 
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {

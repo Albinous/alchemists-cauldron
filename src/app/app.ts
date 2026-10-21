@@ -15,7 +15,7 @@ import {
 } from '@/logic';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
 import { clearLeaderboard, loadLeaderboard, saveLeaderboard } from '@/storage';
-import type { GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
+import type { Difficulty, GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
 import {
   Bars,
   createElement,
@@ -30,6 +30,7 @@ import {
   Leaderboard,
   Confirm,
   Help,
+  Settings,
 } from '@/ui';
 
 const TICK_INTERVAL_MS = 250;
@@ -67,6 +68,15 @@ export class App {
   private readonly help = new Help(() => this.handleHelpClose());
 
   private state = createInitialState();
+  private readonly settings = new Settings({
+    onSelectDifficulty: (difficulty) => {
+      this.handleSelectDifficulty(difficulty);
+    },
+    onContinue: () => {},
+    onNewGame: () => this.handleNewGame(),
+    onLeaderboard: () => this.handleLeaderboard(),
+    onClose: () => this.handleCloseSettings(),
+  });
   private endTime = 0;
   private timerId: ReturnType<typeof setInterval> | undefined = undefined;
 
@@ -97,6 +107,9 @@ export class App {
   private handleSecondary(): void {
     if (this.state.status === 'playing') {
       this.handlePause();
+    } else {
+      this.settings.show(this.state.difficulty);
+      this.settings.setSelected(this.state.difficulty);
     }
   }
 
@@ -122,6 +135,20 @@ export class App {
     this.help.hide();
   }
 
+  private handleSelectDifficulty(difficulty: Difficulty): void {
+    this.settings.setSelected(difficulty);
+    this.state.difficulty = difficulty;
+  }
+
+  private handleCloseSettings(): void {
+    this.settings.hide();
+  }
+
+  private handleNewGame(): void {
+    this.startNewGame();
+    this.settings.hide();
+  }
+
   private handlePlayAgain(): void {
     this.gameOver.hide();
     this.startNewGame();
@@ -137,15 +164,16 @@ export class App {
       name: trimmedName,
       score: this.state.score,
       date: Date.now(),
+      difficulty: this.state.difficulty,
     };
-    const entries = addEntry(loadLeaderboard(), entry);
-    saveLeaderboard(entries);
+    const entries = addEntry(loadLeaderboard(this.state.difficulty), entry);
+    saveLeaderboard(entries, this.state.difficulty);
     this.gameOver.hideForm();
     this.leaderboard.show(entries, entries.indexOf(entry));
   }
 
   private handleLeaderboard(): void {
-    this.leaderboard.show(loadLeaderboard());
+    this.leaderboard.show(loadLeaderboard(this.state.difficulty));
   }
 
   private handlePause(): void {
@@ -169,7 +197,7 @@ export class App {
   private handleExitMenu(): void {
     this.stopTimer();
     this.pause.hide();
-    this.state = createInitialState();
+    this.state = createInitialState(this.state.difficulty);
     this.renderGame();
   }
 
@@ -185,13 +213,13 @@ export class App {
   }
 
   private handleClear(): void {
-    clearLeaderboard();
+    clearLeaderboard(this.state.difficulty);
     this.clearConfirm.hide();
     this.leaderboard.show([]);
   }
 
   private startNewGame(): void {
-    this.state = createNewGame();
+    this.state = createNewGame(this.state.difficulty);
     this.startTimer();
     this.renderGame();
   }
@@ -199,7 +227,11 @@ export class App {
   private endGame(reason: GameOverReason): void {
     this.state.status = 'game-over';
     this.stopTimer();
-    this.gameOver.show(reason, this.state.score, isTopScore(loadLeaderboard(), this.state.score));
+    this.gameOver.show(
+      reason,
+      this.state.score,
+      isTopScore(loadLeaderboard(this.state.difficulty), this.state.score),
+    );
     this.renderGame();
   }
 
@@ -283,6 +315,7 @@ export class App {
       this.leaderboard.render(),
       this.clearConfirm.render(),
       this.help.render(),
+      this.settings.render(),
     );
 
     document.addEventListener('visibilitychange', () => {

@@ -1,0 +1,288 @@
+@use '@/styles/tokens' as *;
+@use '@/styles/mixins' as *;
+
+.settings {
+  .modal__panel {
+    width: min(660px, calc(100vw - 32px));
+
+    @include mobile {
+      padding-inline: 16px;
+    }
+  }
+
+  .modal__emblem {
+    color: $color-gold;
+  }
+
+  .modal__actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__close {
+    @include flex-center;
+
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 2px solid $color-brass-dark;
+    border-radius: 50%;
+    background: $color-panel-bottom;
+    color: #9c927c;
+    cursor: pointer;
+    transition:
+      color $duration-fast $easing,
+      border-color $duration-fast $easing;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: $color-text-light;
+      border-color: $color-brass;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-accent-bright;
+      outline-offset: 3px;
+    }
+  }
+
+  &__continue {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-md;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 18px;
+    background: linear-gradient(90deg, rgba(124, 255, 79, 0.1), rgba(124, 255, 79, 0.02));
+    border: 1px solid #3e5a33;
+    border-radius: 10px;
+    text-align: left;
+  }
+
+  &__continue-info {
+    display: flex;
+    flex: 1 1 200px;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__continue-label {
+    font-size: $fs-xs;
+    font-weight: $fw-bold;
+    letter-spacing: 0.14em;
+    color: #9c927c;
+  }
+
+  &__continue-summary {
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    font-variant-numeric: tabular-nums;
+    color: $color-text-light;
+  }
+
+  &__continue-button {
+    @include hex-button(20px);
+
+    min-width: 210px;
+    min-height: 52px;
+    font-size: $fs-md;
+  }
+
+  // --- difficulty ---
+  &__difficulty {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+  }
+
+  &__label {
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    letter-spacing: 0.14em;
+    color: $color-gold;
+  }
+
+  &__levels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+
+    @include mobile {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__level {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 14px 12px;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
+    border: 2px solid $color-brass-dark;
+    border-radius: 10px;
+    font-family: inherit;
+    text-align: left;
+    color: $color-text-light;
+    cursor: pointer;
+    transition:
+      border-color $duration-fast $easing,
+      box-shadow $duration-fast $easing;
+
+    &:hover {
+      border-color: $color-brass;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-accent-bright;
+      outline-offset: 3px;
+    }
+
+    &[aria-pressed='true'] {
+      background: linear-gradient(180deg, #17220f, #0b1208);
+      border-color: $color-accent-bright;
+      box-shadow:
+        0 0 18px rgba(124, 255, 79, 0.25),
+        inset 0 0 0 1px rgba(124, 255, 79, 0.15);
+    }
+  }
+
+  &__level-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  &__level-name {
+    font-size: $fs-lg;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+
+    .settings__level[aria-pressed='true'] & {
+      color: $color-title-glow;
+    }
+  }
+
+  &__level-check {
+    @include flex-center;
+
+    width: 20px;
+    height: 20px;
+    box-sizing: border-box;
+    border: 2px solid $color-brass-dark;
+    border-radius: 50%;
+    color: transparent; // the check icon is hidden until selected
+    opacity: 0.6;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .settings__level[aria-pressed='true'] & {
+      border: 0;
+      background: $color-accent-bright;
+      color: #0b1208;
+      opacity: 1;
+    }
+  }
+
+  &__level-pips {
+    display: flex;
+    gap: 4px;
+    margin-top: 2px;
+  }
+
+  &__pip {
+    width: 18px;
+    height: 5px;
+    border-radius: 3px;
+    background: #2a2f37;
+
+    &--on {
+      background: $color-gold;
+
+      .settings__level[aria-pressed='true'] & {
+        background: $color-accent-bright;
+      }
+    }
+  }
+
+  &__level-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 8px;
+    font-size: $fs-xs;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__level-stat {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  &__stat-label {
+    color: #9c927c;
+  }
+
+  &__stat-value {
+    font-weight: $fw-bold;
+    color: $color-text-light;
+  }
+
+  &__hint {
+    margin: 0;
+    font-family: $font-accent;
+    font-style: italic;
+    font-size: $fs-md;
+    font-weight: 600;
+    color: #9c927c;
+  }
+
+  &__leaderboard,
+  &__new-game {
+    @include hex-button(20px);
+
+    min-width: 210px;
+    min-height: 52px;
+    font-size: $fs-md;
+    background: $color-brass;
+    color: $color-text-light;
+    text-shadow: none;
+
+    &::before {
+      background: linear-gradient(180deg, #2a2318, #14100a);
+    }
+
+    &:not(:disabled):hover::before,
+    &:focus-visible::before {
+      background: linear-gradient(180deg, #3a3020, #1c160d);
+    }
+  }
+
+  &__leaderboard {
+    gap: $space-sm;
+
+    svg {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      color: $color-gold;
+    }
+  }
+}

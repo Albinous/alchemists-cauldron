@@ -1,0 +1,148 @@
+@use '@/styles/tokens' as *;
+@use '@/styles/mixins' as *;
+
+.modal {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: $color-text-light;
+  overflow: visible;
+
+  &::backdrop {
+    background: rgba(4, 6, 9, 0.72);
+    backdrop-filter: blur(4px);
+  }
+
+  &[open] {
+    animation: modal-appear 0.35s ease-out;
+  }
+
+  &__panel {
+    @include flex-direction-horizontal;
+
+    position: relative;
+    gap: $space-md;
+    width: min(520px, calc(100vw - 32px));
+    box-sizing: border-box;
+    margin-top: 38px;
+    padding: 64px 48px 44px;
+    text-align: center;
+    background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
+    border: 2px solid $color-brass;
+    border-radius: 12px;
+    box-shadow:
+      inset 0 0 0 6px $color-panel-bottom,
+      inset 0 0 0 7px $color-brass-dark,
+      0 24px 60px rgba(0, 0, 0, 0.7),
+      0 0 80px rgba(124, 255, 79, 0.08);
+
+    @include mobile {
+      padding: 56px 24px 32px;
+    }
+  }
+
+  &__emblem {
+    @include flex-center;
+
+    position: absolute;
+    top: -38px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 76px;
+    height: 76px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 35%, #2a2f38, $color-panel-bottom);
+    border: 3px solid $color-brass;
+    box-shadow:
+      0 0 0 3px #2a2318,
+      0 0 22px rgba(124, 255, 79, 0.25);
+    color: $color-accent-bright;
+
+    svg {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $fs-display;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: $color-title-glow;
+    text-shadow:
+      0 0 18px rgba(124, 255, 79, 0.55),
+      0 3px 0 #1f3a12;
+
+    @include mobile {
+      font-size: $fs-title;
+    }
+  }
+
+  &__divider {
+    @include flex-center;
+
+    gap: 12px;
+    width: 100%;
+  }
+
+  &__divider-line {
+    flex: 1 1 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $color-brass);
+
+    &:last-child {
+      background: linear-gradient(270deg, transparent, $color-brass);
+    }
+  }
+
+  &__divider-gem {
+    flex: 0 0 auto;
+    width: 10px;
+    height: 10px;
+    transform: rotate(45deg);
+    background: $color-panel-bottom;
+    border: 2px solid $color-brass;
+    box-shadow: 0 0 8px rgba(124, 255, 79, 0.35);
+  }
+
+  // whatever each dialog puts between the divider and the buttons
+  &__content {
+    @include flex-direction-horizontal;
+
+    gap: $space-md;
+    width: 100%;
+
+    &:empty {
+      display: none; // pause has no content — no extra gap
+    }
+  }
+
+  &__actions {
+    @include flex-direction-horizontal;
+    @include hex-glow;
+
+    gap: $space-md;
+    margin-top: $space-sm;
+  }
+}
+
+@keyframes modal-appear {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal[open] {
+    animation: none;
+  }
+}

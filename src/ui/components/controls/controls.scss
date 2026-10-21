@@ -1,0 +1,89 @@
+@use '../../../styles/tokens' as *;
+@use '../../../styles/mixins' as *;
+
+$main-min-width: 300px;
+$main-min-height: 82px;
+$main-cut: 30px;
+$main-font-size: 32px;
+
+.controls {
+  @include flex-between;
+
+  flex-wrap: wrap;
+  gap: $space-lg;
+
+  // Help / Settings / Pause
+  &__round {
+    @include flex-direction-horizontal;
+
+    gap: $space-xs;
+    padding: 0;
+    border: 0;
+    font-family: inherit;
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    letter-spacing: 0.08em;
+    color: $color-text;
+    background: transparent;
+    cursor: pointer;
+    transition:
+      opacity $duration-fast $easing,
+      filter $duration-fast $easing;
+
+    &:focus-visible {
+      outline: 2px solid $color-accent-bright;
+      outline-offset: 4px;
+      border-radius: 8px;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+      filter: grayscale(0.8);
+    }
+  }
+
+  &__round-icon {
+    @include flex-center;
+
+    width: $round-button-size;
+    height: $round-button-size;
+    background: radial-gradient(circle at 50% 35%, #2a2f38, $color-panel-bottom);
+    border: 3px solid $color-brass-light;
+    border-radius: $radius-round;
+    box-shadow: 0 0 0 2px #2a2318;
+    transition:
+      border-color $duration-fast $easing,
+      transform $duration-fast $easing;
+  }
+
+  // hover / press only for an enabled button
+  &__round:not(:disabled):hover &__round-icon {
+    border-color: $color-gold;
+  }
+
+  &__round:not(:disabled):active &__round-icon {
+    transform: scale(0.95);
+  }
+
+  &__main-glow {
+    @include hex-glow;
+  }
+
+  &__main {
+    @include hex-button($main-cut);
+
+    min-width: $main-min-width;
+    min-height: $main-min-height;
+    font-size: $main-font-size;
+  }
+}
+
+@include tablet {
+  .controls__main-glow {
+    order: -1;
+    flex-basis: 100%;
+    display: flex;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,159 @@
+@use '../../../styles/tokens' as *;
+@use '../../../styles/mixins' as *;
+
+$title-offset: 18px;
+$slot-min-height: 80px;
+$plank-width: 6px;
+
+.shelf {
+  position: relative;
+  margin-top: $title-offset;
+  padding: ($title-offset * 2) $space-md $space-md;
+  background: linear-gradient(180deg, $color-wood-top, $color-wood-bottom);
+  border: 3px solid $color-wood-border;
+  border-radius: $radius-md;
+  box-shadow: $shadow-panel;
+
+  &__title {
+    position: absolute;
+    top: -$title-offset;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: $space-s $space-xl;
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    color: $color-text;
+    background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
+    border: 2px solid $color-brass-light;
+    border-radius: $radius-sm;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    background: $color-wood-inner;
+  }
+
+  &__item {
+    min-height: $slot-min-height;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.3));
+    border-bottom: $plank-width solid $color-wood-top;
+  }
+}
+
+// ---------- Ingredient card ----------
+$card-min-height: 84px;
+$flask-width: 52px;
+$badge-size: 32px;
+
+.ingredient {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr) 34px; // flask | text | badge
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: $card-min-height;
+  padding: 10px $space-md;
+  text-align: left;
+  color: #ede3cc;
+  background: transparent; // background and plank come from li.shelf__item
+  border: 0;
+  transition: background $duration-fast $easing;
+
+  &:not(:disabled):hover {
+    background: rgba(124, 255, 79, 0.06);
+  }
+
+  &:focus-visible {
+    outline-offset: -3px; // keep focus ring inside the plank
+  }
+
+  &__icon {
+    width: $flask-width;
+    height: auto;
+    filter: drop-shadow(0 0 6px currentColor); // glow in the liquid color
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $space-s;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    line-height: 1.15;
+  }
+
+  &__labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-xs;
+    font-size: $fs-xs;
+    font-weight: $fw-bold;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__label {
+    padding: 1px 5px;
+    border: 1px solid;
+    border-radius: 3px;
+
+    &--temperature {
+      color: #ff7a6b;
+      background: rgba(192, 57, 43, 0.15);
+      border-color: #c0392b;
+    }
+
+    &--density {
+      color: #8dbbff;
+      background: rgba(58, 123, 213, 0.15);
+      border-color: #3a7bd5;
+    }
+
+    &--magic {
+      color: #d3a8ff;
+      background: rgba(155, 89, 182, 0.15);
+      border-color: #9b59b6;
+    }
+  }
+
+  &__stock {
+    @include flex-center;
+    width: $badge-size;
+    height: $badge-size;
+    font-size: 14px;
+    font-weight: $fw-bold;
+    color: $color-text-light;
+    background: $color-stock-badge-bg;
+    border: 2px solid $color-stock-badge-border;
+    border-radius: $radius-round;
+  }
+
+  // ---------- Locked (cauldron is full) ----------
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+  }
+
+  // ---------- Empty slot (stock is 0) ----------
+  &--empty {
+    color: $color-text-disabled;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0.6;
+
+    .ingredient__icon,
+    .ingredient__labels {
+      visibility: hidden; // hide content but keep the grid stable
+    }
+
+    .ingredient__stock {
+      color: $color-text-disabled;
+      border-color: #4a4535;
+    }
+  }
+}

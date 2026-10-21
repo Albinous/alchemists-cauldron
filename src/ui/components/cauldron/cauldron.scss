@@ -1,0 +1,105 @@
+@use '../../../styles/tokens' as *;
+@use '../../../styles/mixins' as *;
+
+$pot-max-width: 400px;
+$intro-max-width: 460px;
+$intro-font-size: 21px;
+$idle-liquid: #0b0d10;
+$idle-emblem: #3e5a33;
+
+.cauldron {
+  @include flex-direction-horizontal;
+  gap: $space-lg;
+  padding-top: $space-sm;
+
+  &__pot {
+    position: relative;
+    width: 100%;
+    max-width: $pot-max-width;
+  }
+
+  &__intro {
+    max-width: $intro-max-width;
+    font-family: $font-accent;
+    font-size: $intro-font-size;
+    font-style: italic;
+    font-weight: $fw-semibold;
+    line-height: 1.4;
+    text-align: center;
+    color: $color-text-soft;
+  }
+
+  &__content {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  // ---------- Ingredients list ----------
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: $space-s;
+    width: $cauldron-slots-width;
+    max-width: 100%;
+  }
+
+  &__slot {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 36px;
+    padding: $space-s 14px;
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    background: rgba(13, 16, 21, 0.85);
+    border: 1px solid $color-brass;
+    border-radius: $radius-sm;
+
+    &--empty {
+      color: $color-text-disabled;
+      background: transparent;
+      border-style: dashed;
+      border-color: $color-brass-dim;
+    }
+  }
+
+  &__slot-number {
+    flex-shrink: 0;
+    color: $color-accent-soft;
+  }
+
+  &__slot--empty &__slot-number {
+    color: inherit; // grey number in an empty slot
+  }
+
+  &__slot-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis; // long names like "Essence of the Void" on mobile
+    white-space: nowrap;
+  }
+}
+
+// ---------- Start screen ----------
+.cauldron:not(.cauldron--active) {
+  .cauldron-svg__glow,
+  .cauldron-svg__steam,
+  .cauldron-svg__bubbles,
+  .cauldron-svg__shadow {
+    display: none;
+  }
+
+  .cauldron-svg__liquid {
+    fill: $idle-liquid;
+  }
+
+  .cauldron-svg__emblem {
+    color: $idle-emblem;
+  }
+}
+
+// ---------- game ----------
+.cauldron--active .cauldron-svg__emblem {
+  filter: drop-shadow(0 0 6px $color-accent);
+}

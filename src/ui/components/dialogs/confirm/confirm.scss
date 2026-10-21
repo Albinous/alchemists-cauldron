@@ -1,0 +1,75 @@
+@use '@/styles/tokens' as *;
+@use '@/styles/mixins' as *;
+
+$danger: #ff6b5b;
+$danger-edge: #b5402f;
+$danger-dark: #4a2018;
+$panel-dark: #0f0c0a;
+
+.confirm {
+  .modal__panel {
+    width: min(460px, calc(100vw - 32px));
+    padding: 54px 40px 34px;
+    background: linear-gradient(180deg, #1b1714, $panel-dark);
+    border-color: $danger-edge;
+    box-shadow:
+      inset 0 0 0 6px $panel-dark,
+      inset 0 0 0 7px $danger-dark,
+      0 24px 60px rgba(0, 0, 0, 0.75),
+      0 0 60px rgba(216, 48, 42, 0.12);
+
+    @include mobile {
+      padding-inline: 20px;
+    }
+  }
+
+  .modal__emblem {
+    border-color: $danger-edge;
+    background: radial-gradient(circle at 50% 35%, #2e1a16, $panel-dark);
+    box-shadow:
+      0 0 0 3px #2a1410,
+      0 0 20px rgba(216, 48, 42, 0.3);
+    color: $danger;
+  }
+
+  .modal__title {
+    font-size: $fs-title;
+    line-height: 1.1;
+    color: #ff9a8c;
+    text-shadow: 0 0 14px rgba(216, 48, 42, 0.45);
+  }
+
+  .modal__divider {
+    display: none;
+  }
+
+  .modal__actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: $space-md;
+  }
+
+  &__warning {
+    margin: 0;
+    font-family: $font-accent;
+    font-style: italic;
+    font-size: $fs-xl;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #cdbf9e;
+  }
+
+  &__cancel,
+  &__clear {
+    @include hex-button(20px);
+
+    min-width: 170px;
+    min-height: 52px;
+    font-size: $fs-md;
+  }
+
+  &__clear {
+    @include hex-danger;
+  }
+}

@@ -1,0 +1,7 @@
+@use '../../../styles/tokens' as *;
+
+.bars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-lg;
+}

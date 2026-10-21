@@ -1,0 +1,121 @@
+@use '../../../styles/tokens' as *;
+@use '../../../styles/mixins' as *;
+
+.header {
+  &__wrapper {
+    @include flex-between;
+    flex-wrap: wrap;
+    gap: $space-lg;
+  }
+
+  &__title {
+    font-size: $fs-title;
+    font-weight: $fw-extrabold;
+    color: $color-title;
+    text-shadow:
+      $glow-text,
+      0 3px 0 $color-title-shadow;
+  }
+}
+
+.stats {
+  display: flex;
+  align-items: stretch;
+  border: 2px solid $color-brass;
+  border-radius: $radius-lg;
+  background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
+  box-shadow: $shadow-plaque-inset;
+
+  &--inactive &__item-value {
+    color: $color-text-inactive;
+  }
+
+  &__item {
+    @include flex-direction-vertical;
+    padding: $space-md $space-xl;
+    gap: $space-xs;
+    justify-content: flex-start;
+
+    &-time {
+      min-width: $time-min-width;
+
+      &--low {
+        .stats__item-value {
+          color: $color-danger;
+          text-shadow: 0 0 10px $color-danger-glow;
+          animation: timer-pulse 1s ease-in-out infinite;
+        }
+
+        .stats__bar-fill {
+          background: $color-danger;
+          box-shadow: 0 0 8px $color-danger-glow;
+        }
+      }
+
+      @keyframes timer-pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+
+        50% {
+          transform: scale(1.12);
+          opacity: 0.75;
+        }
+      }
+
+      // respect users who turn off animations in the OS
+      @media (prefers-reduced-motion: reduce) {
+        .header__timer--low .header__timer-value {
+          animation: none;
+        }
+      }
+    }
+
+    &-hearts {
+      @include flex-center;
+      gap: $space-xs;
+    }
+
+    &-label {
+      font-size: $fs-xs;
+      font-weight: $fw-bold;
+      color: $color-text-muted;
+      letter-spacing: $letter-spacing;
+    }
+
+    &-value {
+      font-size: $fs-xl;
+      font-weight: $fw-extrabold;
+      color: $color-accent-soft;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  &__divider {
+    width: 1px;
+    background-color: $color-brass-dark;
+    margin: $space-md 0;
+  }
+
+  &__bar {
+    width: 100%;
+    border-radius: $radius-xs;
+    background-color: $bar-track;
+    height: $space-xs;
+    &-fill {
+      width: 0;
+      height: 100%;
+      background-color: $color-accent;
+      transition: width $duration-base $easing;
+    }
+  }
+}
+
+// respect users who turn off animations in the OS
+@media (prefers-reduced-motion: reduce) {
+  .header__timer--low .header__timer-value {
+    animation: none;
+  }
+}

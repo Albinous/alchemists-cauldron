@@ -1,0 +1,152 @@
+import type { IBarConfig, IRecipeRange } from '@/types';
+import { createContainer, createElement, createSvgFromString } from '@/ui/dom';
+import { clamp, formatNumber } from '@/utils';
+
+import './bar.scss';
+
+const INITIAL_VALUE = 0;
+const TICKS_COUNT = 5;
+const MIN_PERCENT = 0;
+const MAX_PERCENT = 100;
+
+export class Bar {
+  private readonly config: IBarConfig;
+  private readonly bar = createContainer('bar');
+  private readonly min: number;
+  private readonly max: number;
+  private readonly track = createElement('div', {
+    className: 'bar__range-track',
+  });
+  private readonly value = createElement('span', {
+    className: 'bar__value',
+  });
+  private readonly marker = createElement('span', {
+    className: 'bar__marker',
+  });
+  private readonly barZone = createElement('span', {
+    className: 'bar__zone',
+  });
+  private readonly barStatusLabel = createElement('span', {
+    className: 'bar__status-label',
+    text: 'In range',
+  });
+
+  constructor(config: IBarConfig) {
+    this.config = config;
+    this.min = config.min;
+    this.max = config.max;
+    this.buildStructure();
+    this.reset();
+  }
+
+  private buildStructure(): void {
+    const icon = createSvgFromString(this.config.icon, 'bar__icon');
+    const barInfo = this.createBarInfo();
+
+    this.bar.classList.add(`bar--${this.config.modifier}`);
+
+    this.bar.replaceChildren(icon, barInfo);
+  }
+
+  private createBarInfo(): HTMLElement {
+    const container = createContainer('bar__info');
+    const header = this.createBarHeader();
+    const range = this.createRange();
+
+    container.append(header, range);
+    return container;
+  }
+
+  private createBarHeader(): HTMLElement {
+    const container = createContainer('bar__header');
+    const labelName = createElement('span', {
+      className: 'bar__label',
+      text: this.config.label,
+    });
+    const barStatus = createContainer('bar__status', [this.barStatusLabel, this.value]);
+    container.append(labelName, barStatus);
+
+    return container;
+  }
+
+  private createRange(): HTMLElement {
+    const zeroLine = this.createZeroLine();
+
+    this.track.setAttribute('role', 'meter');
+    this.track.setAttribute('aria-label', this.config.label);
+    this.track.setAttribute('aria-valuemin', String(this.min));
+    this.track.setAttribute('aria-valuemax', String(this.max));
+    this.track.append(this.barZone, zeroLine, this.marker);
+
+    const ticksArray = this.createTicksValues();
+    const ticks = ticksArray.map((tickValue) => this.createTick(tickValue));
+    const ticksContainer = createContainer('bar__range-ticks', [...ticks]);
+    const container = createContainer('bar__range', [this.track, ticksContainer]);
+
+    return container;
+  }
+
+  private createZeroLine(): HTMLElement {
+    const zero = createElement('span', { className: 'bar__zero' });
+    zero.style.left = `${this.toPercent(0)}%`;
+    return zero;
+  }
+
+  private createTicksValues(): number[] {
+    const stepPerTick = (this.max - this.min) / (TICKS_COUNT - 1);
+
+    return Array.from(
+      { length: TICKS_COUNT },
+      (_, index: number) => this.min + index * stepPerTick,
+    );
+  }
+
+  private createTick(value: number): HTMLElement {
+    const tick = createElement('span', {
+      className: 'bar__range-tick',
+      text: formatNumber(value),
+    });
+
+    tick.style.left = `${this.toPercent(value)}%`;
+
+    return tick;
+  }
+
+  private toPercent(value: number): number {
+    return ((value - this.min) / (this.max - this.min)) * 100;
+  }
+
+  public setValue(value: number): void {
+    this.track.setAttribute('aria-valuenow', String(value));
+    this.value.textContent = formatNumber(value);
+    const position = clamp(this.toPercent(value), MIN_PERCENT, MAX_PERCENT);
+    this.marker.style.setProperty('--marker-position', `${position}%`);
+  }
+
+  public setTarget(range: IRecipeRange | undefined): void {
+    if (range === undefined) {
+      this.barZone.hidden = true;
+      return;
+    }
+    const start = clamp(this.toPercent(range.min), MIN_PERCENT, MAX_PERCENT);
+    const end = clamp(this.toPercent(range.max), MIN_PERCENT, MAX_PERCENT);
+    this.barZone.style.left = `${start}%`;
+    this.barZone.style.width = `${end - start}%`;
+
+    this.barZone.hidden = false;
+  }
+
+  public setInRange(isInRange: boolean): void {
+    this.bar.classList.toggle('bar--in-range', isInRange);
+  }
+
+  public reset(): void {
+    this.setValue(INITIAL_VALUE);
+    this.setTarget(undefined);
+    this.setInRange(false);
+  }
+
+  public render(): HTMLElement {
+    return this.bar;
+  }
+}

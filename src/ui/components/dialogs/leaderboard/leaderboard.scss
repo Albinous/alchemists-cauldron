@@ -8,12 +8,7 @@ $medal-bronze: (#e3a774, #8c5226, #4e2a10);
 $danger-edge: #b5402f;
 $danger-text: #ff9a8c;
 
-// a round badge drawn as a background, so the <td> needs no extra element
-@mixin medal($colors) {
-  $light: nth($colors, 1);
-  $dark: nth($colors, 2);
-  $ring: nth($colors, 3);
-
+@mixin medal($light, $dark, $ring) {
   background: radial-gradient(
     circle at center,
     $light 0,
@@ -75,15 +70,15 @@ $danger-text: #ff9a8c;
     }
 
     &--gold .leaderboard__table-data--rank {
-      @include medal($medal-gold);
+      @include medal(#f3d98a, #b8862e, #6b4a12);
     }
 
     &--silver .leaderboard__table-data--rank {
-      @include medal($medal-silver);
+      @include medal(#e8eaee, #8f96a1, #4a505a);
     }
 
     &--bronze .leaderboard__table-data--rank {
-      @include medal($medal-bronze);
+      @include medal(#e3a774, #8c5226, #4e2a10);
     }
   }
 

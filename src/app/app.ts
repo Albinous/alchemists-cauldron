@@ -14,7 +14,7 @@ import {
   isTopScore,
 } from '@/logic';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
-import { clearLeaderboard, loadLeaderboard, saveLeaderboard } from '@/storage';
+import { clearLeaderboard, clearSave, loadLeaderboard, saveGame, saveLeaderboard } from '@/storage';
 import type { Difficulty, GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
 import {
   Bars,
@@ -89,6 +89,7 @@ export class App {
 
         applyBrew(this.state);
         this.endTime = getEndTime(this.state.timeLeft, Date.now());
+        saveGame(this.state);
 
         this.checkGameOver();
       }
@@ -109,15 +110,14 @@ export class App {
       this.handlePause();
     } else {
       this.settings.show(this.state.difficulty);
-      this.settings.setSelected(this.state.difficulty);
     }
   }
 
   private handleSelect(ingredient: IIngredient): void {
     if (!canAddIngredient(this.state, ingredient)) return;
     addIngredient(this.state, ingredient);
-
     this.renderGame();
+    saveGame(this.state);
   }
 
   private handleTick(): void {
@@ -136,6 +136,7 @@ export class App {
   }
 
   private handleSelectDifficulty(difficulty: Difficulty): void {
+    if (this.state.status !== 'menu') return;
     this.settings.setSelected(difficulty);
     this.state.difficulty = difficulty;
   }
@@ -183,6 +184,7 @@ export class App {
     this.stopTimer();
     this.pause.show();
     this.renderGame();
+    saveGame(this.state);
   }
 
   private handleResume(): void {
@@ -192,6 +194,7 @@ export class App {
     this.startTimer();
     this.pause.hide();
     this.renderGame();
+    saveGame(this.state);
   }
 
   private handleExitMenu(): void {
@@ -199,6 +202,7 @@ export class App {
     this.pause.hide();
     this.state = createInitialState(this.state.difficulty);
     this.renderGame();
+    clearSave();
   }
 
   private handleClearLeaderboard(): void {
@@ -222,6 +226,7 @@ export class App {
     this.state = createNewGame(this.state.difficulty);
     this.startTimer();
     this.renderGame();
+    saveGame(this.state);
   }
 
   private endGame(reason: GameOverReason): void {
@@ -233,6 +238,7 @@ export class App {
       isTopScore(loadLeaderboard(this.state.difficulty), this.state.score),
     );
     this.renderGame();
+    clearSave();
   }
 
   private checkGameOver(): void {

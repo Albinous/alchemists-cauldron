@@ -17,16 +17,37 @@ export class Cauldron {
   private readonly img = createSvgFromString(cauldronSvg, 'cauldron__image');
   private readonly potFloating = createContainer('cauldron__floating');
   private readonly content = createElement('div', { className: 'cauldron__content' });
+  private isDropEnabled = false;
 
-  constructor() {
-    this.buildStructure();
+  constructor(onDropIngredient: (id: string) => void) {
+    this.buildStructure(onDropIngredient);
     this.renderMain();
   }
 
-  private buildStructure(): void {
+  private buildStructure(onDropIngredient: (id: string) => void): void {
     const pot = createContainer('cauldron__pot', [this.img, this.potFloating]);
     this.cauldron.append(pot, this.content);
+
+    this.cauldron.addEventListener('dragover', (event) => {
+      if (!this.isDropEnabled) return;
+      event.preventDefault();
+      this.cauldron.classList.add('cauldron--drop-target');
+    });
+
+    this.cauldron.addEventListener('dragleave', (event) => {
+      if (event.relatedTarget instanceof Node && this.cauldron.contains(event.relatedTarget))
+        return;
+      this.cauldron.classList.remove('cauldron--drop-target');
+    });
+
+    this.cauldron.addEventListener('drop', (event) => {
+      event.preventDefault();
+      this.cauldron.classList.remove('cauldron--drop-target');
+      const id = event.dataTransfer?.getData('text/plain');
+      if (id) onDropIngredient(id);
+    });
   }
+
   private createSlot(ingredient: IIngredient, position: number): HTMLElement {
     const isEmpty = ingredient === undefined;
     const slotNumber = createElement('span', {
@@ -43,6 +64,10 @@ export class Cauldron {
     });
 
     return cauldronSlot;
+  }
+
+  public setDropEnabled(isEnabled: boolean): void {
+    this.isDropEnabled = isEnabled;
   }
 
   public renderIngredients(ingredient: IIngredient[], max: number): void {

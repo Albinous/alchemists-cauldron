@@ -1,4 +1,4 @@
-import { difficultySettings } from '@/data';
+import { difficultySettings, ingredients } from '@/data';
 import {
   addIngredient,
   applyBrew,
@@ -48,7 +48,7 @@ export class App {
   private readonly shelf = new Shelf((ingredient) => {
     this.handleSelect(ingredient);
   });
-  private readonly cauldron = new Cauldron();
+  private readonly cauldron = new Cauldron((id) => this.handleDrop(id));
   private readonly recipe = new Recipe();
   private readonly bars = new Bars();
   private readonly controls = new Controls({
@@ -132,6 +132,12 @@ export class App {
     addIngredient(this.state, ingredient);
     this.renderGame();
     saveGame(this.state);
+  }
+
+  private handleDrop(id: string): void {
+    const ingredient = ingredients.find((item) => item.id === id);
+    if (!ingredient) return;
+    this.handleSelect(ingredient);
   }
 
   private handleTick(): void {

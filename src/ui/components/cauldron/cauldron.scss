@@ -12,6 +12,42 @@ $idle-emblem: #3e5a33;
   gap: $space-lg;
   padding-top: $space-sm;
 
+  position: relative;
+  transition: filter $duration-fast $easing;
+
+  // the drop ring, invisible until a valid drag is over the cauldron
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border: 2px dashed transparent;
+    border-radius: 24px;
+    pointer-events: none; // never catches the drag events itself
+    transition:
+      border-color $duration-fast $easing,
+      box-shadow $duration-fast $easing;
+  }
+
+  &--drop-target {
+    filter: drop-shadow(0 0 24px rgba(124, 255, 79, 0.45));
+
+    &::after {
+      border-color: rgba(124, 255, 79, 0.7);
+      box-shadow:
+        inset 0 0 40px rgba(124, 255, 79, 0.12),
+        0 0 24px rgba(124, 255, 79, 0.25);
+      animation: drop-ring-pulse 1.2s ease-in-out infinite;
+    }
+
+    .cauldron-svg__glow {
+      opacity: 1;
+    }
+
+    .cauldron-svg__liquid {
+      transform: translateY(-3px);
+    }
+  }
+
   &__pot {
     position: relative;
     width: 100%;
@@ -102,4 +138,28 @@ $idle-emblem: #3e5a33;
 // ---------- game ----------
 .cauldron--active .cauldron-svg__emblem {
   filter: drop-shadow(0 0 6px $color-accent);
+}
+
+.cauldron-svg__glow,
+.cauldron-svg__liquid {
+  transition:
+    opacity $duration-fast $easing,
+    transform $duration-fast $easing;
+}
+
+@keyframes drop-ring-pulse {
+  0%,
+  100% {
+    border-color: rgba(124, 255, 79, 0.45);
+  }
+
+  50% {
+    border-color: rgba(124, 255, 79, 0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cauldron--drop-target::after {
+    animation: none;
+  }
 }

@@ -81,9 +81,15 @@ export class Shelf {
     });
 
     button.classList.toggle('ingredient--empty', stock === 0);
+    button.setAttribute('draggable', String(stock > 0));
 
     button.addEventListener('click', () => {
       this.onSelect(ingredient);
+    });
+
+    button.addEventListener('dragstart', (event) => {
+      event.dataTransfer?.setData('text/plain', ingredient.id);
+      if (event.dataTransfer) event.dataTransfer.effectAllowed = 'copy';
     });
 
     const ingredientElement = this.createListItem();

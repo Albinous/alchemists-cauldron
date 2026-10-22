@@ -1,9 +1,38 @@
-import type { IGameState, IRecipe, ISavedGame } from '@/types';
+import type { IGameState, ISavedGame } from '@/types';
 import { isDifficulty } from './leaderboard';
 import { ingredients, recipes } from '@/data';
 import { MAX_STOCK_COUNT } from '@/logic';
 
 const GAME_STATE_KEY = 'alchemists-cauldron:game-state';
+
+const isNonNegativeNumber = (value: unknown): value is number =>
+  typeof value === 'number' && value >= 0;
+
+const isKnownRecipe = (value: unknown): boolean => {
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    'name' in value &&
+    typeof value.name === 'string' &&
+    recipes.some((recipe) => recipe.name === value.name)
+  );
+};
+
+const isKnownIngredientId = (value: unknown): value is string =>
+  typeof value === 'string' && ingredients.some((ingredient) => ingredient.id === value);
+
+const isValidStock = (value: unknown): value is Record<string, number> =>
+  value !== null &&
+  typeof value === 'object' &&
+  !Array.isArray(value) &&
+  Object.entries(value).every(
+    ([id, count]) =>
+      isKnownIngredientId(id) &&
+      typeof count === 'number' &&
+      Number.isSafeInteger(count) &&
+      count >= 0 &&
+      count <= MAX_STOCK_COUNT,
+  );
 
 const isValidSave = (value: unknown): value is ISavedGame => {
   if (value === null || typeof value !== 'object') return false;
@@ -35,38 +64,9 @@ const isValidSave = (value: unknown): value is ISavedGame => {
   );
 };
 
-const isNonNegativeNumber = (value: unknown): value is number =>
-  typeof value === 'number' && value >= 0;
-
-const isKnownRecipe = (value: unknown): value is IRecipe | undefined => {
-  return (
-    value !== null &&
-    typeof value === 'object' &&
-    'name' in value &&
-    typeof value.name === 'string' &&
-    recipes.some((recipe) => recipe.name === value.name)
-  );
-};
-
-const isKnownIngredientId = (value: unknown): value is string =>
-  typeof value === 'string' && ingredients.some((ingredient) => ingredient.id === value);
-
-const isValidStock = (value: unknown): value is Record<string, number> =>
-  value !== null &&
-  typeof value === 'object' &&
-  !Array.isArray(value) &&
-  Object.entries(value).every(
-    ([id, count]) =>
-      isKnownIngredientId(id) &&
-      typeof count === 'number' &&
-      Number.isSafeInteger(count) &&
-      count >= 0 &&
-      count <= MAX_STOCK_COUNT,
-  );
-
 const toGameState = (savedState: ISavedGame): IGameState => {
   const cauldronIngredients = savedState.cauldronIngredients.flatMap((id) => {
-    const ingredient = ingredients.find((ingredient) => ingredient.id === id);
+    const ingredient = ingredients.find((item) => item.id === id);
     return ingredient ? [ingredient] : [];
   });
   const activeRecipe = recipes.find((recipe) => recipe.name === savedState.activeRecipe?.name);

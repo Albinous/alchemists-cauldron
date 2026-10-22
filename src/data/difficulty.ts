@@ -34,3 +34,5 @@ export const difficultySettings: Readonly<Record<Difficulty, IDifficultySettings
 };
 
 export const DEFAULT_DIFFICULTY: Difficulty = 'medium';
+
+export const DIFFICULTIES: readonly Difficulty[] = ['easy', 'medium', 'hard'];

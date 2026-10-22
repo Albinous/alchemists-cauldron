@@ -13,6 +13,7 @@ const COLUMNS = [
   { label: 'Name', modifier: 'name' },
   { label: 'Score', modifier: 'score' },
   { label: 'Date', modifier: 'date' },
+  { label: 'Difficulty', modifier: 'difficulty' },
 ] as const;
 const CLEAR_BUTTON_TEXT = 'Clear Leaderboard';
 const BACK_BUTTON_TEXT = 'Back';
@@ -88,7 +89,13 @@ export class Leaderboard {
   }
 
   private createRow(entry: ILeaderboardEntry, index: number): HTMLTableRowElement {
-    const rowValues = [index + 1, entry.name, entry.score, formatDate(entry.date)];
+    const rowValues = [
+      index + 1,
+      entry.name,
+      entry.score,
+      formatDate(entry.date),
+      entry.difficulty,
+    ];
     const tableData = rowValues.map((value, columnIndex) =>
       createElement('td', {
         className: `leaderboard__table-data leaderboard__table-data--${COLUMNS[columnIndex].modifier}`,

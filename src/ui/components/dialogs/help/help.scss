@@ -1,0 +1,139 @@
+@use '@/styles/tokens' as *;
+@use '@/styles/mixins' as *;
+
+// same colors as the bars
+$tag-temperature: #ff6b5b;
+$tag-density: #6fa8ff;
+$tag-magic: #c99bff;
+
+.help {
+  .modal__panel {
+    width: min(660px, calc(100vw - 32px));
+
+    @include mobile {
+      padding-inline: 16px;
+    }
+  }
+
+  .modal__emblem {
+    color: $color-gold;
+  }
+
+  &__steps {
+    @include flex-direction-vertical;
+
+    gap: 12px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none; // the numbers are drawn by .help__step-number
+    text-align: left;
+  }
+
+  &__step {
+    display: flex;
+    align-items: flex-start;
+    gap: $space-md;
+    padding: 14px 16px;
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid $color-brass-dark;
+    border-radius: 8px;
+
+    @include mobile {
+      gap: 12px;
+      padding: 12px;
+    }
+  }
+
+  &__step-number {
+    @include flex-center;
+
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: #1a2a12;
+    border: 2px solid $color-accent-bright;
+    font-size: $fs-md;
+    font-weight: 800;
+    color: #9bff5c;
+  }
+
+  &__step-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0; // lets long text wrap inside the flex row
+  }
+
+  &__step-title {
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    letter-spacing: 0.04em;
+    color: $color-text-light;
+  }
+
+  &__step-text {
+    font-family: $font-accent;
+    font-style: italic;
+    font-size: $fs-lg;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #cdbf9e;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 2px;
+  }
+
+  // one rule for all tags; each modifier only sets the color
+  &__tag {
+    padding: 2px 8px;
+    border: 1px solid color-mix(in srgb, var(--tag-color) 55%, transparent);
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--tag-color) 12%, transparent);
+    font-size: $fs-xs;
+    font-weight: $fw-bold;
+    color: var(--tag-color);
+
+    &--temperature {
+      --tag-color: #{$tag-temperature};
+    }
+
+    &--density {
+      --tag-color: #{$tag-density};
+    }
+
+    &--magicPower {
+      --tag-color: #{$tag-magic};
+    }
+  }
+
+  &__note {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 12px 16px;
+    border: 1px dashed #6b5a3a;
+    border-radius: 8px;
+    font-family: $font-accent;
+    font-style: italic;
+    font-size: $fs-lg;
+    font-weight: 600;
+    line-height: 1.35;
+    text-align: center;
+    color: #cdbf9e;
+  }
+
+  &__close {
+    @include hex-button(20px);
+
+    min-width: 220px;
+    min-height: 54px;
+    font-size: $fs-lg;
+  }
+}

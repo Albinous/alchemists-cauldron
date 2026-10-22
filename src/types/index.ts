@@ -14,3 +14,5 @@ export * from './brew-result';
 export * from './game-over';
 export * from './modal-options';
 export * from './leaderboard';
+export * from './settings';
+export * from './saved-game';

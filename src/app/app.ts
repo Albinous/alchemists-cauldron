@@ -10,11 +10,19 @@ import {
   getTimeLeft,
   isCauldronFull,
   isValidName,
+  addEntry,
+  isTopScore,
 } from '@/logic';
-import { addEntry, isTopScore } from '@/logic/leaderboard';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
-import { clearLeaderboard, loadLeaderboard, saveLeaderboard } from '@/storage';
-import type { GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
+import {
+  clearLeaderboard,
+  clearSave,
+  loadGame,
+  loadLeaderboard,
+  saveGame,
+  saveLeaderboard,
+} from '@/storage';
+import type { Difficulty, GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
 import {
   Bars,
   createElement,
@@ -27,8 +35,11 @@ import {
   GameOver,
   Pause,
   Leaderboard,
+  Confirm,
+  Help,
+  Settings,
 } from '@/ui';
-import { Confirm } from '@/ui/components/dialogs/confirm';
+import { formatTime } from '@/utils';
 
 const TICK_INTERVAL_MS = 250;
 
@@ -41,7 +52,7 @@ export class App {
   private readonly recipe = new Recipe();
   private readonly bars = new Bars();
   private readonly controls = new Controls({
-    onHelp: () => {},
+    onHelp: () => this.handleHelpOpen(),
     onMain: () => this.handleMain(),
     onSecondary: () => this.handleSecondary(),
   });
@@ -62,8 +73,18 @@ export class App {
     () => this.handleCancelClear(),
     () => this.handleClear(),
   );
+  private readonly help = new Help(() => this.handleHelpClose());
 
   private state = createInitialState();
+  private readonly settings = new Settings({
+    onSelectDifficulty: (difficulty) => {
+      this.handleSelectDifficulty(difficulty);
+    },
+    onContinue: () => this.handleContinue(),
+    onNewGame: () => this.handleNewGame(),
+    onLeaderboard: () => this.handleLeaderboard(),
+    onClose: () => this.handleCloseSettings(),
+  });
   private endTime = 0;
   private timerId: ReturnType<typeof setInterval> | undefined = undefined;
 
@@ -76,6 +97,7 @@ export class App {
 
         applyBrew(this.state);
         this.endTime = getEndTime(this.state.timeLeft, Date.now());
+        saveGame(this.state);
 
         this.checkGameOver();
       }
@@ -84,11 +106,32 @@ export class App {
     }
   }
 
+  private handleHelpOpen(): void {
+    if (this.state.status === 'playing') {
+      this.handlePause();
+    }
+    this.help.show();
+  }
+
+  private handleSecondary(): void {
+    if (this.state.status === 'playing') {
+      this.handlePause();
+    } else {
+      const saved = loadGame();
+      if (saved) {
+        const continueSummary = `${saved.difficulty} · ${formatTime(saved.timeLeft)} · ${saved.score} pts`;
+        this.settings.show(this.state.difficulty, continueSummary);
+        return;
+      }
+      this.settings.show(this.state.difficulty);
+    }
+  }
+
   private handleSelect(ingredient: IIngredient): void {
     if (!canAddIngredient(this.state, ingredient)) return;
     addIngredient(this.state, ingredient);
-
     this.renderGame();
+    saveGame(this.state);
   }
 
   private handleTick(): void {
@@ -100,6 +143,35 @@ export class App {
     );
 
     this.checkGameOver();
+  }
+
+  private handleHelpClose(): void {
+    this.help.hide();
+  }
+
+  private handleContinue(): void {
+    const saved = loadGame();
+    if (saved === undefined) return;
+    this.state = saved;
+    this.state.status = 'paused';
+    this.settings.hide();
+    this.pause.show();
+    this.renderGame();
+  }
+
+  private handleSelectDifficulty(difficulty: Difficulty): void {
+    if (this.state.status !== 'menu') return;
+    this.settings.setSelected(difficulty);
+    this.state.difficulty = difficulty;
+  }
+
+  private handleCloseSettings(): void {
+    this.settings.hide();
+  }
+
+  private handleNewGame(): void {
+    this.startNewGame();
+    this.settings.hide();
   }
 
   private handlePlayAgain(): void {
@@ -117,22 +189,16 @@ export class App {
       name: trimmedName,
       score: this.state.score,
       date: Date.now(),
+      difficulty: this.state.difficulty,
     };
-    const entries = addEntry(loadLeaderboard(), entry);
-    saveLeaderboard(entries);
+    const entries = addEntry(loadLeaderboard(this.state.difficulty), entry);
+    saveLeaderboard(entries, this.state.difficulty);
     this.gameOver.hideForm();
     this.leaderboard.show(entries, entries.indexOf(entry));
   }
 
   private handleLeaderboard(): void {
-    this.gameOver.hideForm();
-    this.leaderboard.show(loadLeaderboard());
-  }
-
-  private handleSecondary(): void {
-    if (this.state.status === 'playing') {
-      this.handlePause();
-    }
+    this.leaderboard.show(loadLeaderboard(this.state.difficulty));
   }
 
   private handlePause(): void {
@@ -142,6 +208,7 @@ export class App {
     this.stopTimer();
     this.pause.show();
     this.renderGame();
+    saveGame(this.state);
   }
 
   private handleResume(): void {
@@ -151,13 +218,15 @@ export class App {
     this.startTimer();
     this.pause.hide();
     this.renderGame();
+    saveGame(this.state);
   }
 
   private handleExitMenu(): void {
     this.stopTimer();
     this.pause.hide();
-    this.state = createInitialState();
+    this.state = createInitialState(this.state.difficulty);
     this.renderGame();
+    clearSave();
   }
 
   private handleClearLeaderboard(): void {
@@ -172,22 +241,28 @@ export class App {
   }
 
   private handleClear(): void {
-    clearLeaderboard();
+    clearLeaderboard(this.state.difficulty);
     this.clearConfirm.hide();
     this.leaderboard.show([]);
   }
 
   private startNewGame(): void {
-    this.state = createNewGame();
+    this.state = createNewGame(this.state.difficulty);
     this.startTimer();
     this.renderGame();
+    saveGame(this.state);
   }
 
   private endGame(reason: GameOverReason): void {
     this.state.status = 'game-over';
     this.stopTimer();
-    this.gameOver.show(reason, this.state.score, isTopScore(loadLeaderboard(), this.state.score));
+    this.gameOver.show(
+      reason,
+      this.state.score,
+      isTopScore(loadLeaderboard(this.state.difficulty), this.state.score),
+    );
     this.renderGame();
+    clearSave();
   }
 
   private checkGameOver(): void {
@@ -269,6 +344,8 @@ export class App {
       this.pause.render(),
       this.leaderboard.render(),
       this.clearConfirm.render(),
+      this.help.render(),
+      this.settings.render(),
     );
 
     document.addEventListener('visibilitychange', () => {

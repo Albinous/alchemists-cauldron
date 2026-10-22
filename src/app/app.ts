@@ -14,7 +14,14 @@ import {
   isTopScore,
 } from '@/logic';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
-import { clearLeaderboard, clearSave, loadLeaderboard, saveGame, saveLeaderboard } from '@/storage';
+import {
+  clearLeaderboard,
+  clearSave,
+  loadGame,
+  loadLeaderboard,
+  saveGame,
+  saveLeaderboard,
+} from '@/storage';
 import type { Difficulty, GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
 import {
   Bars,
@@ -32,6 +39,7 @@ import {
   Help,
   Settings,
 } from '@/ui';
+import { formatTime } from '@/utils';
 
 const TICK_INTERVAL_MS = 250;
 
@@ -72,7 +80,7 @@ export class App {
     onSelectDifficulty: (difficulty) => {
       this.handleSelectDifficulty(difficulty);
     },
-    onContinue: () => {},
+    onContinue: () => this.handleContinue(),
     onNewGame: () => this.handleNewGame(),
     onLeaderboard: () => this.handleLeaderboard(),
     onClose: () => this.handleCloseSettings(),
@@ -109,6 +117,12 @@ export class App {
     if (this.state.status === 'playing') {
       this.handlePause();
     } else {
+      const saved = loadGame();
+      if (saved) {
+        const continueSummary = `${saved.difficulty} · ${formatTime(saved.timeLeft)} · ${saved.score} pts`;
+        this.settings.show(this.state.difficulty, continueSummary);
+        return;
+      }
       this.settings.show(this.state.difficulty);
     }
   }
@@ -133,6 +147,16 @@ export class App {
 
   private handleHelpClose(): void {
     this.help.hide();
+  }
+
+  private handleContinue(): void {
+    const saved = loadGame();
+    if (saved === undefined) return;
+    this.state = saved;
+    this.state.status = 'paused';
+    this.settings.hide();
+    this.pause.show();
+    this.renderGame();
   }
 
   private handleSelectDifficulty(difficulty: Difficulty): void {

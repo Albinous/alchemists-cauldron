@@ -307,6 +307,8 @@ export class App {
     const ingredients = getShelfIngredients(settings.ingredientsOnShelf);
     const cauldronIngredients = this.state.cauldronIngredients;
 
+    this.cauldron.setDropEnabled(isPlaying && !isCauldronFull(this.state, settings.maxIngredients));
+
     this.cauldron.renderIngredients(cauldronIngredients, settings.maxIngredients);
 
     if (status === 'menu') {

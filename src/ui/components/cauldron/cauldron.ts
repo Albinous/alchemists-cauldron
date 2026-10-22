@@ -17,6 +17,7 @@ export class Cauldron {
   private readonly img = createSvgFromString(cauldronSvg, 'cauldron__image');
   private readonly potFloating = createContainer('cauldron__floating');
   private readonly content = createElement('div', { className: 'cauldron__content' });
+  private isDropEnabled = false;
 
   constructor(onDropIngredient: (id: string) => void) {
     this.buildStructure(onDropIngredient);
@@ -28,11 +29,14 @@ export class Cauldron {
     this.cauldron.append(pot, this.content);
 
     this.cauldron.addEventListener('dragover', (event) => {
+      if (!this.isDropEnabled) return;
       event.preventDefault();
       this.cauldron.classList.add('cauldron--drop-target');
     });
 
-    this.cauldron.addEventListener('dragleave', () => {
+    this.cauldron.addEventListener('dragleave', (event) => {
+      if (event.relatedTarget instanceof Node && this.cauldron.contains(event.relatedTarget))
+        return;
       this.cauldron.classList.remove('cauldron--drop-target');
     });
 
@@ -60,6 +64,10 @@ export class Cauldron {
     });
 
     return cauldronSlot;
+  }
+
+  public setDropEnabled(isEnabled: boolean): void {
+    this.isDropEnabled = isEnabled;
   }
 
   public renderIngredients(ingredient: IIngredient[], max: number): void {

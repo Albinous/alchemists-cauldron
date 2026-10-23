@@ -53,7 +53,7 @@ export class Recipe {
     });
     const rangeValue = createElement('dd', {
       className: 'recipe__range-value',
-      text: `${formatNumber(range.min)}–${formatNumber(range.max)}`,
+      text: `${formatNumber(range.min)} – ${formatNumber(range.max)}`,
     });
     const container = createContainer(`recipe__range recipe__range--${modifier}`, [
       rangeLabel,

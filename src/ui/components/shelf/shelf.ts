@@ -1,9 +1,13 @@
 import { createElement, createSvgFromString } from '@/ui/dom';
+import type { ICauldronValues, IIngredient } from '@/types';
+import { PARAMETER_KEYS, PARAMETER_LABELS } from '@/data';
+import { formatSigned } from '@/utils';
+
 import './shelf.scss';
-import type { IIngredient } from '@/types';
-import { formatNumber } from '@/utils';
+import './tooltip.scss';
 
 const EMPTY_SHELF_COUNT = 6;
+const TOOLTIP_GAP = 12;
 
 export class Shelf {
   private readonly shelf = createElement('section', {
@@ -15,10 +19,10 @@ export class Shelf {
   private readonly onSelect: (ingredient: IIngredient) => void;
 
   constructor(onSelect: (ingredient: IIngredient) => void) {
+    this.onSelect = onSelect;
+
     this.buildStructure();
     this.renderEmpty();
-
-    this.onSelect = onSelect;
   }
 
   private buildStructure(): void {
@@ -47,22 +51,9 @@ export class Shelf {
       className: 'ingredient__name',
       text: ingredient.name,
     });
-    const temperature = this.createIngredientLabel(
-      'temperature',
-      `T${formatNumber(ingredient.temperature)}`,
-    );
-    const density = this.createIngredientLabel('density', `D${formatNumber(ingredient.density)}`);
-    const magicPower = this.createIngredientLabel(
-      'magic',
-      `MP${formatNumber(ingredient.magicPower)}`,
-    );
-    const ingredientLabels = createElement('span', {
-      className: 'ingredient__labels',
-      children: [temperature, density, magicPower],
-    });
     const info = createElement('span', {
       className: 'ingredient__info',
-      children: [ingredientName, ingredientLabels],
+      children: [ingredientName],
     });
 
     const ingredientStock = createElement('span', {
@@ -81,6 +72,7 @@ export class Shelf {
     });
 
     button.classList.toggle('ingredient--empty', stock === 0);
+
     button.setAttribute('draggable', String(stock > 0));
 
     button.addEventListener('click', () => {
@@ -93,20 +85,80 @@ export class Shelf {
     });
 
     const ingredientElement = this.createListItem();
-
     ingredientElement.append(button);
+
+    if (stock > 0) {
+      this.createTooltip(ingredient, ingredientElement, button);
+    }
 
     return ingredientElement;
   }
 
-  private createIngredientLabel(
-    type: 'temperature' | 'density' | 'magic',
+  private createTooltip(
+    ingredient: IIngredient,
+    item: HTMLLIElement,
+    button: HTMLButtonElement,
+  ): void {
+    button.setAttribute('aria-describedby', `tooltip-${ingredient.id}`);
+
+    const tooltip = createElement('span', {
+      className: 'tooltip',
+      attributes: {
+        role: 'tooltip',
+        id: `tooltip-${ingredient.id}`,
+      },
+    });
+
+    for (const key of PARAMETER_KEYS) {
+      tooltip.append(this.createTooltipRow(key, PARAMETER_LABELS[key], ingredient[key]));
+    }
+    const placeTooltip = (): void => this.updateTooltipSide(item, tooltip);
+    item.addEventListener('mouseenter', placeTooltip);
+    item.addEventListener('focusin', placeTooltip);
+    item.append(tooltip);
+  }
+
+  private createTooltipRow(
+    type: keyof ICauldronValues,
     labelName: string,
+    value: number,
   ): HTMLSpanElement {
-    return createElement('span', {
-      className: `ingredient__label ingredient__label--${type}`,
+    const tooltipLabel = createElement('span', {
+      className: 'tooltip__label',
       text: labelName,
     });
+    const tooltipValue = createElement('span', {
+      className: 'tooltip__value',
+      text: formatSigned(value),
+    });
+    const tooltip = createElement('span', {
+      className: `tooltip__row tooltip__row--${type}`,
+      children: [tooltipLabel, tooltipValue],
+    });
+
+    return tooltip;
+  }
+
+  private updateTooltipSide(item: HTMLLIElement, tooltip: HTMLSpanElement): void {
+    const ingredientRect = item.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+
+    const canFitRight = window.innerWidth - ingredientRect.right >= tooltipRect.width + TOOLTIP_GAP;
+    const canFitLeft = ingredientRect.left >= tooltipRect.width + TOOLTIP_GAP;
+    const isStacked = !canFitRight && !canFitLeft;
+    const isLeft = !canFitRight && canFitLeft;
+
+    const spaceBelow =
+      window.innerHeight - (isStacked ? ingredientRect.bottom : ingredientRect.top);
+    const isUp = spaceBelow < tooltipRect.height + (isStacked ? TOOLTIP_GAP : 0);
+
+    tooltip.classList.toggle('tooltip--left', isLeft);
+    tooltip.classList.toggle('tooltip--stacked', isStacked);
+    tooltip.classList.toggle('tooltip--up', isUp);
+  }
+
+  public setPaused(isPaused: boolean): void {
+    this.shelf.classList.toggle('shelf--paused', isPaused);
   }
 
   public renderIngredients(

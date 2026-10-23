@@ -294,6 +294,7 @@ export class App {
     const { shelfStock, status } = this.state;
     const isPlaying = status === 'playing';
     const isInGame = status !== 'menu';
+    const isFull = isCauldronFull(this.state, settings.maxIngredients);
     this.header.setActive(isInGame);
 
     this.controls.setPlaying(isInGame);
@@ -307,7 +308,8 @@ export class App {
     const ingredients = getShelfIngredients(settings.ingredientsOnShelf);
     const cauldronIngredients = this.state.cauldronIngredients;
 
-    this.cauldron.setDropEnabled(isPlaying && !isCauldronFull(this.state, settings.maxIngredients));
+    this.shelf.setPaused(status === 'paused');
+    this.cauldron.setDropEnabled(isPlaying && !isFull);
 
     this.cauldron.renderIngredients(cauldronIngredients, settings.maxIngredients);
 
@@ -321,11 +323,7 @@ export class App {
       this.header.setScore(this.state.score);
       this.header.setTimer(this.state.timeLeft, settings.startTimeSec);
       this.header.setLives(this.state.lives, settings.lives);
-      this.shelf.renderIngredients(
-        ingredients,
-        shelfStock,
-        isCauldronFull(this.state, settings.maxIngredients) || !isPlaying,
-      );
+      this.shelf.renderIngredients(ingredients, shelfStock, isFull || !isPlaying);
       this.recipe.showRecipe(this.state.activeRecipe);
       this.recipe.setIngredientCount(cauldronIngredients.length, settings.maxIngredients);
 

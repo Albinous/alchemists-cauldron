@@ -19,10 +19,10 @@ export class Shelf {
   private readonly onSelect: (ingredient: IIngredient) => void;
 
   constructor(onSelect: (ingredient: IIngredient) => void) {
+    this.onSelect = onSelect;
+
     this.buildStructure();
     this.renderEmpty();
-
-    this.onSelect = onSelect;
   }
 
   private buildStructure(): void {
@@ -67,12 +67,12 @@ export class Shelf {
         type: 'button',
         disabled: isLocked || stock === 0,
         'aria-label': `${ingredient.name}, ${stock} left`,
-        'aria-describedby': `tooltip-${ingredient.id}`,
       },
       children: [icon, info, ingredientStock],
     });
 
     button.classList.toggle('ingredient--empty', stock === 0);
+
     button.setAttribute('draggable', String(stock > 0));
 
     button.addEventListener('click', () => {
@@ -85,6 +85,21 @@ export class Shelf {
     });
 
     const ingredientElement = this.createListItem();
+    ingredientElement.append(button);
+
+    if (stock > 0) {
+      this.createTooltip(ingredient, ingredientElement, button);
+    }
+
+    return ingredientElement;
+  }
+
+  private createTooltip(
+    ingredient: IIngredient,
+    item: HTMLLIElement,
+    button: HTMLButtonElement,
+  ): void {
+    button.setAttribute('aria-describedby', `tooltip-${ingredient.id}`);
 
     const tooltip = createElement('span', {
       className: 'tooltip',
@@ -95,20 +110,15 @@ export class Shelf {
     });
 
     for (const key of PARAMETER_KEYS) {
-      tooltip.append(this.createIngredientTooltip(key, PARAMETER_LABELS[key], ingredient[key]));
+      tooltip.append(this.createTooltipRow(key, PARAMETER_LABELS[key], ingredient[key]));
     }
-    this.updateTooltipSide(ingredientElement, tooltip);
-
-    ingredientElement.append(button, tooltip);
-
-    const placeTooltip = (): void => this.updateTooltipSide(ingredientElement, tooltip);
-    ingredientElement.addEventListener('mouseenter', placeTooltip);
-    ingredientElement.addEventListener('focusin', placeTooltip);
-
-    return ingredientElement;
+    const placeTooltip = (): void => this.updateTooltipSide(item, tooltip);
+    item.addEventListener('mouseenter', placeTooltip);
+    item.addEventListener('focusin', placeTooltip);
+    item.append(tooltip);
   }
 
-  private createIngredientTooltip(
+  private createTooltipRow(
     type: keyof ICauldronValues,
     labelName: string,
     value: number,
@@ -129,8 +139,8 @@ export class Shelf {
     return tooltip;
   }
 
-  private updateTooltipSide(ingredient: HTMLLIElement, tooltip: HTMLSpanElement): void {
-    const ingredientRect = ingredient.getBoundingClientRect();
+  private updateTooltipSide(item: HTMLLIElement, tooltip: HTMLSpanElement): void {
+    const ingredientRect = item.getBoundingClientRect();
     const tooltipRect = tooltip.getBoundingClientRect();
 
     const canFitRight = window.innerWidth - ingredientRect.right >= tooltipRect.width + TOOLTIP_GAP;

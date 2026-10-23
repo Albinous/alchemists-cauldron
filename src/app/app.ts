@@ -2,7 +2,6 @@ import { difficultySettings, ingredients } from '@/data';
 import {
   addIngredient,
   applyBrew,
-  calculateCauldron,
   canAddIngredient,
   canBrew,
   getEndTime,
@@ -12,6 +11,9 @@ import {
   isValidName,
   addEntry,
   isTopScore,
+  calculateCauldronWithReactions,
+  getFiredReactions,
+  applyReactionEffects,
 } from '@/logic';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
 import {
@@ -129,9 +131,25 @@ export class App {
 
   private handleSelect(ingredient: IIngredient): void {
     if (!canAddIngredient(this.state, ingredient)) return;
+    const previousCauldronIngredients = [...this.state.cauldronIngredients];
     addIngredient(this.state, ingredient);
-    this.renderGame();
+    const firedReactions = getFiredReactions(
+      previousCauldronIngredients,
+      this.state.cauldronIngredients,
+      this.state.difficulty,
+    );
+
+    if (firedReactions.length > 0) {
+      this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
+      for (const reaction of firedReactions) {
+        applyReactionEffects(this.state, reaction);
+      }
+      this.endTime = getEndTime(this.state.timeLeft, Date.now());
+    }
+
     saveGame(this.state);
+    this.checkGameOver();
+    this.renderGame();
   }
 
   private handleDrop(id: string): void {
@@ -327,7 +345,10 @@ export class App {
       this.recipe.showRecipe(this.state.activeRecipe);
       this.recipe.setIngredientCount(cauldronIngredients.length, settings.maxIngredients);
 
-      const cauldronValues = calculateCauldron(this.state.cauldronIngredients);
+      const cauldronValues = calculateCauldronWithReactions(
+        this.state.cauldronIngredients,
+        this.state.difficulty,
+      );
 
       this.bars.update(cauldronValues, this.state.activeRecipe);
     }

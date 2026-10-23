@@ -1,4 +1,4 @@
-import { helpSvg, pauseSvg, settingsSvg } from '@/assets';
+import { helpSvg, pauseSvg, pourOutSvg, settingsSvg } from '@/assets';
 import type { IControlsHandlers } from '@/types';
 import { createContainer, createElement, createSvgFromString } from '@/ui/dom';
 
@@ -9,6 +9,8 @@ const BREW_LABEL = 'Brew';
 const HELP_LABEL = 'Help';
 const SETTINGS_LABEL = 'Settings';
 const PAUSE_LABEL = 'Pause';
+const POUR_OUT_LABEL = 'Pour Out';
+const POUR_OUT_TEXT = '-10 s';
 
 export class Controls {
   private readonly controls = createContainer('controls');
@@ -26,6 +28,14 @@ export class Controls {
     attributes: {
       type: 'button',
     },
+  });
+  private readonly pourOutButton = createElement('button', {
+    className: 'controls__round',
+    attributes: {
+      type: 'button',
+      'aria-label': 'Pour out, costs 10 seconds',
+    },
+    children: this.createRoundContent(pourOutSvg, POUR_OUT_LABEL, POUR_OUT_TEXT),
   });
 
   constructor(handlers: IControlsHandlers) {
@@ -46,9 +56,15 @@ export class Controls {
     });
 
     const mainGlow = this.createMainGlow(handlers);
+    // this.pourOutButton.append(
+    //   ...this.createRoundContent(pourOutSvg, POUR_OUT_LABEL, POUR_OUT_TEXT),
+    // );
+    this.pourOutButton.hidden = true;
 
-    this.controls.append(helpButton, mainGlow, this.secondaryButton);
+    const controlsActions = createContainer('controls__actions', [this.pourOutButton, mainGlow]);
+    this.controls.append(helpButton, controlsActions, this.secondaryButton);
     helpButton.addEventListener('click', handlers.onHelp);
+    this.pourOutButton.addEventListener('click', handlers.onPourOut);
   }
 
   private createMainGlow(handlers: IControlsHandlers): HTMLElement {
@@ -60,12 +76,20 @@ export class Controls {
     return mainGlow;
   }
 
-  private createRoundContent(iconSvg: string, label: string): Node[] {
+  private createRoundContent(iconSvg: string, label: string, extraInfo?: string): Node[] {
     const icon = createContainer('controls__round-icon', [createSvgFromString(iconSvg)]);
     const spanLabel = createElement('span', {
       className: 'controls__round-label',
       text: label,
     });
+
+    if (extraInfo) {
+      const spanInfo = createElement('span', {
+        className: 'controls__round-text',
+        text: extraInfo,
+      });
+      return [icon, spanLabel, spanInfo];
+    }
 
     return [icon, spanLabel];
   }
@@ -74,8 +98,13 @@ export class Controls {
     this.mainButton.disabled = !isEnabled;
   }
 
+  public setPourOutEnabled(isEnabled: boolean): void {
+    this.pourOutButton.toggleAttribute('disabled', !isEnabled);
+  }
+
   public setPlaying(isPlaying: boolean): void {
     this.mainLabel.textContent = isPlaying ? BREW_LABEL : START_LABEL;
+    this.pourOutButton.hidden = !isPlaying;
     const content = isPlaying
       ? this.createRoundContent(pauseSvg, PAUSE_LABEL)
       : this.createRoundContent(settingsSvg, SETTINGS_LABEL);

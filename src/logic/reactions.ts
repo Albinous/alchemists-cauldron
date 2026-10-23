@@ -1,5 +1,7 @@
 import { REACTIONS } from '@/data/reactions';
 import type { Difficulty, IGameState, IIngredient, IReaction } from '@/types';
+import { clearCauldron } from './cauldron';
+import { applyTimePenalty } from './timer';
 
 export const getReactions = (difficulty: Difficulty): readonly IReaction[] =>
   REACTIONS.filter((reaction) => reaction.difficulty === difficulty);
@@ -17,7 +19,7 @@ export const getFiredReactions = (
 
 export const applyReactionEffects = (state: IGameState, reaction: IReaction): void => {
   if (reaction.timePenalty) {
-    state.timeLeft = Math.max(0, state.timeLeft - reaction.timePenalty);
+    applyTimePenalty(state, reaction.timePenalty);
   }
 
   if (reaction.lifePenalty) {
@@ -25,7 +27,7 @@ export const applyReactionEffects = (state: IGameState, reaction: IReaction): vo
   }
 
   if (reaction.clearsCauldron) {
-    state.cauldronIngredients = [];
+    clearCauldron(state);
   }
 
   state.lastReactionId = reaction.id;

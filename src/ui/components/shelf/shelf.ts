@@ -7,6 +7,7 @@ import './shelf.scss';
 import './tooltip.scss';
 
 const EMPTY_SHELF_COUNT = 6;
+const TOOLTIP_GAP = 12;
 
 export class Shelf {
   private readonly shelf = createElement('section', {
@@ -50,12 +51,9 @@ export class Shelf {
       className: 'ingredient__name',
       text: ingredient.name,
     });
-    const ingredientLabels = createElement('span', {
-      className: 'ingredient__labels',
-    });
     const info = createElement('span', {
       className: 'ingredient__info',
-      children: [ingredientName, ingredientLabels],
+      children: [ingredientName],
     });
 
     const ingredientStock = createElement('span', {
@@ -69,6 +67,7 @@ export class Shelf {
         type: 'button',
         disabled: isLocked || stock === 0,
         'aria-label': `${ingredient.name}, ${stock} left`,
+        'aria-describedby': `tooltip-${ingredient.id}`,
       },
       children: [icon, info, ingredientStock],
     });
@@ -91,16 +90,20 @@ export class Shelf {
       className: 'tooltip',
       attributes: {
         role: 'tooltip',
+        id: `tooltip-${ingredient.id}`,
       },
     });
 
     for (const key of PARAMETER_KEYS) {
       tooltip.append(this.createIngredientTooltip(key, PARAMETER_LABELS[key], ingredient[key]));
-      tooltip.setAttribute('id', `tooltip-${key}`);
-      button.setAttribute('aria-describedby', `tooltip-${key}`);
     }
+    this.updateTooltipSide(ingredientElement, tooltip);
 
     ingredientElement.append(button, tooltip);
+
+    const placeTooltip = (): void => this.updateTooltipSide(ingredientElement, tooltip);
+    ingredientElement.addEventListener('mouseenter', placeTooltip);
+    ingredientElement.addEventListener('focusin', placeTooltip);
 
     return ingredientElement;
   }
@@ -124,6 +127,28 @@ export class Shelf {
     });
 
     return tooltip;
+  }
+
+  private updateTooltipSide(ingredient: HTMLLIElement, tooltip: HTMLSpanElement): void {
+    const ingredientRect = ingredient.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+
+    const canFitRight = window.innerWidth - ingredientRect.right >= tooltipRect.width + TOOLTIP_GAP;
+    const canFitLeft = ingredientRect.left >= tooltipRect.width + TOOLTIP_GAP;
+    const isStacked = !canFitRight && !canFitLeft;
+    const isLeft = !canFitRight && canFitLeft;
+
+    const spaceBelow =
+      window.innerHeight - (isStacked ? ingredientRect.bottom : ingredientRect.top);
+    const isUp = spaceBelow < tooltipRect.height + (isStacked ? TOOLTIP_GAP : 0);
+
+    tooltip.classList.toggle('tooltip--left', isLeft);
+    tooltip.classList.toggle('tooltip--stacked', isStacked);
+    tooltip.classList.toggle('tooltip--up', isUp);
+  }
+
+  public setPaused(isPaused: boolean): void {
+    this.shelf.classList.toggle('shelf--paused', isPaused);
   }
 
   public renderIngredients(

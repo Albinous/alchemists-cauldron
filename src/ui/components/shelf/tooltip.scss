@@ -91,6 +91,39 @@ $tooltip-arrow: 10px;
     }
   }
 
+  // --- no room on either side: below the card (or above with --up) ---
+  &--stacked {
+    top: calc(100% + #{$tooltip-gap});
+    left: 0;
+    right: auto;
+    width: 100%; // never wider than the card, so no horizontal scroll
+    min-width: 0;
+    transform: translateY(-6px);
+
+    &::before {
+      top: calc(#{$tooltip-arrow} / -2 - 1px);
+      left: 28px;
+      right: auto;
+      border: 0;
+      border-top: 2px solid $color-brass;
+      border-left: 2px solid $color-brass;
+    }
+  }
+
+  &--stacked.tooltip--up {
+    top: auto;
+    bottom: calc(100% + #{$tooltip-gap});
+    transform: translateY(6px);
+
+    &::before {
+      top: auto;
+      bottom: calc(#{$tooltip-arrow} / -2 - 1px);
+      border: 0;
+      border-bottom: 2px solid $color-brass;
+      border-right: 2px solid $color-brass;
+    }
+  }
+
   &__row {
     display: flex;
     align-items: baseline;

@@ -3,6 +3,7 @@ import type { BrewResult, IGameState } from '@/types';
 import { getRandomRecipe } from './recipe-generator';
 import { isBrewSuccessful } from './check-brew';
 import { calculateCauldronWithReactions } from './cauldron-values';
+import { clearCauldron } from './cauldron';
 
 export const applyBrew = (state: IGameState): BrewResult => {
   const settings = difficultySettings[state.difficulty];
@@ -12,7 +13,7 @@ export const applyBrew = (state: IGameState): BrewResult => {
   );
   const isSuccess = isBrewSuccessful(cauldronValues, state.activeRecipe, settings.tolerance);
 
-  state.cauldronIngredients = [];
+  clearCauldron(state);
 
   if (isSuccess) {
     state.score += settings.scorePerBrew;

@@ -1,9 +1,8 @@
-import { difficultySettings, ingredients } from '@/data';
+import { difficultySettings, ingredients, POUR_OUT_PENALTY_SEC } from '@/data';
 import {
   addIngredient,
   applyBrew,
   canAddIngredient,
-  canBrew,
   getEndTime,
   getGameOverReason,
   getTimeLeft,
@@ -14,6 +13,10 @@ import {
   calculateCauldronWithReactions,
   getFiredReactions,
   applyReactionEffects,
+  canBrew,
+  canPourOut,
+  clearCauldron,
+  applyTimePenalty,
 } from '@/logic';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
 import {
@@ -55,6 +58,7 @@ export class App {
   private readonly bars = new Bars();
   private readonly controls = new Controls({
     onHelp: () => this.handleHelpOpen(),
+    onPourOut: () => this.handlePourOut(),
     onMain: () => this.handleMain(),
     onSecondary: () => this.handleSecondary(),
   });
@@ -167,6 +171,17 @@ export class App {
     );
 
     this.checkGameOver();
+  }
+
+  private handlePourOut(): void {
+    if (!canPourOut(this.state)) return;
+    this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
+    clearCauldron(this.state);
+    applyTimePenalty(this.state, POUR_OUT_PENALTY_SEC);
+    this.endTime = getEndTime(this.state.timeLeft, Date.now());
+    saveGame(this.state);
+    this.checkGameOver();
+    this.renderGame();
   }
 
   private handleHelpClose(): void {
@@ -319,6 +334,8 @@ export class App {
 
     const isMainEnabled = status === 'menu' || canBrew(this.state);
     this.controls.setMainEnabled(isMainEnabled);
+
+    this.controls.setPourOutEnabled(canPourOut(this.state));
 
     const isSecondaryEnabled = status === 'menu' || status === 'playing';
     this.controls.setSecondaryEnabled(isSecondaryEnabled);

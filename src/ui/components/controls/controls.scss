@@ -12,6 +12,12 @@ $main-font-size: 32px;
   flex-wrap: wrap;
   gap: $space-lg;
 
+  &__actions {
+    @include flex-center;
+    flex-wrap: wrap;
+    gap: $space-xl;
+  }
+
   // Help / Settings / Pause
   &__round {
     @include flex-direction-horizontal;
@@ -41,20 +47,35 @@ $main-font-size: 32px;
       opacity: 0.45;
       filter: grayscale(0.8);
     }
-  }
 
-  &__round-icon {
-    @include flex-center;
+    &[hidden] {
+      display: none;
+    }
 
-    width: $round-button-size;
-    height: $round-button-size;
-    background: radial-gradient(circle at 50% 35%, #2a2f38, $color-panel-bottom);
-    border: 3px solid $color-brass-light;
-    border-radius: $radius-round;
-    box-shadow: 0 0 0 2px #2a2318;
-    transition:
-      border-color $duration-fast $easing,
-      transform $duration-fast $easing;
+    &-icon {
+      @include flex-center;
+
+      width: $round-button-size;
+      height: $round-button-size;
+      background: radial-gradient(circle at 50% 35%, #2a2f38, $color-panel-bottom);
+      border: 3px solid $color-brass-light;
+      border-radius: $radius-round;
+      box-shadow: 0 0 0 2px #2a2318;
+      transition:
+        border-color $duration-fast $easing,
+        transform $duration-fast $easing;
+    }
+
+    &-text {
+      font-size: $fs-xs;
+      font-weight: $fw-bold;
+      letter-spacing: 0.06em;
+      color: $color-danger;
+    }
+
+    &:disabled .controls__round-text {
+      color: inherit;
+    }
   }
 
   // hover / press only for an enabled button

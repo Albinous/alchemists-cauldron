@@ -1,0 +1,137 @@
+@use '@/styles/tokens' as *;
+
+// same colors as the bars
+$tooltip-temperature: #ff6b5b;
+$tooltip-density: #6fa8ff;
+$tooltip-magic: #c99bff;
+
+$tooltip-gap: 12px; // distance between the card and the tooltip
+$tooltip-arrow: 10px;
+
+// the card is the anchor for the tooltip
+.shelf__item {
+  position: relative;
+}
+
+.tooltip {
+  position: absolute;
+  top: 0;
+  left: calc(100% + #{$tooltip-gap}); // default: to the right of the card
+  z-index: 50; // above the cauldron, bars and recipe
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
+  border: 2px solid $color-brass;
+  border-radius: 8px;
+  box-shadow:
+    inset 0 0 0 3px $color-panel-bottom,
+    inset 0 0 0 4px $color-brass-dark,
+    0 12px 28px rgba(0, 0, 0, 0.6);
+  pointer-events: none; // never steals hover or clicks from the cards
+
+  // hidden, but still has a size — JS can measure it to choose the side
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity $duration-fast $easing,
+    transform $duration-fast $easing,
+    visibility $duration-fast $easing;
+
+  // the arrow pointing at the card
+  &::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: calc(#{$tooltip-arrow} / -2 - 1px);
+    width: $tooltip-arrow;
+    height: $tooltip-arrow;
+    background: $color-panel-top;
+    border-bottom: 2px solid $color-brass;
+    border-left: 2px solid $color-brass;
+    transform: rotate(45deg);
+  }
+
+  // --- shown on hover and on keyboard focus ---
+  .shelf__item:hover &,
+  .shelf__item:focus-within & {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+  }
+
+  // --- opens to the left (card near the right edge) ---
+  &--left {
+    left: auto;
+    right: calc(100% + #{$tooltip-gap});
+    transform: translateX(6px);
+
+    &::before {
+      left: auto;
+      right: calc(#{$tooltip-arrow} / -2 - 1px);
+      border-bottom: 0;
+      border-left: 0;
+      border-top: 2px solid $color-brass;
+      border-right: 2px solid $color-brass;
+    }
+  }
+
+  // --- opens upward (card near the bottom edge) ---
+  &--up {
+    top: auto;
+    bottom: 0;
+
+    &::before {
+      top: auto;
+      bottom: 22px;
+    }
+  }
+
+  &__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: $space-md;
+
+    &--temperature {
+      --tooltip-color: #{$tooltip-temperature};
+    }
+
+    &--density {
+      --tooltip-color: #{$tooltip-density};
+    }
+
+    &--magicPower {
+      --tooltip-color: #{$tooltip-magic};
+    }
+  }
+
+  &__label {
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    letter-spacing: 0.04em;
+    color: var(--tooltip-color);
+  }
+
+  &__value {
+    font-size: $fs-md;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: $color-text-light;
+  }
+}
+
+// no tooltips while the game is paused
+.shelf--paused .tooltip {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tooltip {
+    transition: none;
+  }
+}

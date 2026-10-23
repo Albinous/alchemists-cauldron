@@ -1,7 +1,10 @@
 import { createElement, createSvgFromString } from '@/ui/dom';
+import type { ICauldronValues, IIngredient } from '@/types';
+import { PARAMETER_KEYS, PARAMETER_LABELS } from '@/data';
+import { formatSigned } from '@/utils';
+
 import './shelf.scss';
-import type { IIngredient } from '@/types';
-import { formatNumber } from '@/utils';
+import './tooltip.scss';
 
 const EMPTY_SHELF_COUNT = 6;
 
@@ -47,18 +50,8 @@ export class Shelf {
       className: 'ingredient__name',
       text: ingredient.name,
     });
-    const temperature = this.createIngredientLabel(
-      'temperature',
-      `T${formatNumber(ingredient.temperature)}`,
-    );
-    const density = this.createIngredientLabel('density', `D${formatNumber(ingredient.density)}`);
-    const magicPower = this.createIngredientLabel(
-      'magic',
-      `MP${formatNumber(ingredient.magicPower)}`,
-    );
     const ingredientLabels = createElement('span', {
       className: 'ingredient__labels',
-      children: [temperature, density, magicPower],
     });
     const info = createElement('span', {
       className: 'ingredient__info',
@@ -94,19 +87,43 @@ export class Shelf {
 
     const ingredientElement = this.createListItem();
 
-    ingredientElement.append(button);
+    const tooltip = createElement('span', {
+      className: 'tooltip',
+      attributes: {
+        role: 'tooltip',
+      },
+    });
+
+    for (const key of PARAMETER_KEYS) {
+      tooltip.append(this.createIngredientTooltip(key, PARAMETER_LABELS[key], ingredient[key]));
+      tooltip.setAttribute('id', `tooltip-${key}`);
+      button.setAttribute('aria-describedby', `tooltip-${key}`);
+    }
+
+    ingredientElement.append(button, tooltip);
 
     return ingredientElement;
   }
 
-  private createIngredientLabel(
-    type: 'temperature' | 'density' | 'magic',
+  private createIngredientTooltip(
+    type: keyof ICauldronValues,
     labelName: string,
+    value: number,
   ): HTMLSpanElement {
-    return createElement('span', {
-      className: `ingredient__label ingredient__label--${type}`,
+    const tooltipLabel = createElement('span', {
+      className: 'tooltip__label',
       text: labelName,
     });
+    const tooltipValue = createElement('span', {
+      className: 'tooltip__value',
+      text: formatSigned(value),
+    });
+    const tooltip = createElement('span', {
+      className: `tooltip__row tooltip__row--${type}`,
+      children: [tooltipLabel, tooltipValue],
+    });
+
+    return tooltip;
   }
 
   public renderIngredients(

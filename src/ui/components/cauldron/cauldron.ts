@@ -67,16 +67,27 @@ export class Cauldron {
     return cauldronSlot;
   }
 
+  private createFloatingIcon(ingredient: IIngredient, index: number): SVGSVGElement {
+    const icon = createSvgFromString(ingredient.icon, 'cauldron__float-icon');
+    icon.style.setProperty('--float-index', String(index));
+    icon.style.color = ingredient.color;
+    return icon;
+  }
+
   public setDropEnabled(isEnabled: boolean): void {
     this.isDropEnabled = isEnabled;
   }
 
-  public renderIngredients(ingredient: IIngredient[], max: number): void {
+  public renderIngredients(ingredients: IIngredient[], max: number): void {
     this.cauldron.classList.add('cauldron--active');
 
     const slots = Array.from({ length: max }, (_, index) => {
-      return this.createSlot(ingredient[index], index + 1);
+      return this.createSlot(ingredients[index], index + 1);
     });
+
+    const icons = ingredients.map((ingredient, index) =>
+      this.createFloatingIcon(ingredient, index),
+    );
 
     const ingredientsList = createElement('ol', {
       className: 'cauldron__list',
@@ -84,6 +95,7 @@ export class Cauldron {
     });
 
     this.content.replaceChildren(ingredientsList);
+    this.potFloating.replaceChildren(...icons);
   }
 
   public renderMain(): void {

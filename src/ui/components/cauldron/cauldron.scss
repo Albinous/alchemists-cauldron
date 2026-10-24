@@ -109,6 +109,25 @@ $idle-emblem: #3e5a33;
     width: 100%;
   }
 
+  &__floating {
+    position: absolute;
+    inset: 22% 20% auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $space-sm;
+    pointer-events: none;
+  }
+
+  &__float-icon {
+    width: $float-icon-size;
+    height: $float-icon-size;
+    filter: drop-shadow(0 0 6px rgba($color-accent, 0.6));
+    animation: ingredient-float $duration-float ease-in-out infinite;
+    // negative delay: each icon starts mid-cycle, so they move out of sync
+    animation-delay: calc(var(--float-index, 0) * -0.4s);
+  }
+
   // ---------- Ingredients list ----------
   &__list {
     display: flex;
@@ -257,5 +276,16 @@ $idle-emblem: #3e5a33;
   50% {
     transform: scale(1.06);
     filter: drop-shadow($glow-accent);
+  }
+}
+
+@keyframes ingredient-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(4deg);
   }
 }

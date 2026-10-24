@@ -101,7 +101,8 @@ export class App {
       if (canBrew(this.state)) {
         this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
 
-        applyBrew(this.state);
+        const result = applyBrew(this.state);
+        this.cauldron.playBrewResult(result);
         this.endTime = getEndTime(this.state.timeLeft, Date.now());
         saveGame(this.state);
 

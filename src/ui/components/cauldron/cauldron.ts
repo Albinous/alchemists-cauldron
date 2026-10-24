@@ -1,8 +1,8 @@
 import cauldronSvg from '@/assets/cauldron.svg?raw';
-import { createContainer, createElement, createSvgFromString } from '@/ui/dom';
+import { createContainer, createElement, createSvgFromString, playAnimation } from '@/ui/dom';
 
 import './cauldron.scss';
-import type { IIngredient } from '@/types';
+import type { BrewResult, IIngredient } from '@/types';
 
 const INTRO_TEXT =
   'Mix ingredients, match three target ranges and brew potions before time or lives run out.';
@@ -14,6 +14,7 @@ export class Cauldron {
     className: 'cauldron',
     attributes: { 'aria-label': 'Cauldron' },
   });
+  private readonly pot = createContainer('cauldron__pot');
   private readonly img = createSvgFromString(cauldronSvg, 'cauldron__image');
   private readonly potFloating = createContainer('cauldron__floating');
   private readonly content = createElement('div', { className: 'cauldron__content' });
@@ -25,8 +26,8 @@ export class Cauldron {
   }
 
   private buildStructure(onDropIngredient: (id: string) => void): void {
-    const pot = createContainer('cauldron__pot', [this.img, this.potFloating]);
-    this.cauldron.append(pot, this.content);
+    this.pot.append(this.img, this.potFloating);
+    this.cauldron.append(this.pot, this.content);
 
     this.cauldron.addEventListener('dragover', (event) => {
       if (!this.isDropEnabled) return;
@@ -48,7 +49,7 @@ export class Cauldron {
     });
   }
 
-  private createSlot(ingredient: IIngredient, position: number): HTMLElement {
+  private createSlot(ingredient: IIngredient | undefined, position: number): HTMLElement {
     const isEmpty = ingredient === undefined;
     const slotNumber = createElement('span', {
       className: 'cauldron__slot-number',
@@ -74,7 +75,7 @@ export class Cauldron {
     this.cauldron.classList.add('cauldron--active');
 
     const slots = Array.from({ length: max }, (_, index) => {
-      return this.createSlot(ingredient[index] ?? undefined, index + 1);
+      return this.createSlot(ingredient[index], index + 1);
     });
 
     const ingredientsList = createElement('ol', {
@@ -93,6 +94,10 @@ export class Cauldron {
 
     this.content.replaceChildren(textIntro);
     this.cauldron.classList.remove('cauldron--active');
+  }
+
+  public playBrewResult(brewResult: BrewResult): void {
+    playAnimation(this.pot, `cauldron--${brewResult}`);
   }
 
   public render(): HTMLElement {

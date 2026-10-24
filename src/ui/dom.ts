@@ -79,3 +79,8 @@ export const playAnimation = (element: HTMLElement, className: string): void => 
   element.classList.add(className);
   element.addEventListener('animationend', handleEnd);
 };
+
+export const isTypingTarget = (target: EventTarget | null): boolean =>
+  target instanceof HTMLInputElement ||
+  target instanceof HTMLTextAreaElement ||
+  (target instanceof HTMLElement && target.isContentEditable);

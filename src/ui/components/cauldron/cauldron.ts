@@ -97,7 +97,7 @@ export class Cauldron {
   }
 
   public playBrewResult(brewResult: BrewResult): void {
-    playAnimation(this.pot, `cauldron--${brewResult}`);
+    playAnimation(this.pot, `cauldron__pot--${brewResult}`);
   }
 
   public render(): HTMLElement {

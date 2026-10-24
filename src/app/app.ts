@@ -43,6 +43,8 @@ import {
   Confirm,
   Help,
   Settings,
+  playAnimation,
+  createContainer,
 } from '@/ui';
 import { formatTime } from '@/utils';
 
@@ -91,6 +93,18 @@ export class App {
     onLeaderboard: () => this.handleLeaderboard(),
     onClose: () => this.handleCloseSettings(),
   });
+
+  private readonly layout = createContainer('game', [
+    createLayout({
+      header: this.header.render(),
+      shelf: this.shelf.render(),
+      cauldron: this.cauldron.render(),
+      recipe: this.recipe.render(),
+      bars: this.bars.render(),
+      controls: this.controls.render(),
+      footer: createElement('footer'),
+    }),
+  ]);
   private endTime = 0;
   private timerId: ReturnType<typeof setInterval> | undefined = undefined;
 
@@ -103,6 +117,8 @@ export class App {
 
         const result = applyBrew(this.state);
         this.cauldron.playBrewResult(result);
+        if (result === 'fail') playAnimation(this.layout, 'layout--shake');
+
         this.endTime = getEndTime(this.state.timeLeft, Date.now());
         saveGame(this.state);
 
@@ -373,17 +389,7 @@ export class App {
   }
 
   public start(): void {
-    const layout = createLayout({
-      header: this.header.render(),
-      shelf: this.shelf.render(),
-      cauldron: this.cauldron.render(),
-      recipe: this.recipe.render(),
-      bars: this.bars.render(),
-      controls: this.controls.render(),
-      footer: createElement('footer'),
-    });
-
-    document.body.prepend(layout);
+    document.body.prepend(this.layout);
     document.body.append(
       this.gameOver.render(),
       this.pause.render(),

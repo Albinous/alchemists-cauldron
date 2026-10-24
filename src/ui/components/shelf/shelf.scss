@@ -50,7 +50,7 @@ $badge-size: 32px;
 
 .ingredient {
   display: grid;
-  grid-template-columns: 54px minmax(0, 1fr) 34px; // flask | text | badge
+  grid-template-columns: 54px minmax(0, 1fr);
   align-items: center;
   gap: 10px;
   width: 100%;
@@ -135,18 +135,6 @@ $badge-size: 32px;
       background: rgba(155, 89, 182, 0.15);
       border-color: #9b59b6;
     }
-  }
-
-  &__stock {
-    @include flex-center;
-    width: $badge-size;
-    height: $badge-size;
-    font-size: 14px;
-    font-weight: $fw-bold;
-    color: $color-text-light;
-    background: $color-stock-badge-bg;
-    border: 2px solid $color-stock-badge-border;
-    border-radius: $radius-round;
   }
 
   // ---------- Locked (cauldron is full) ----------

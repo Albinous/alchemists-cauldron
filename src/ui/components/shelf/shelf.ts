@@ -56,19 +56,14 @@ export class Shelf {
       children: [ingredientName],
     });
 
-    const ingredientStock = createElement('span', {
-      className: 'ingredient__stock',
-      text: String(stock),
-    });
-
     const button = createElement('button', {
       className: 'ingredient',
       attributes: {
         type: 'button',
         disabled: isLocked || stock === 0,
-        'aria-label': `${ingredient.name}, ${stock} left`,
+        'aria-label': `${ingredient.name}`,
       },
-      children: [icon, info, ingredientStock],
+      children: [icon, info],
     });
 
     button.classList.toggle('ingredient--empty', stock === 0);

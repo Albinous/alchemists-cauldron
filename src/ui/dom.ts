@@ -5,10 +5,10 @@ type ElementOptions = {
   children?: Node[];
 };
 
-export function createElement<K extends keyof HTMLElementTagNameMap>(
+export const createElement = <K extends keyof HTMLElementTagNameMap>(
   tagName: K,
   options: ElementOptions = {},
-): HTMLElementTagNameMap[K] {
+): HTMLElementTagNameMap[K] => {
   const element = document.createElement(tagName);
 
   if (options.className) {
@@ -34,14 +34,10 @@ export function createElement<K extends keyof HTMLElementTagNameMap>(
   }
 
   return element;
-}
+};
 
-export function createContainer(className: string, children?: Node[]): HTMLDivElement {
-  return createElement('div', {
-    className: className,
-    children: children,
-  });
-}
+export const createContainer = (className: string, children?: Node[]): HTMLDivElement =>
+  createElement('div', { className, children });
 
 export const createZone = <K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -55,9 +51,9 @@ export const createZone = <K extends keyof HTMLElementTagNameMap>(
     children: content ? [content] : [],
   });
 
-export function createSvgFromString(svg: string, className?: string): SVGSVGElement {
-  const document = new DOMParser().parseFromString(svg, 'image/svg+xml');
-  const element = document.documentElement;
+export const createSvgFromString = (svg: string, className?: string): SVGSVGElement => {
+  const parsedDocument = new DOMParser().parseFromString(svg, 'image/svg+xml');
+  const element = parsedDocument.documentElement;
 
   if (!(element instanceof SVGSVGElement)) {
     throw new TypeError('Invalid SVG markup');
@@ -69,4 +65,17 @@ export function createSvgFromString(svg: string, className?: string): SVGSVGElem
   element.setAttribute('aria-hidden', 'true');
 
   return element;
-}
+};
+
+export const playAnimation = (element: HTMLElement, className: string): void => {
+  const handleEnd = (event: AnimationEvent): void => {
+    if (event.target !== element) return;
+    element.classList.remove(className);
+    element.removeEventListener('animationend', handleEnd);
+  };
+
+  element.classList.remove(className);
+  void element.offsetWidth;
+  element.classList.add(className);
+  element.addEventListener('animationend', handleEnd);
+};

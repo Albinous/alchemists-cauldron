@@ -1,4 +1,10 @@
-import { difficultySettings, ingredients, POUR_OUT_PENALTY_SEC } from '@/data';
+import {
+  difficultySettings,
+  INGREDIENT_KEY_PATTERN,
+  ingredients,
+  POUR_OUT_PENALTY_SEC,
+  SHORTCUTS,
+} from '@/data';
 import {
   addIngredient,
   applyBrew,
@@ -27,7 +33,13 @@ import {
   saveGame,
   saveLeaderboard,
 } from '@/storage';
-import type { Difficulty, GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
+import type {
+  Difficulty,
+  GameOverReason,
+  IIngredient,
+  ILeaderboardEntry,
+  ShortcutAction,
+} from '@/types';
 import {
   Bars,
   createElement,
@@ -45,6 +57,7 @@ import {
   Settings,
   playAnimation,
   createContainer,
+  isTypingTarget,
 } from '@/ui';
 import { formatTime } from '@/utils';
 
@@ -302,6 +315,65 @@ export class App {
     this.leaderboard.show([]);
   }
 
+  private handleKeydown(event: KeyboardEvent): void {
+    if (
+      this.state.status !== 'playing' ||
+      isTypingTarget(event.target) ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.altKey ||
+      event.repeat
+    )
+      return;
+
+    if (this.handleIngredientKey(event.code)) {
+      event.preventDefault();
+      return;
+    }
+
+    const action = SHORTCUTS[event.code];
+    if (action === undefined) return;
+
+    event.preventDefault();
+    this.runShortcut(action);
+  }
+
+  private handleIngredientKey(code: string): boolean {
+    const match = INGREDIENT_KEY_PATTERN.exec(code);
+    if (match === null) return false;
+
+    const position = Number(match[1]);
+    const shelfIngredients = getShelfIngredients(
+      difficultySettings[this.state.difficulty].ingredientsOnShelf,
+    );
+    const ingredient = shelfIngredients.at(position - 1);
+    if (ingredient === undefined) return false;
+
+    this.handleSelect(ingredient);
+    return true;
+  }
+
+  private runShortcut(action: ShortcutAction): void {
+    switch (action) {
+      case 'brew': {
+        this.handleMain();
+        break;
+      }
+      case 'pour-out': {
+        this.handlePourOut();
+        break;
+      }
+      case 'pause': {
+        this.handlePause();
+        break;
+      }
+      case 'help': {
+        this.handleHelpOpen();
+        break;
+      }
+    }
+  }
+
   private startNewGame(): void {
     this.state = createNewGame(this.state.difficulty);
     this.startTimer();
@@ -404,5 +476,6 @@ export class App {
         this.handlePause();
       }
     });
+    document.addEventListener('keydown', (event) => this.handleKeydown(event));
   }
 }

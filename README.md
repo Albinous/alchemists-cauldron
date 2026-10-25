@@ -25,8 +25,8 @@ Built for the [RS School](https://github.com/rolling-scopes-school/qualifying-st
 ## Getting started
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/Albinous/alchemists-cauldron.git
+cd alchemists-cauldron
 npm install
 npm run dev
 ```

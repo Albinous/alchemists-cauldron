@@ -1,4 +1,5 @@
 @use '@/styles/tokens' as *;
+@use '@/styles/mixins' as *;
 
 // same colors as the bars
 $tooltip-temperature: #ff6b5b;
@@ -166,5 +167,42 @@ $tooltip-arrow: 10px;
 @media (prefers-reduced-motion: reduce) {
   .tooltip {
     transition: none;
+  }
+}
+
+@include tablet {
+  .tooltip,
+  .tooltip--left {
+    top: calc(100% + #{$tooltip-gap});
+    bottom: auto;
+    left: 0;
+    right: auto;
+    width: 100%;
+    min-width: 0;
+    transform: translateY(-6px);
+
+    &::before {
+      top: calc(#{$tooltip-arrow} / -2 - 1px);
+      bottom: auto;
+      left: 28px;
+      right: auto;
+      border: 0;
+      border-top: 2px solid $color-brass;
+      border-left: 2px solid $color-brass;
+    }
+  }
+
+  .tooltip--up {
+    top: auto;
+    bottom: calc(100% + #{$tooltip-gap});
+    transform: translateY(6px);
+
+    &::before {
+      top: auto;
+      bottom: calc(#{$tooltip-arrow} / -2 - 1px);
+      border: 0;
+      border-bottom: 2px solid $color-brass;
+      border-right: 2px solid $color-brass;
+    }
   }
 }

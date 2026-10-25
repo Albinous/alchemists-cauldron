@@ -9,6 +9,7 @@
 
     @include tablet {
       justify-content: center;
+      padding-bottom: 20px;
     }
   }
 
@@ -20,7 +21,7 @@
       $glow-text,
       0 3px 0 $color-title-shadow;
 
-    @include mobile {
+    @include tablet {
       text-align: center;
     }
   }

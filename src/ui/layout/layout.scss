@@ -11,6 +11,9 @@
     flex-wrap: wrap;
     gap: $space-xl;
     align-items: flex-start;
+    @include tablet {
+      justify-content: center;
+    }
     > .shelf {
       flex: 1 1 290px;
       min-width: 0;

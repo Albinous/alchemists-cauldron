@@ -4,7 +4,7 @@ A browser game about brewing potions. Pick ingredients from the shelf, drop them
 
 Built for the [RS School](https://github.com/rolling-scopes-school/qualifying-stage/tree/main/tasks/game-alchemists-cauldron) qualifying stage as a single-page application in plain TypeScript and SCSS, without frameworks or libraries.
 
-- **Deploy:** [DEPLOY LINK]
+- **Deploy:** https://alchemists-cauldron-albinous.netlify.app/
 - **Task:** [game-alchemists-cauldron](https://github.com/rolling-scopes-school/qualifying-stage/tree/main/tasks/game-alchemists-cauldron)
 
 ---

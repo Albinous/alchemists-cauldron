@@ -22,9 +22,9 @@ $danger-text: #ff9a8c;
 }
 
 .leaderboard {
-  .modal__panel {
-    width: min(720px, calc(100vw - 32px));
+  width: min(720px, calc(100vw - 32px));
 
+  .modal__panel {
     @include mobile {
       padding-inline: 16px;
     }
@@ -186,6 +186,12 @@ $danger-text: #ff9a8c;
       padding-inline: 6px;
     }
 
+    // medal is 31px, 64px is too wide for a phone
+    &__table-title--rank,
+    &__table-data--rank {
+      width: 40px;
+    }
+
     &__table-title--score,
     &__table-data--score {
       width: auto;
@@ -194,6 +200,12 @@ $danger-text: #ff9a8c;
     &__table-title--date,
     &__table-data--date {
       width: 90px;
+    }
+
+    // each difficulty has its own table, the column is redundant on a phone
+    &__table-title--difficulty,
+    &__table-data--difficulty {
+      display: none;
     }
   }
 }

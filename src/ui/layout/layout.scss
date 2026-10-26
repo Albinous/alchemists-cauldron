@@ -1,12 +1,19 @@
 @use '../../styles/tokens' as *;
 @use '../../styles/mixins' as *;
 
+.layout--shake {
+  animation: screen-shake $duration-base linear;
+}
+
 .main {
   &__board {
     @include flex-between;
     flex-wrap: wrap;
     gap: $space-xl;
     align-items: flex-start;
+    @include tablet {
+      justify-content: center;
+    }
     > .shelf {
       flex: 1 1 290px;
       min-width: 0;
@@ -26,8 +33,4 @@
 .bars {
   flex-wrap: wrap;
   gap: $space-xl;
-}
-
-.controls {
-  @include flex-between;
 }

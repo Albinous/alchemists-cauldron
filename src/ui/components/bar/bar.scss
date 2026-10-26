@@ -96,6 +96,13 @@ $track-radius: 7px;
     transition: left $duration-base $easing;
   }
 
+  &__target,
+  &__tolerance {
+    transition:
+      left $duration-base $easing,
+      width $duration-base $easing;
+  }
+
   &__range {
     display: flex;
     flex-direction: column;

@@ -6,6 +6,11 @@
     @include flex-between;
     flex-wrap: wrap;
     gap: $space-lg;
+
+    @include tablet {
+      justify-content: center;
+      padding-bottom: 20px;
+    }
   }
 
   &__title {
@@ -15,6 +20,10 @@
     text-shadow:
       $glow-text,
       0 3px 0 $color-title-shadow;
+
+    @include tablet {
+      text-align: center;
+    }
   }
 }
 

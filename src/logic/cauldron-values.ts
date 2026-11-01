@@ -1,4 +1,6 @@
-import type { ICauldronValues, IIngredient } from '@/types';
+import type { Difficulty, ICauldronValues, IIngredient } from '@/types';
+import { getReactions } from './reactions';
+import { PARAMETER_KEYS } from '@/data';
 
 export const calculateCauldron = (ingredients: readonly IIngredient[]): ICauldronValues => {
   const values: ICauldronValues = {
@@ -11,6 +13,28 @@ export const calculateCauldron = (ingredients: readonly IIngredient[]): ICauldro
     values.temperature += ingredient.temperature;
     values.density += ingredient.density;
     values.magicPower += ingredient.magicPower;
+  }
+
+  return values;
+};
+
+export const calculateCauldronWithReactions = (
+  ingredients: IIngredient[],
+  difficulty: Difficulty,
+): ICauldronValues => {
+  const baseValues = calculateCauldron(ingredients);
+  const activeReactions = getReactions(difficulty).filter((reaction) =>
+    reaction.isActive(ingredients),
+  );
+
+  let values = baseValues;
+
+  for (const activeReaction of activeReactions) {
+    values = activeReaction.apply(values);
+  }
+
+  for (const key of PARAMETER_KEYS) {
+    values[key] = Math.round(values[key]);
   }
 
   return values;

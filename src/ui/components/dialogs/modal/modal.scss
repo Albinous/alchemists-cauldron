@@ -7,6 +7,8 @@
   background: transparent;
   color: $color-text-light;
   overflow: visible;
+  width: min(520px, calc(100vw - 32px));
+  max-width: none;
 
   &::backdrop {
     background: rgba(4, 6, 9, 0.72);
@@ -22,7 +24,7 @@
 
     position: relative;
     gap: $space-md;
-    width: min(520px, calc(100vw - 32px));
+    width: 100%;
     box-sizing: border-box;
     margin-top: 38px;
     padding: 64px 48px 44px;

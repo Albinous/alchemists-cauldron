@@ -70,6 +70,21 @@ $badge-size: 32px;
     outline-offset: -3px; // keep focus ring inside the plank
   }
 
+  &[draggable='true'] {
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  &--dragging {
+    opacity: 0.45;
+    transform: scale(0.97);
+    outline: 2px dashed $color-accent-bright;
+    outline-offset: -4px;
+  }
+
   &__icon {
     width: $flask-width;
     height: auto;

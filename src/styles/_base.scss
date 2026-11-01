@@ -117,3 +117,10 @@ section {
     animation-iteration-count: 1 !important;
   }
 }
+@media (prefers-reduced-motion: reduce) {
+  .layout--shake,
+  .cauldron__float-icon,
+  .cauldron__pot--success svg {
+    animation: none;
+  }
+}

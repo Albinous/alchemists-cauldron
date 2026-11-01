@@ -1,3 +1,4 @@
+import type { ICauldronValues } from './cauldron-values';
 import type { Difficulty } from './difficulty';
 import type { IIngredient } from './ingredient';
 
@@ -6,9 +7,8 @@ export interface IReaction {
   name: string;
   difficulty: Exclude<Difficulty, 'easy'>;
   isActive: (ingredients: IIngredient[]) => boolean;
-  apply: (values: { temperature: number; density: number; magicPower: number }) => {
-    temperature: number;
-    density: number;
-    magicPower: number;
-  };
+  apply: (values: ICauldronValues) => ICauldronValues;
+  timePenalty?: number;
+  lifePenalty?: number;
+  clearsCauldron?: boolean;
 }

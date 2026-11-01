@@ -1,10 +1,14 @@
-import { difficultySettings } from '@/data';
+import {
+  difficultySettings,
+  INGREDIENT_KEY_PATTERN,
+  ingredients,
+  POUR_OUT_PENALTY_SEC,
+  SHORTCUTS,
+} from '@/data';
 import {
   addIngredient,
   applyBrew,
-  calculateCauldron,
   canAddIngredient,
-  canBrew,
   getEndTime,
   getGameOverReason,
   getTimeLeft,
@@ -12,6 +16,13 @@ import {
   isValidName,
   addEntry,
   isTopScore,
+  calculateCauldronWithReactions,
+  getFiredReactions,
+  applyReactionEffects,
+  canBrew,
+  canPourOut,
+  clearCauldron,
+  applyTimePenalty,
 } from '@/logic';
 import { createInitialState, createNewGame, getShelfIngredients } from '@/state';
 import {
@@ -22,7 +33,13 @@ import {
   saveGame,
   saveLeaderboard,
 } from '@/storage';
-import type { Difficulty, GameOverReason, IIngredient, ILeaderboardEntry } from '@/types';
+import type {
+  Difficulty,
+  GameOverReason,
+  IIngredient,
+  ILeaderboardEntry,
+  ShortcutAction,
+} from '@/types';
 import {
   Bars,
   createElement,
@@ -38,6 +55,9 @@ import {
   Confirm,
   Help,
   Settings,
+  playAnimation,
+  createContainer,
+  isTypingTarget,
 } from '@/ui';
 import { formatTime } from '@/utils';
 
@@ -48,11 +68,12 @@ export class App {
   private readonly shelf = new Shelf((ingredient) => {
     this.handleSelect(ingredient);
   });
-  private readonly cauldron = new Cauldron();
+  private readonly cauldron = new Cauldron((id) => this.handleDrop(id));
   private readonly recipe = new Recipe();
   private readonly bars = new Bars();
   private readonly controls = new Controls({
     onHelp: () => this.handleHelpOpen(),
+    onPourOut: () => this.handlePourOut(),
     onMain: () => this.handleMain(),
     onSecondary: () => this.handleSecondary(),
   });
@@ -85,6 +106,18 @@ export class App {
     onLeaderboard: () => this.handleLeaderboard(),
     onClose: () => this.handleCloseSettings(),
   });
+
+  private readonly layout = createContainer('game', [
+    createLayout({
+      header: this.header.render(),
+      shelf: this.shelf.render(),
+      cauldron: this.cauldron.render(),
+      recipe: this.recipe.render(),
+      bars: this.bars.render(),
+      controls: this.controls.render(),
+      footer: createElement('footer'),
+    }),
+  ]);
   private endTime = 0;
   private timerId: ReturnType<typeof setInterval> | undefined = undefined;
 
@@ -95,7 +128,10 @@ export class App {
       if (canBrew(this.state)) {
         this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
 
-        applyBrew(this.state);
+        const result = applyBrew(this.state);
+        this.cauldron.playBrewResult(result);
+        if (result === 'fail') playAnimation(this.layout, 'layout--shake');
+
         this.endTime = getEndTime(this.state.timeLeft, Date.now());
         saveGame(this.state);
 
@@ -129,9 +165,31 @@ export class App {
 
   private handleSelect(ingredient: IIngredient): void {
     if (!canAddIngredient(this.state, ingredient)) return;
+    const previousCauldronIngredients = [...this.state.cauldronIngredients];
     addIngredient(this.state, ingredient);
-    this.renderGame();
+    const firedReactions = getFiredReactions(
+      previousCauldronIngredients,
+      this.state.cauldronIngredients,
+      this.state.difficulty,
+    );
+
+    if (firedReactions.length > 0) {
+      this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
+      for (const reaction of firedReactions) {
+        applyReactionEffects(this.state, reaction);
+      }
+      this.endTime = getEndTime(this.state.timeLeft, Date.now());
+    }
+
     saveGame(this.state);
+    this.checkGameOver();
+    this.renderGame();
+  }
+
+  private handleDrop(id: string): void {
+    const ingredient = ingredients.find((item) => item.id === id);
+    if (!ingredient) return;
+    this.handleSelect(ingredient);
   }
 
   private handleTick(): void {
@@ -143,6 +201,17 @@ export class App {
     );
 
     this.checkGameOver();
+  }
+
+  private handlePourOut(): void {
+    if (!canPourOut(this.state)) return;
+    this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
+    clearCauldron(this.state);
+    applyTimePenalty(this.state, POUR_OUT_PENALTY_SEC);
+    this.endTime = getEndTime(this.state.timeLeft, Date.now());
+    saveGame(this.state);
+    this.checkGameOver();
+    this.renderGame();
   }
 
   private handleHelpClose(): void {
@@ -246,6 +315,65 @@ export class App {
     this.leaderboard.show([]);
   }
 
+  private handleKeydown(event: KeyboardEvent): void {
+    if (
+      this.state.status !== 'playing' ||
+      isTypingTarget(event.target) ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.altKey ||
+      event.repeat
+    )
+      return;
+
+    if (this.handleIngredientKey(event.code)) {
+      event.preventDefault();
+      return;
+    }
+
+    const action = SHORTCUTS[event.code];
+    if (action === undefined) return;
+
+    event.preventDefault();
+    this.runShortcut(action);
+  }
+
+  private handleIngredientKey(code: string): boolean {
+    const match = INGREDIENT_KEY_PATTERN.exec(code);
+    if (match === null) return false;
+
+    const position = Number(match[1]);
+    const shelfIngredients = getShelfIngredients(
+      difficultySettings[this.state.difficulty].ingredientsOnShelf,
+    );
+    const ingredient = shelfIngredients.at(position - 1);
+    if (ingredient === undefined) return false;
+
+    this.handleSelect(ingredient);
+    return true;
+  }
+
+  private runShortcut(action: ShortcutAction): void {
+    switch (action) {
+      case 'brew': {
+        this.handleMain();
+        break;
+      }
+      case 'pour-out': {
+        this.handlePourOut();
+        break;
+      }
+      case 'pause': {
+        this.handlePause();
+        break;
+      }
+      case 'help': {
+        this.handleHelpOpen();
+        break;
+      }
+    }
+  }
+
   private startNewGame(): void {
     this.state = createNewGame(this.state.difficulty);
     this.startTimer();
@@ -288,6 +416,7 @@ export class App {
     const { shelfStock, status } = this.state;
     const isPlaying = status === 'playing';
     const isInGame = status !== 'menu';
+    const isFull = isCauldronFull(this.state, settings.maxIngredients);
     this.header.setActive(isInGame);
 
     this.controls.setPlaying(isInGame);
@@ -295,11 +424,16 @@ export class App {
     const isMainEnabled = status === 'menu' || canBrew(this.state);
     this.controls.setMainEnabled(isMainEnabled);
 
+    this.controls.setPourOutEnabled(canPourOut(this.state));
+
     const isSecondaryEnabled = status === 'menu' || status === 'playing';
     this.controls.setSecondaryEnabled(isSecondaryEnabled);
 
     const ingredients = getShelfIngredients(settings.ingredientsOnShelf);
     const cauldronIngredients = this.state.cauldronIngredients;
+
+    this.shelf.setPaused(status === 'paused');
+    this.cauldron.setDropEnabled(isPlaying && !isFull);
 
     this.cauldron.renderIngredients(cauldronIngredients, settings.maxIngredients);
 
@@ -313,32 +447,21 @@ export class App {
       this.header.setScore(this.state.score);
       this.header.setTimer(this.state.timeLeft, settings.startTimeSec);
       this.header.setLives(this.state.lives, settings.lives);
-      this.shelf.renderIngredients(
-        ingredients,
-        shelfStock,
-        isCauldronFull(this.state, settings.maxIngredients) || !isPlaying,
-      );
+      this.shelf.renderIngredients(ingredients, shelfStock, isFull || !isPlaying);
       this.recipe.showRecipe(this.state.activeRecipe);
       this.recipe.setIngredientCount(cauldronIngredients.length, settings.maxIngredients);
 
-      const cauldronValues = calculateCauldron(this.state.cauldronIngredients);
+      const cauldronValues = calculateCauldronWithReactions(
+        this.state.cauldronIngredients,
+        this.state.difficulty,
+      );
 
       this.bars.update(cauldronValues, this.state.activeRecipe);
     }
   }
 
   public start(): void {
-    const layout = createLayout({
-      header: this.header.render(),
-      shelf: this.shelf.render(),
-      cauldron: this.cauldron.render(),
-      recipe: this.recipe.render(),
-      bars: this.bars.render(),
-      controls: this.controls.render(),
-      footer: createElement('footer'),
-    });
-
-    document.body.prepend(layout);
+    document.body.prepend(this.layout);
     document.body.append(
       this.gameOver.render(),
       this.pause.render(),
@@ -353,5 +476,6 @@ export class App {
         this.handlePause();
       }
     });
+    document.addEventListener('keydown', (event) => this.handleKeydown(event));
   }
 }

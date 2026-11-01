@@ -6,13 +6,38 @@ $main-min-height: 82px;
 $main-cut: 30px;
 $main-font-size: 32px;
 
+$main-height-mobile: 56px;
+$main-cut-mobile: 20px;
+$round-size-mobile: 48px;
+$round-icon-size-mobile: 24px;
+
 .controls {
   @include flex-between;
 
   flex-wrap: wrap;
   gap: $space-lg;
 
-  // Help / Settings / Pause
+  // one row: round buttons on the sides, the hex button takes the rest
+  @include tablet {
+    flex-wrap: nowrap;
+    gap: $space-sm;
+  }
+
+  // Pour Out + Brew
+  &__actions {
+    @include flex-center;
+    flex-wrap: wrap;
+    gap: $space-xl;
+
+    @include tablet {
+      flex: 1 1 auto;
+      min-width: 0;
+      flex-wrap: nowrap;
+      gap: $space-sm;
+    }
+  }
+
+  // Help / Settings / Pause / Pour Out
   &__round {
     @include flex-direction-horizontal;
 
@@ -41,20 +66,46 @@ $main-font-size: 32px;
       opacity: 0.45;
       filter: grayscale(0.8);
     }
-  }
 
-  &__round-icon {
-    @include flex-center;
+    // the class sets display, so [hidden] needs an explicit rule
+    &[hidden] {
+      display: none;
+    }
 
-    width: $round-button-size;
-    height: $round-button-size;
-    background: radial-gradient(circle at 50% 35%, #2a2f38, $color-panel-bottom);
-    border: 3px solid $color-brass-light;
-    border-radius: $radius-round;
-    box-shadow: 0 0 0 2px #2a2318;
-    transition:
-      border-color $duration-fast $easing,
-      transform $duration-fast $easing;
+    &-icon {
+      @include flex-center;
+
+      width: $round-button-size;
+      height: $round-button-size;
+      background: radial-gradient(circle at 50% 35%, #2a2f38, $color-panel-bottom);
+      border: 3px solid $color-brass-light;
+      border-radius: $radius-round;
+      box-shadow: 0 0 0 2px #2a2318;
+      transition:
+        border-color $duration-fast $easing,
+        transform $duration-fast $easing;
+
+      @include tablet {
+        width: $round-size-mobile;
+        height: $round-size-mobile;
+
+        svg {
+          width: $round-icon-size-mobile;
+          height: $round-icon-size-mobile;
+        }
+      }
+    }
+
+    &-text {
+      font-size: $fs-xs;
+      font-weight: $fw-bold;
+      letter-spacing: 0.06em;
+      color: $color-danger;
+    }
+
+    &:disabled .controls__round-text {
+      color: inherit;
+    }
   }
 
   // hover / press only for an enabled button
@@ -68,6 +119,12 @@ $main-font-size: 32px;
 
   &__main-glow {
     @include hex-glow;
+
+    // takes all free space between the round buttons
+    @include tablet {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
   }
 
   &__main {
@@ -76,14 +133,20 @@ $main-font-size: 32px;
     min-width: $main-min-width;
     min-height: $main-min-height;
     font-size: $main-font-size;
-  }
-}
 
-@include tablet {
-  .controls__main-glow {
-    order: -1;
-    flex-basis: 100%;
-    display: flex;
-    justify-content: center;
+    @include tablet {
+      @include hex-button($main-cut-mobile);
+
+      width: 100%;
+      min-width: 0;
+      min-height: $main-height-mobile;
+    }
+
+    &-label {
+      @include tablet {
+        font-size: $fs-xl;
+        white-space: nowrap;
+      }
+    }
   }
 }

@@ -6,7 +6,7 @@
   .modal__panel {
     width: min(460px, calc(100vw - 32px));
     padding: 54px 40px 34px;
-    background: linear-gradient(180deg, #1b1714, $color-danger-panel-bottom);
+    background: linear-gradient(180deg, $color-danger-panel-top, $color-danger-panel-bottom);
     border-color: $color-danger-edge;
     box-shadow:
       inset 0 0 0 6px $color-danger-panel-bottom,

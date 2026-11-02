@@ -58,7 +58,7 @@ $round-icon-size-mobile: 24px;
     &:focus-visible {
       outline: 2px solid $color-accent-bright;
       outline-offset: 4px;
-      border-radius: 8px;
+      border-radius: $radius-sm;
     }
 
     &:disabled {

@@ -55,7 +55,7 @@
     z-index: -1;
     background: linear-gradient(180deg, $color-accent-dark, $color-accent-darker);
     clip-path: hexagon(calc(#{$cut} - #{$edge}));
-    transition: background 0.2s ease;
+    transition: background 0.2s $easing;
   }
 
   &:not(:disabled):hover::before,

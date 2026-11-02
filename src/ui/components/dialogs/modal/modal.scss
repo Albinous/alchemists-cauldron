@@ -1,5 +1,6 @@
 @use '@/styles/tokens' as *;
 @use '@/styles/mixins' as *;
+@use '@/styles/functions' as *;
 
 .modal {
   padding: 0;
@@ -11,7 +12,7 @@
   max-width: none;
 
   &::backdrop {
-    background: rgba(4, 6, 9, 0.72);
+    background: with-alpha($color-bg, 0.72);
     backdrop-filter: blur(4px);
   }
 
@@ -36,7 +37,7 @@
       inset 0 0 0 6px $color-panel-bottom,
       inset 0 0 0 7px $color-brass-dark,
       0 24px 60px rgba(0, 0, 0, 0.7),
-      0 0 80px rgba(124, 255, 79, 0.08);
+      0 0 80px with-alpha($color-accent, 0.08);
 
     @include mobile {
       padding: 56px 24px 32px;
@@ -54,11 +55,11 @@
     height: 76px;
     box-sizing: border-box;
     border-radius: 50%;
-    background: radial-gradient(circle at 50% 35%, #2a2f38, $color-panel-bottom);
+    background: radial-gradient(circle at 50% 35%, $color-round-top, $color-panel-bottom);
     border: 3px solid $color-brass;
     box-shadow:
-      0 0 0 3px #2a2318,
-      0 0 22px rgba(124, 255, 79, 0.25);
+      0 0 0 3px $color-brass-deep,
+      0 0 22px with-alpha($color-accent, 0.25);
     color: $color-accent-bright;
 
     svg {
@@ -75,8 +76,8 @@
     letter-spacing: 0.02em;
     color: $color-title-glow;
     text-shadow:
-      0 0 18px rgba(124, 255, 79, 0.55),
-      0 3px 0 #1f3a12;
+      0 0 18px with-alpha($color-accent, 0.55),
+      0 3px 0 $color-title-shadow;
 
     @include mobile {
       font-size: $fs-title;
@@ -107,7 +108,7 @@
     transform: rotate(45deg);
     background: $color-panel-bottom;
     border: 2px solid $color-brass;
-    box-shadow: 0 0 8px rgba(124, 255, 79, 0.35);
+    box-shadow: 0 0 8px with-alpha($color-accent, 0.35);
   }
 
   // whatever each dialog puts between the divider and the buttons

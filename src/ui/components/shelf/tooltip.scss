@@ -1,11 +1,6 @@
 @use '@/styles/tokens' as *;
 @use '@/styles/mixins' as *;
 
-// same colors as the bars
-$tooltip-temperature: #ff6b5b;
-$tooltip-density: #6fa8ff;
-$tooltip-magic: #c99bff;
-
 $tooltip-gap: 12px; // distance between the card and the tooltip
 $tooltip-arrow: 10px;
 
@@ -132,15 +127,15 @@ $tooltip-arrow: 10px;
     gap: $space-md;
 
     &--temperature {
-      --tooltip-color: #{$tooltip-temperature};
+      --tooltip-color: #{$color-temperature};
     }
 
     &--density {
-      --tooltip-color: #{$tooltip-density};
+      --tooltip-color: #{$color-density};
     }
 
     &--magicPower {
-      --tooltip-color: #{$tooltip-magic};
+      --tooltip-color: #{$color-magic};
     }
   }
 

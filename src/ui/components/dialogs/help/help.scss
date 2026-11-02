@@ -1,11 +1,6 @@
 @use '@/styles/tokens' as *;
 @use '@/styles/mixins' as *;
 
-// same colors as the bars
-$tag-temperature: #ff6b5b;
-$tag-density: #6fa8ff;
-$tag-magic: #c99bff;
-
 .help {
   .modal__panel {
     width: min(660px, calc(100vw - 32px));
@@ -53,11 +48,11 @@ $tag-magic: #c99bff;
     height: 34px;
     box-sizing: border-box;
     border-radius: 50%;
-    background: #1a2a12;
+    background: $color-accent-dark;
     border: 2px solid $color-accent-bright;
     font-size: $fs-md;
     font-weight: 800;
-    color: #9bff5c;
+    color: $color-accent-bright;
   }
 
   &__step-body {
@@ -80,7 +75,7 @@ $tag-magic: #c99bff;
     font-size: $fs-lg;
     font-weight: 600;
     line-height: 1.35;
-    color: #cdbf9e;
+    color: $color-text-soft;
   }
 
   &__tags {
@@ -101,15 +96,15 @@ $tag-magic: #c99bff;
     color: var(--tag-color);
 
     &--temperature {
-      --tag-color: #{$tag-temperature};
+      --tag-color: #{$color-temperature};
     }
 
     &--density {
-      --tag-color: #{$tag-density};
+      --tag-color: #{$color-density};
     }
 
     &--magicPower {
-      --tag-color: #{$tag-magic};
+      --tag-color: #{$color-magic};
     }
   }
 
@@ -118,7 +113,7 @@ $tag-magic: #c99bff;
     box-sizing: border-box;
     margin: 0;
     padding: 12px 16px;
-    border: 1px dashed #6b5a3a;
+    border: 1px dashed $color-brass;
     border-radius: 8px;
     font-family: $font-accent;
     font-style: italic;
@@ -126,7 +121,7 @@ $tag-magic: #c99bff;
     font-weight: 600;
     line-height: 1.35;
     text-align: center;
-    color: #cdbf9e;
+    color: $color-text-soft;
   }
 
   &__close {

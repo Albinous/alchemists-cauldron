@@ -1,4 +1,5 @@
 @use '../../../styles/tokens' as *;
+@use '../../../styles/functions' as *;
 
 $bar-min-width: 300px;
 $track-radius: 7px;
@@ -10,7 +11,7 @@ $track-radius: 7px;
   gap: $space-lg;
   min-width: 0;
   padding: $space-md $space-lg;
-  background: linear-gradient(180deg, #141821, #0c0f14);
+  background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
   border: 2px solid $color-brass-dim;
   border-radius: $radius-md;
   transition:
@@ -70,7 +71,7 @@ $track-radius: 7px;
       font-weight: $fw-bold;
       letter-spacing: 0.08em;
       color: $color-accent-bright;
-      text-shadow: 0 0 8px rgba(124, 255, 79, 0.7);
+      text-shadow: 0 0 8px with-alpha($color-accent, 0.7);
     }
   }
 
@@ -145,7 +146,7 @@ $track-radius: 7px;
   // ---------- Value inside the target zone ----------
   &--in-range {
     border-color: $color-in-range;
-    box-shadow: 0 0 18px rgba(124, 255, 79, 0.25);
+    box-shadow: 0 0 18px with-alpha($color-accent, 0.25);
 
     .bar__status-label {
       display: inline;

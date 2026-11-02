@@ -9,6 +9,14 @@
   --color-text-disabled: #8c826e;
   --color-text-inactive: #6e7a62;
   --color-danger: #ff5a4f;
+  --color-danger-edge: #b5402f;
+  --color-danger-text: #ff9a8c;
+  --color-danger-top: #2e1512;
+  --color-danger-bottom: #160a08;
+  --color-danger-hover-top: #44201a;
+  --color-danger-hover-bottom: #20100c;
+  --color-danger-panel-top: #1b1714;
+  --color-danger-panel-bottom: #0f0c0a;
 
   // ---------- Brass frames (header plaque, panels, round buttons) ----------
   --color-panel-top: #171b23;
@@ -17,17 +25,24 @@
   --color-brass-light: #8c7448;
   --color-brass-dark: #3b3222;
   --color-brass-dim: #4a3e28;
+  --color-brass-deep: #2a2318;
+  --color-brass-deeper: #14100a;
+  --color-brass-deep-hover: #3a3020;
+  --color-brass-deeper-hover: #1c160d;
   --color-gold: #c9a45a;
 
   // ---------- Magic green (accent) ----------
   --color-accent: #7cff4f;
   --color-accent-bright: #9bff5c;
   --color-accent-soft: #8be84a;
+  --color-accent-muted: #3e5a33;
   --color-title: #a8f06a;
   --color-title-shadow: #1f3a12;
   --color-title-glow: #a8f06a;
   --color-accent-dark: #1a2a12;
+  --color-accent-dark-hover: #24391a;
   --color-accent-darker: #0b1208;
+  --color-accent-darker-hover: #0f180b;
   --color-in-range: #5fa83a;
 
   // ---------- Wooden cabinet (ingredient shelf) ----------
@@ -48,6 +63,9 @@
   --color-ink-faded: #7a6a52;
   --color-seal: #2e7a3e;
   --color-seal-dark: #174a24;
+
+  --color-round-top: #2a2f38;
+  --color-input-bg: #0b0d11;
 
   --bar-track: #1b1f27;
   --bar-marker: #f2ead3;

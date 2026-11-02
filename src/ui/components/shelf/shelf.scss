@@ -1,5 +1,6 @@
 @use '../../../styles/tokens' as *;
 @use '../../../styles/mixins' as *;
+@use '../../../styles/functions' as *;
 
 $title-offset: 18px;
 $slot-min-height: 80px;
@@ -57,13 +58,13 @@ $badge-size: 32px;
   min-height: $card-min-height;
   padding: 10px $space-md;
   text-align: left;
-  color: #ede3cc;
+  color: $color-text-light;
   background: transparent; // background and plank come from li.shelf__item
   border: 0;
   transition: background $duration-fast $easing;
 
   &:not(:disabled):hover {
-    background: rgba(124, 255, 79, 0.06);
+    background: with-alpha($color-accent, 0.06);
   }
 
   &:focus-visible {
@@ -113,30 +114,6 @@ $badge-size: 32px;
     font-variant-numeric: tabular-nums;
   }
 
-  &__label {
-    padding: 1px 5px;
-    border: 1px solid;
-    border-radius: 3px;
-
-    &--temperature {
-      color: #ff7a6b;
-      background: rgba(192, 57, 43, 0.15);
-      border-color: #c0392b;
-    }
-
-    &--density {
-      color: #8dbbff;
-      background: rgba(58, 123, 213, 0.15);
-      border-color: #3a7bd5;
-    }
-
-    &--magic {
-      color: #d3a8ff;
-      background: rgba(155, 89, 182, 0.15);
-      border-color: #9b59b6;
-    }
-  }
-
   &__stock {
     @include flex-center;
     width: $badge-size;
@@ -168,7 +145,7 @@ $badge-size: 32px;
 
     .ingredient__stock {
       color: $color-text-disabled;
-      border-color: #4a4535;
+      border-color: $color-brass-dim;
     }
   }
 }

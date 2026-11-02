@@ -36,12 +36,24 @@ $color-text-muted: var(--color-text-muted);
 $color-text-disabled: var(--color-text-disabled);
 $color-text-inactive: var(--color-text-inactive);
 $color-danger: var(--color-danger);
+$color-danger-edge: var(--color-danger-edge);
+$color-danger-text: var(--color-danger-text);
+$color-danger-top: var(--color-danger-top);
+$color-danger-bottom: var(--color-danger-bottom);
+$color-danger-hover-top: var(--color-danger-hover-top);
+$color-danger-hover-bottom: var(--color-danger-hover-bottom);
+$color-danger-panel-top: var(--color-danger-panel-top);
+$color-danger-panel-bottom: var(--color-danger-panel-bottom);
 $color-danger-glow: with-alpha($color-danger, 0.55);
 
 // ---------- Brass frames (theme) ----------
 $color-panel-top: var(--color-panel-top);
 $color-panel-bottom: var(--color-panel-bottom);
 $color-brass: var(--color-brass);
+$color-brass-deep: var(--color-brass-deep);
+$color-brass-deeper: var(--color-brass-deeper);
+$color-brass-deep-hover: var(--color-brass-deep-hover);
+$color-brass-deeper-hover: var(--color-brass-deeper-hover);
 $color-brass-light: var(--color-brass-light);
 $color-brass-dark: var(--color-brass-dark);
 $color-brass-dim: var(--color-brass-dim);
@@ -51,11 +63,14 @@ $color-gold: var(--color-gold);
 $color-accent: var(--color-accent);
 $color-accent-bright: var(--color-accent-bright);
 $color-accent-soft: var(--color-accent-soft);
+$color-accent-muted: var(--color-accent-muted);
 $color-title: var(--color-title);
 $color-title-shadow: var(--color-title-shadow);
 $color-title-glow: var(--color-title-glow);
 $color-accent-dark: var(--color-accent-dark);
+$color-accent-dark-hover: var(--color-accent-dark-hover);
 $color-accent-darker: var(--color-accent-darker);
+$color-accent-darker-hover: var(--color-accent-darker-hover);
 $color-in-range: var(--color-in-range);
 
 // ---------- Wooden cabinet (theme) ----------
@@ -87,6 +102,9 @@ $color-magic: #c99bff;
 $color-temperature-ink: #a8281e;
 $color-density-ink: #23508f;
 $color-magic-ink: #5b2e8c;
+
+$color-round-top: var(--color-round-top);
+$color-input-bg: var(--color-input-bg);
 
 // ---------- Animations (fixed) ----------
 $color-explosion: #ffb347;

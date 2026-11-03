@@ -6,3 +6,4 @@ export * from './parameters';
 export * from './game-over';
 export * from './game-config';
 export * from './shortcuts';
+export * from './themes';

@@ -6,8 +6,8 @@
 // =============================================
 
 // ---------- Fonts ----------
-$font-display: 'Cinzel', Georgia, serif;
-$font-accent: 'Cormorant Garamond', Georgia, serif;
+$font-display: var(--font-display);
+$font-accent: var(--font-accent);
 
 $fw-semibold: 600;
 $fw-bold: 700;
@@ -144,10 +144,10 @@ $space-xl: 24px;
 $space-2xl: 32px;
 
 // ---------- Radius ----------
-$radius-xs: 2px;
-$radius-sm: 6px;
-$radius-md: 10px;
-$radius-lg: 12px;
+$radius-xs: var(--radius-xs);
+$radius-sm: var(--radius-sm);
+$radius-md: var(--radius-md);
+$radius-lg: var(--radius-lg);
 $radius-round: 50%;
 $radius-pill: 999px;
 
@@ -166,6 +166,6 @@ $bp-desktop: 1024px;
 $duration-fast: 0.15s;
 $duration-base: 0.3s;
 $duration-slow: 0.6s;
-$easing: ease-out;
+$easing: var(--easing);
 
 $time-min-width: 150px;

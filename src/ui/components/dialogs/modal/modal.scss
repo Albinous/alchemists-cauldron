@@ -17,7 +17,7 @@
   }
 
   &[open] {
-    animation: modal-appear 0.35s ease-out;
+    animation: modal-appear 0.35s $easing;
   }
 
   &__panel {
@@ -32,7 +32,7 @@
     text-align: center;
     background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
     border: 2px solid $color-brass;
-    border-radius: 12px;
+    border-radius: $radius-lg;
     box-shadow:
       inset 0 0 0 6px $color-panel-bottom,
       inset 0 0 0 7px $color-brass-dark,

@@ -39,7 +39,11 @@ $plank-width: 6px;
 
   &__item {
     min-height: $slot-min-height;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.3));
+    background: linear-gradient(
+      90deg,
+      with-alpha($color-panel-bottom, 0.55),
+      with-alpha($color-panel-bottom, 0.3)
+    );
     border-bottom: $plank-width solid $color-wood-top;
   }
 }
@@ -135,7 +139,7 @@ $badge-size: 32px;
   // ---------- Empty slot (stock is 0) ----------
   &--empty {
     color: $color-text-disabled;
-    background: rgba(0, 0, 0, 0.45);
+    background: with-alpha($color-panel-bottom, 0.45);
     opacity: 0.6;
 
     .ingredient__icon,

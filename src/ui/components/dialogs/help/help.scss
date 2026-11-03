@@ -1,5 +1,6 @@
 @use '@/styles/tokens' as *;
 @use '@/styles/mixins' as *;
+@use '@/styles/functions' as *;
 
 .help {
   .modal__panel {
@@ -30,9 +31,9 @@
     align-items: flex-start;
     gap: $space-md;
     padding: 14px 16px;
-    background: rgba(0, 0, 0, 0.28);
+    background: with-alpha($color-panel-bottom, 0.28);
     border: 1px solid $color-brass-dark;
-    border-radius: 8px;
+    border-radius: $radius-sm;
 
     @include mobile {
       gap: 12px;
@@ -89,7 +90,7 @@
   &__tag {
     padding: 2px 8px;
     border: 1px solid color-mix(in srgb, var(--tag-color) 55%, transparent);
-    border-radius: 4px;
+    border-radius: $radius-xs;
     background: color-mix(in srgb, var(--tag-color) 12%, transparent);
     font-size: $fs-xs;
     font-weight: $fw-bold;
@@ -114,7 +115,7 @@
     margin: 0;
     padding: 12px 16px;
     border: 1px dashed $color-brass;
-    border-radius: 8px;
+    border-radius: $radius-sm;
     font-family: $font-accent;
     font-style: italic;
     font-size: $fs-lg;

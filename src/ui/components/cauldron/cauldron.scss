@@ -20,7 +20,7 @@ $intro-font-size: 21px;
     position: absolute;
     inset: -8px;
     border: 2px dashed transparent;
-    border-radius: 24px;
+    border-radius: calc(#{$radius-lg} * 2);
     pointer-events: none; // never catches the drag events itself
     transition:
       border-color $duration-fast $easing,

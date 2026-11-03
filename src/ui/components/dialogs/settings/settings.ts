@@ -1,8 +1,8 @@
 import { checkSvg, closeSvg, settingsSvg, trophySvg } from '@/assets';
 import { Modal } from '../modal';
 import { createContainer, createElement, createSvgFromString } from '@/ui/dom';
-import type { Difficulty, ISettingsHandlers } from '@/types';
-import { DIFFICULTIES, difficultySettings } from '@/data';
+import { type ThemeId, type Difficulty, type ISettingsHandlers } from '@/types';
+import { DIFFICULTIES, difficultySettings, THEME_LABELS, THEME_NOTES, THEMES } from '@/data';
 
 import './settings.scss';
 
@@ -18,6 +18,9 @@ const DIFFICULTY_ID = 'settings-difficulty-title';
 const HINT_TEXT = 'Difficulty can be changed only before a game starts.';
 const LEADERBOARD_TEXT = 'Leaderboard';
 const NEW_GAME_TEXT = 'New Game';
+const THEME_LABEL = 'Theme';
+const THEME_PANEL_TEXT = 'Aa';
+const THEME_ID = 'settings-theme-title';
 
 export class Settings {
   private readonly modal: Modal;
@@ -27,6 +30,7 @@ export class Settings {
     text: CONTINUE.text,
   });
   private readonly levelButtons = new Map<Difficulty, HTMLButtonElement>();
+  private readonly themeButtons = new Map<ThemeId, HTMLButtonElement>();
 
   constructor(handlers: ISettingsHandlers) {
     const closeIcon = createSvgFromString(closeSvg);
@@ -47,6 +51,8 @@ export class Settings {
       className: 'settings__hint',
       text: HINT_TEXT,
     });
+
+    const themes = this.createThemes(handlers.onSelectTheme);
 
     const leaderboardIcon = createSvgFromString(trophySvg);
     const leaderboardButton = createElement('button', {
@@ -69,7 +75,7 @@ export class Settings {
       className: 'settings',
       title: TITLE_TEXT,
       titleId: TITLE_ID,
-      content: [this.continueBlock, difficulty, hint, closeButton],
+      content: [this.continueBlock, difficulty, hint, themes, closeButton],
       actions: [leaderboardButton, newGameButton],
       icon: settingsSvg,
       onCancel: handlers.onClose,
@@ -203,11 +209,11 @@ export class Settings {
 
   private createLevelStat(label: string, value: string): HTMLElement {
     const statLabel = createElement('span', {
-      className: 'settings__stat__label',
+      className: 'settings__stat-label',
       text: label,
     });
     const statValue = createElement('span', {
-      className: 'settings__stat__value',
+      className: 'settings__stat-value',
       text: value,
     });
     const container = createElement('span', {
@@ -218,14 +224,127 @@ export class Settings {
     return container;
   }
 
+  private createThemes(onSelectTheme: (theme: ThemeId) => void): HTMLDivElement {
+    const title = createElement('span', {
+      className: 'settings__label',
+      text: THEME_LABEL,
+      attributes: {
+        id: THEME_ID,
+      },
+    });
+    const themeButtons = THEMES.map((theme) => {
+      const themeButton = this.createThemeButton(
+        theme,
+        THEME_LABELS[theme],
+        THEME_NOTES[theme],
+        onSelectTheme,
+      );
+      this.themeButtons.set(theme, themeButton);
+
+      return themeButton;
+    });
+
+    const options = createElement('div', {
+      className: 'settings__theme-options',
+      attributes: {
+        role: 'group',
+        'aria-labelledby': THEME_ID,
+      },
+      children: themeButtons,
+    });
+    const container = createContainer('settings__themes', [title, options]);
+
+    return container;
+  }
+
+  private createThemeButton(
+    id: ThemeId,
+    label: string,
+    note: string,
+    onSelectTheme: (theme: ThemeId) => void,
+  ): HTMLButtonElement {
+    const panel = createElement('span', {
+      className: 'theme-option__panel',
+      text: THEME_PANEL_TEXT,
+    });
+
+    const optionAccent = createElement('span', {
+      className: 'theme-option__accent',
+    });
+    const optionLine = createElement('span', {
+      className: 'theme-option__line',
+    });
+    const optionLineShort = createElement('span', {
+      className: 'theme-option__line theme-option__line--short',
+    });
+    const lines = createElement('span', {
+      className: 'theme-option__lines',
+      children: [optionAccent, optionLine, optionLineShort],
+    });
+
+    const preview = createElement('span', {
+      className: 'theme-option__preview',
+      attributes: {
+        'data-theme': id,
+        'aria-hidden': 'true',
+      },
+      children: [panel, lines],
+    });
+
+    const name = createElement('span', {
+      className: 'theme-option__name',
+      text: label,
+    });
+    const checkIcon = createSvgFromString(checkSvg);
+    const check = createElement('span', {
+      className: 'theme-option__check',
+      attributes: {
+        'aria-hidden': 'true',
+      },
+      children: [checkIcon],
+    });
+    const head = createElement('span', {
+      className: 'theme-option__head',
+      children: [name, check],
+    });
+
+    const optionNote = createElement('span', {
+      className: 'theme-option__note',
+      text: note,
+    });
+
+    const button = createElement('button', {
+      className: 'theme-option',
+      attributes: {
+        type: 'button',
+        'aria-pressed': 'false',
+        'data-theme-id': id,
+      },
+      children: [preview, head, optionNote],
+    });
+
+    button.addEventListener('click', () => {
+      onSelectTheme(id);
+    });
+
+    return button;
+  }
+
   public setSelected(difficulty: Difficulty): void {
     for (const [difficultyName, button] of this.levelButtons) {
       button.setAttribute('aria-pressed', String(difficultyName === difficulty));
     }
   }
 
-  public show(selected: Difficulty, continueSummary?: string): void {
+  public setSelectedTheme(theme: ThemeId): void {
+    for (const [themeName, button] of this.themeButtons) {
+      button.setAttribute('aria-pressed', String(themeName === theme));
+    }
+  }
+
+  public show(selected: Difficulty, theme: ThemeId, continueSummary?: string): void {
     this.setSelected(selected);
+    this.setSelectedTheme(theme);
     this.modal.show();
     if (continueSummary === undefined) {
       this.continueBlock.hidden = true;

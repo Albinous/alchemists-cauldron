@@ -30,8 +30,10 @@ import {
   clearSave,
   loadGame,
   loadLeaderboard,
+  loadSettings,
   saveGame,
   saveLeaderboard,
+  saveSettings,
 } from '@/storage';
 import type {
   Difficulty,
@@ -39,6 +41,7 @@ import type {
   IIngredient,
   ILeaderboardEntry,
   ShortcutAction,
+  ThemeId,
 } from '@/types';
 import {
   Bars,
@@ -58,6 +61,7 @@ import {
   playAnimation,
   createContainer,
   isTypingTarget,
+  applyTheme,
 } from '@/ui';
 import { formatTime } from '@/utils';
 
@@ -104,8 +108,10 @@ export class App {
     onContinue: () => this.handleContinue(),
     onNewGame: () => this.handleNewGame(),
     onLeaderboard: () => this.handleLeaderboard(),
+    onSelectTheme: (theme) => this.handleSelectTheme(theme),
     onClose: () => this.handleCloseSettings(),
   });
+  private userSettings = loadSettings();
 
   private readonly layout = createContainer('game', [
     createLayout({
@@ -156,10 +162,10 @@ export class App {
       const saved = loadGame();
       if (saved) {
         const continueSummary = `${saved.difficulty} · ${formatTime(saved.timeLeft)} · ${saved.score} pts`;
-        this.settings.show(this.state.difficulty, continueSummary);
+        this.settings.show(this.state.difficulty, this.userSettings.theme, continueSummary);
         return;
       }
-      this.settings.show(this.state.difficulty);
+      this.settings.show(this.state.difficulty, this.userSettings.theme);
     }
   }
 
@@ -232,6 +238,15 @@ export class App {
     if (this.state.status !== 'menu') return;
     this.settings.setSelected(difficulty);
     this.state.difficulty = difficulty;
+  }
+
+  private handleSelectTheme(theme: ThemeId): void {
+    if (this.userSettings.theme === theme) return;
+
+    this.userSettings = { ...this.userSettings, theme };
+    applyTheme(theme);
+    saveSettings(this.userSettings);
+    this.settings.setSelectedTheme(theme);
   }
 
   private handleCloseSettings(): void {

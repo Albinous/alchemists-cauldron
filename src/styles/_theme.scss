@@ -1,5 +1,6 @@
 :root,
-:root[data-theme='alchemy'] {
+:root[data-theme='alchemy'],
+.theme-option__preview[data-theme='alchemy'] {
   color-scheme: dark;
 
   --font-display: 'Cinzel', Georgia, serif;
@@ -83,7 +84,8 @@
   --bar-marker: #f2ead3;
 }
 
-:root[data-theme='parchment'] {
+:root[data-theme='parchment'],
+.theme-option__preview[data-theme='parchment'] {
   color-scheme: light;
 
   --color-bg: #e8dcc0;
@@ -154,7 +156,8 @@
   --bar-marker: #3a2a1a;
 }
 
-:root[data-theme='pixel'] {
+:root[data-theme='pixel'],
+.theme-option__preview[data-theme='pixel'] {
   color-scheme: dark;
 
   --font-display: 'Pixelify Sans', monospace;

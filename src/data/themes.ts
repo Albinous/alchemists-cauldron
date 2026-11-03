@@ -18,3 +18,9 @@ export const DEFAULT_SETTINGS: ISettings = {
   },
   isMuted: false,
 };
+
+export const THEME_NOTES: Record<ThemeId, string> = {
+  alchemy: 'Dark workshop',
+  parchment: 'Old recipe book',
+  pixel: 'Arcade neon',
+};

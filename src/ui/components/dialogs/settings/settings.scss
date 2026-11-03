@@ -2,6 +2,71 @@
 @use '@/styles/mixins' as *;
 @use '@/styles/functions' as *;
 
+$preview-height: 72px;
+$preview-panel-size: 50px;
+$preview-accent-height: 12px;
+$preview-line-height: 5px;
+
+// shared look of the difficulty and theme cards
+@mixin option-card {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
+  border: 2px solid $color-brass-dark;
+  border-radius: $radius-md;
+  font-family: inherit;
+  text-align: left;
+  color: $color-text-light;
+  cursor: pointer;
+  transition:
+    border-color $duration-fast $easing,
+    box-shadow $duration-fast $easing;
+
+  &:hover {
+    border-color: $color-brass;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent-bright;
+    outline-offset: 3px;
+  }
+
+  &[aria-pressed='true'] {
+    background: linear-gradient(180deg, $color-accent-dark, $color-accent-darker);
+    border-color: $color-accent-bright;
+    box-shadow:
+      0 0 18px with-alpha($color-accent, 0.25),
+      inset 0 0 0 1px with-alpha($color-accent, 0.15);
+  }
+}
+
+// round check mark, filled when its card is selected
+@mixin option-check($card) {
+  @include flex-center;
+
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  border: 2px solid $color-brass-dark;
+  border-radius: 50%;
+  color: transparent; // the check icon is hidden until selected
+  opacity: 0.6;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  #{$card}[aria-pressed='true'] & {
+    border: 0;
+    background: $color-accent-bright;
+    color: $color-accent-darker;
+    opacity: 1;
+  }
+}
+
 .settings {
   .modal__panel {
     width: min(660px, calc(100vw - 32px));
@@ -103,8 +168,9 @@
     font-size: $fs-md;
   }
 
-  // --- difficulty ---
-  &__difficulty {
+  // ---------- Difficulty ----------
+  &__difficulty,
+  &__themes {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -119,7 +185,8 @@
     color: $color-gold;
   }
 
-  &__levels {
+  &__levels,
+  &__theme-options {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
@@ -130,38 +197,10 @@
   }
 
   &__level {
-    display: flex;
-    flex-direction: column;
+    @include option-card;
+
     gap: 4px;
     padding: 14px 14px 12px;
-    box-sizing: border-box;
-    background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
-    border: 2px solid $color-brass-dark;
-    border-radius: $radius-md;
-    font-family: inherit;
-    text-align: left;
-    color: $color-text-light;
-    cursor: pointer;
-    transition:
-      border-color $duration-fast $easing,
-      box-shadow $duration-fast $easing;
-
-    &:hover {
-      border-color: $color-brass;
-    }
-
-    &:focus-visible {
-      outline: 2px solid $color-accent-bright;
-      outline-offset: 3px;
-    }
-
-    &[aria-pressed='true'] {
-      background: linear-gradient(180deg, $color-accent-dark, $color-accent-darker);
-      border-color: $color-accent-bright;
-      box-shadow:
-        0 0 18px with-alpha($color-accent, 0.25),
-        inset 0 0 0 1px with-alpha($color-accent, 0.15);
-    }
   }
 
   &__level-head {
@@ -182,27 +221,7 @@
   }
 
   &__level-check {
-    @include flex-center;
-
-    width: 20px;
-    height: 20px;
-    box-sizing: border-box;
-    border: 2px solid $color-brass-dark;
-    border-radius: 50%;
-    color: transparent; // the check icon is hidden until selected
-    opacity: 0.6;
-
-    svg {
-      width: 14px;
-      height: 14px;
-    }
-
-    .settings__level[aria-pressed='true'] & {
-      border: 0;
-      background: $color-accent-bright;
-      color: $color-accent-darker;
-      opacity: 1;
-    }
+    @include option-check('.settings__level');
   }
 
   &__level-pips {
@@ -289,5 +308,101 @@
       height: 18px;
       color: $color-gold;
     }
+  }
+}
+
+// ---------- Theme option card ----------
+.theme-option {
+  @include option-card;
+
+  gap: 6px;
+  padding: 12px;
+
+  // mini screen painted with the colors of its own theme:
+  // data-theme on this element redefines the CSS variables for its subtree only
+  &__preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: $preview-height;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid with-alpha($color-text, 0.12);
+    border-radius: $radius-sm;
+    background: linear-gradient(180deg, $color-bg-top, $color-bg);
+  }
+
+  &__panel {
+    @include flex-center;
+
+    flex: 0 0 auto;
+    width: $preview-panel-size;
+    height: $preview-panel-size;
+    box-sizing: border-box;
+    border: 2px solid $color-brass-light;
+    border-radius: $radius-sm;
+    background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
+    font-family: $font-display;
+    font-size: $fs-xl;
+    font-weight: $fw-bold;
+    color: $color-title;
+  }
+
+  &__lines {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  &__accent {
+    height: $preview-accent-height;
+    border-radius: $radius-sm;
+    background: $color-accent;
+    box-shadow: 0 0 8px $color-accent;
+  }
+
+  &__line {
+    width: 80%;
+    height: $preview-line-height;
+    border-radius: $radius-xs;
+    background: $color-text;
+    opacity: 0.55;
+
+    &--short {
+      width: 50%;
+      opacity: 0.35;
+    }
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  &__name {
+    font-size: $fs-lg;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+
+    .theme-option[aria-pressed='true'] & {
+      color: $color-title-glow;
+    }
+  }
+
+  &__check {
+    @include option-check('.theme-option');
+  }
+
+  &__note {
+    font-family: $font-accent;
+    font-style: italic;
+    font-size: $fs-md;
+    font-weight: $fw-semibold;
+    color: $color-text-muted;
   }
 }

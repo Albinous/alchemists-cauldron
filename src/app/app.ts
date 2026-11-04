@@ -1,3 +1,4 @@
+import { audio } from '@/audio';
 import {
   difficultySettings,
   INGREDIENT_KEY_PATTERN,
@@ -66,6 +67,10 @@ import {
 import { formatTime } from '@/utils';
 
 const TICK_INTERVAL_MS = 250;
+
+const unlockAudio = (): void => {
+  audio.unlock();
+};
 
 export class App {
   private readonly header = new Header();
@@ -491,6 +496,11 @@ export class App {
         this.handlePause();
       }
     });
-    document.addEventListener('keydown', (event) => this.handleKeydown(event));
+    document.addEventListener('keydown', (event) => {
+      this.handleKeydown(event);
+    });
+
+    document.addEventListener('pointerdown', unlockAudio, { once: true });
+    document.addEventListener('keydown', unlockAudio, { once: true });
   }
 }

@@ -1,4 +1,4 @@
-import { audio } from '@/audio';
+import { audio, playSound } from '@/audio';
 import {
   difficultySettings,
   INGREDIENT_KEY_PATTERN,

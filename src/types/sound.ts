@@ -15,3 +15,7 @@ export interface INoiseOptions {
   attack?: number;
   delay?: number;
 }
+
+export type SoundName = 'add' | 'success' | 'fail' | 'reaction' | 'pour-out' | 'tick' | 'game-over';
+
+export type SoundStep = ({ kind: 'tone' } & IToneOptions) | ({ kind: 'noise' } & INoiseOptions);

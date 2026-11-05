@@ -1,4 +1,5 @@
 import { AUDIO_CHANNELS } from '@/data';
+import { loadSettings } from '@/storage';
 import { type AudioChannel, type ISettings } from '@/types';
 
 const VOLUME_SMOOTHING_SEC = 0.02;
@@ -80,3 +81,5 @@ export class AudioEngine {
     void this.context?.resume();
   }
 }
+
+export const audio = new AudioEngine(loadSettings());

@@ -1,5 +1,6 @@
-import { audio } from '@/audio';
+import { audio, playSound } from '@/audio';
 import {
+  DANGER_TIME,
   difficultySettings,
   INGREDIENT_KEY_PATTERN,
   ingredients,
@@ -131,6 +132,7 @@ export class App {
   ]);
   private endTime = 0;
   private timerId: ReturnType<typeof setInterval> | undefined = undefined;
+  private lastTickSecond: number | undefined;
 
   private handleMain(): void {
     if (this.state.status === 'menu') {
@@ -141,6 +143,7 @@ export class App {
 
         const result = applyBrew(this.state);
         this.cauldron.playBrewResult(result);
+        playSound(result);
         if (result === 'fail') playAnimation(this.layout, 'layout--shake');
 
         this.endTime = getEndTime(this.state.timeLeft, Date.now());
@@ -178,6 +181,7 @@ export class App {
     if (!canAddIngredient(this.state, ingredient)) return;
     const previousCauldronIngredients = [...this.state.cauldronIngredients];
     addIngredient(this.state, ingredient);
+    playSound('add');
     const firedReactions = getFiredReactions(
       previousCauldronIngredients,
       this.state.cauldronIngredients,
@@ -189,6 +193,7 @@ export class App {
       for (const reaction of firedReactions) {
         applyReactionEffects(this.state, reaction);
       }
+      playSound('reaction');
       this.endTime = getEndTime(this.state.timeLeft, Date.now());
     }
 
@@ -205,12 +210,17 @@ export class App {
 
   private handleTick(): void {
     this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
+    const wholeSec = Math.ceil(this.state.timeLeft);
 
     this.header.setTimer(
       this.state.timeLeft,
       difficultySettings[this.state.difficulty].startTimeSec,
     );
 
+    if (wholeSec > 0 && wholeSec <= DANGER_TIME && wholeSec !== this.lastTickSecond) {
+      playSound('tick');
+      this.lastTickSecond = wholeSec;
+    }
     this.checkGameOver();
   }
 
@@ -219,6 +229,7 @@ export class App {
     this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
     clearCauldron(this.state);
     applyTimePenalty(this.state, POUR_OUT_PENALTY_SEC);
+    playSound('pour-out');
     this.endTime = getEndTime(this.state.timeLeft, Date.now());
     saveGame(this.state);
     this.checkGameOver();
@@ -236,6 +247,7 @@ export class App {
     this.state.status = 'paused';
     this.settings.hide();
     this.pause.show();
+    this.lastTickSecond = undefined;
     this.renderGame();
   }
 
@@ -399,6 +411,7 @@ export class App {
   private startNewGame(): void {
     this.state = createNewGame(this.state.difficulty);
     this.startTimer();
+    this.lastTickSecond = undefined;
     this.renderGame();
     saveGame(this.state);
     audio.resume();
@@ -407,6 +420,7 @@ export class App {
   private endGame(reason: GameOverReason): void {
     this.state.status = 'game-over';
     this.stopTimer();
+    playSound('game-over');
     this.gameOver.show(
       reason,
       this.state.score,

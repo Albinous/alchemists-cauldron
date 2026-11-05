@@ -1,5 +1,6 @@
 import { audio, playSound } from '@/audio';
 import {
+  DANGER_TIME,
   difficultySettings,
   INGREDIENT_KEY_PATTERN,
   ingredients,
@@ -131,6 +132,7 @@ export class App {
   ]);
   private endTime = 0;
   private timerId: ReturnType<typeof setInterval> | undefined = undefined;
+  private lastTickSecond: number | undefined;
 
   private handleMain(): void {
     if (this.state.status === 'menu') {
@@ -208,12 +210,17 @@ export class App {
 
   private handleTick(): void {
     this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
+    const wholeSec = Math.ceil(this.state.timeLeft);
 
     this.header.setTimer(
       this.state.timeLeft,
       difficultySettings[this.state.difficulty].startTimeSec,
     );
 
+    if (wholeSec > 0 && wholeSec <= DANGER_TIME && wholeSec !== this.lastTickSecond) {
+      playSound('tick');
+      this.lastTickSecond = wholeSec;
+    }
     this.checkGameOver();
   }
 
@@ -240,6 +247,7 @@ export class App {
     this.state.status = 'paused';
     this.settings.hide();
     this.pause.show();
+    this.lastTickSecond = undefined;
     this.renderGame();
   }
 
@@ -403,6 +411,7 @@ export class App {
   private startNewGame(): void {
     this.state = createNewGame(this.state.difficulty);
     this.startTimer();
+    this.lastTickSecond = undefined;
     this.renderGame();
     saveGame(this.state);
     audio.resume();

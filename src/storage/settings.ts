@@ -62,7 +62,7 @@ export const loadSettings = (): ISettings => {
       return defaults;
     }
 
-    const saved = data as Partial<ISettings>;
+    const saved = data as Partial<Record<keyof ISettings, unknown>>;
 
     return {
       theme: readTheme(saved.theme, defaults.theme),

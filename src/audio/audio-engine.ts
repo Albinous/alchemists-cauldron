@@ -63,4 +63,12 @@ export class AudioEngine {
     this.isMuted = isMuted;
     this.applyVolume('master');
   }
+
+  public getOutput(channel: Exclude<AudioChannel, 'master'>): GainNode | undefined {
+    return this.gains.get(channel);
+  }
+
+  public getContext(): AudioContext | undefined {
+    return this.context;
+  }
 }

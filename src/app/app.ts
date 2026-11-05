@@ -298,6 +298,7 @@ export class App {
     this.pause.show();
     this.renderGame();
     saveGame(this.state);
+    audio.suspend();
   }
 
   private handleResume(): void {
@@ -308,6 +309,7 @@ export class App {
     this.pause.hide();
     this.renderGame();
     saveGame(this.state);
+    audio.resume();
   }
 
   private handleExitMenu(): void {
@@ -399,6 +401,7 @@ export class App {
     this.startTimer();
     this.renderGame();
     saveGame(this.state);
+    audio.resume();
   }
 
   private endGame(reason: GameOverReason): void {

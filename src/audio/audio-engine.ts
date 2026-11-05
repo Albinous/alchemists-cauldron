@@ -71,4 +71,12 @@ export class AudioEngine {
   public getContext(): AudioContext | undefined {
     return this.context;
   }
+
+  public suspend(): void {
+    void this.context?.suspend();
+  }
+
+  public resume(): void {
+    void this.context?.resume();
+  }
 }

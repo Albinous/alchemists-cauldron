@@ -141,6 +141,7 @@ export class App {
 
         const result = applyBrew(this.state);
         this.cauldron.playBrewResult(result);
+        playSound(result);
         if (result === 'fail') playAnimation(this.layout, 'layout--shake');
 
         this.endTime = getEndTime(this.state.timeLeft, Date.now());
@@ -178,6 +179,7 @@ export class App {
     if (!canAddIngredient(this.state, ingredient)) return;
     const previousCauldronIngredients = [...this.state.cauldronIngredients];
     addIngredient(this.state, ingredient);
+    playSound('add');
     const firedReactions = getFiredReactions(
       previousCauldronIngredients,
       this.state.cauldronIngredients,
@@ -189,6 +191,7 @@ export class App {
       for (const reaction of firedReactions) {
         applyReactionEffects(this.state, reaction);
       }
+      playSound('reaction');
       this.endTime = getEndTime(this.state.timeLeft, Date.now());
     }
 
@@ -219,6 +222,7 @@ export class App {
     this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
     clearCauldron(this.state);
     applyTimePenalty(this.state, POUR_OUT_PENALTY_SEC);
+    playSound('pour-out');
     this.endTime = getEndTime(this.state.timeLeft, Date.now());
     saveGame(this.state);
     this.checkGameOver();
@@ -407,6 +411,7 @@ export class App {
   private endGame(reason: GameOverReason): void {
     this.state.status = 'game-over';
     this.stopTimer();
+    playSound('game-over');
     this.gameOver.show(
       reason,
       this.state.score,

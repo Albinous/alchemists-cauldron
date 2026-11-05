@@ -52,11 +52,15 @@ export class AudioEngine {
     for (const channel of AUDIO_CHANNELS) {
       this.applyVolume(channel, true);
     }
+  }
 
-    // temporary check: remove after testing
-    const beep = this.context.createOscillator();
-    beep.connect(sfx);
-    beep.start();
-    beep.stop(this.context.currentTime + 0.2);
+  public setVolume(channel: AudioChannel, value: number): void {
+    this.volumes[channel] = value;
+    this.applyVolume(channel);
+  }
+
+  public setMuted(isMuted: boolean): void {
+    this.isMuted = isMuted;
+    this.applyVolume('master');
   }
 }

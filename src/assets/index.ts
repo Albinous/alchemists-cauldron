@@ -12,3 +12,6 @@ export { default as bookSvg } from './book.svg?raw';
 export { default as closeSvg } from './close.svg?raw';
 export { default as checkSvg } from './check.svg?raw';
 export { default as pourOutSvg } from './pour-out.svg?raw';
+export { default as effectsSvg } from './effects.svg?raw';
+export { default as musicSvg } from './music.svg?raw';
+export { default as volumeSvg } from './volume.svg?raw';

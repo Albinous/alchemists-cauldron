@@ -38,6 +38,7 @@ import {
   saveSettings,
 } from '@/storage';
 import type {
+  AudioChannel,
   Difficulty,
   GameOverReason,
   IIngredient,
@@ -115,6 +116,8 @@ export class App {
     onNewGame: () => this.handleNewGame(),
     onLeaderboard: () => this.handleLeaderboard(),
     onSelectTheme: (theme) => this.handleSelectTheme(theme),
+    onVolumeChange: (channel, value) => this.handleVolumeChange(channel, value),
+    onToggleMute: () => this.handleToggleMute(),
     onClose: () => this.handleCloseSettings(),
   });
   private userSettings = loadSettings();
@@ -170,10 +173,10 @@ export class App {
       const saved = loadGame();
       if (saved) {
         const continueSummary = `${saved.difficulty} · ${formatTime(saved.timeLeft)} · ${saved.score} pts`;
-        this.settings.show(this.state.difficulty, this.userSettings.theme, continueSummary);
+        this.settings.show(this.state.difficulty, this.userSettings, continueSummary);
         return;
       }
-      this.settings.show(this.state.difficulty, this.userSettings.theme);
+      this.settings.show(this.state.difficulty, this.userSettings);
     }
   }
 
@@ -266,6 +269,22 @@ export class App {
     this.settings.setSelectedTheme(theme);
   }
 
+  private handleVolumeChange(channel: AudioChannel, value: number): void {
+    this.userSettings = {
+      ...this.userSettings,
+      volume: { ...this.userSettings.volume, [channel]: value },
+    };
+    audio.setVolume(channel, value);
+    saveSettings(this.userSettings);
+  }
+
+  private handleToggleMute(): void {
+    const isMuted = !this.userSettings.isMuted;
+    this.userSettings = { ...this.userSettings, isMuted };
+    audio.setMuted(isMuted);
+    this.settings.setSound(this.userSettings);
+  }
+
   private handleCloseSettings(): void {
     this.settings.hide();
   }
@@ -351,7 +370,6 @@ export class App {
 
   private handleKeydown(event: KeyboardEvent): void {
     if (
-      this.state.status !== 'playing' ||
       isTypingTarget(event.target) ||
       event.ctrlKey ||
       event.metaKey ||
@@ -360,12 +378,21 @@ export class App {
     )
       return;
 
+    const action = SHORTCUTS[event.code];
+
+    if (action === 'mute') {
+      event.preventDefault();
+      this.handleToggleMute();
+      return;
+    }
+
+    if (this.state.status !== 'playing') return;
+
     if (this.handleIngredientKey(event.code)) {
       event.preventDefault();
       return;
     }
 
-    const action = SHORTCUTS[event.code];
     if (action === undefined) return;
 
     event.preventDefault();

@@ -14,6 +14,8 @@ export interface ISettingsHandlers {
   onContinue: () => void;
   onLeaderboard: () => void;
   onSelectTheme: (theme: ThemeId) => void;
+  onVolumeChange: (channel: AudioChannel, value: number) => void;
+  onToggleMute: () => void;
   onNewGame: () => void;
   onClose: () => void;
 }

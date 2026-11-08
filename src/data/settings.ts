@@ -1,13 +1,23 @@
 import type { AudioChannel, ISettings, ThemeId } from '@/types';
 
-export const THEMES: ThemeId[] = ['alchemy', 'parchment', 'pixel'];
+export const THEMES: readonly ThemeId[] = ['alchemy', 'parchment', 'pixel'];
 export const THEME_LABELS: Record<ThemeId, string> = {
   alchemy: 'Alchemy',
   parchment: 'Parchment',
   pixel: 'Pixel',
 };
+export const THEME_NOTES: Record<ThemeId, string> = {
+  alchemy: 'Dark workshop',
+  parchment: 'Old recipe book',
+  pixel: 'Arcade neon',
+};
 
 export const AUDIO_CHANNELS: readonly AudioChannel[] = ['master', 'music', 'sfx'];
+export const AUDIO_CHANNEL_LABELS: Record<AudioChannel, string> = {
+  master: 'Master',
+  music: 'Music',
+  sfx: 'Effects',
+};
 
 export const DEFAULT_SETTINGS: ISettings = {
   theme: 'alchemy',
@@ -17,10 +27,4 @@ export const DEFAULT_SETTINGS: ISettings = {
     sfx: 0.7,
   },
   isMuted: false,
-};
-
-export const THEME_NOTES: Record<ThemeId, string> = {
-  alchemy: 'Dark workshop',
-  parchment: 'Old recipe book',
-  pixel: 'Arcade neon',
 };

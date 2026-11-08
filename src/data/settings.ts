@@ -1,4 +1,3 @@
-import { effectsSvg, musicSvg, volumeSvg } from '@/assets';
 import type { AudioChannel, ISettings, ThemeId } from '@/types';
 
 export const THEMES: readonly ThemeId[] = ['alchemy', 'parchment', 'pixel'];
@@ -18,11 +17,6 @@ export const AUDIO_CHANNEL_LABELS: Record<AudioChannel, string> = {
   master: 'Master',
   music: 'Music',
   sfx: 'Effects',
-};
-export const AUDIO_CHANNEL_ICONS: Record<AudioChannel, string> = {
-  master: volumeSvg,
-  music: musicSvg,
-  sfx: effectsSvg,
 };
 
 export const DEFAULT_SETTINGS: ISettings = {

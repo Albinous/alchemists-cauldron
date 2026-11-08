@@ -170,10 +170,10 @@ export class App {
       const saved = loadGame();
       if (saved) {
         const continueSummary = `${saved.difficulty} · ${formatTime(saved.timeLeft)} · ${saved.score} pts`;
-        this.settings.show(this.state.difficulty, this.userSettings.theme, continueSummary);
+        this.settings.show(this.state.difficulty, this.userSettings, continueSummary);
         return;
       }
-      this.settings.show(this.state.difficulty, this.userSettings.theme);
+      this.settings.show(this.state.difficulty, this.userSettings);
     }
   }
 

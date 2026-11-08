@@ -370,7 +370,6 @@ export class App {
 
   private handleKeydown(event: KeyboardEvent): void {
     if (
-      this.state.status !== 'playing' ||
       isTypingTarget(event.target) ||
       event.ctrlKey ||
       event.metaKey ||
@@ -379,12 +378,21 @@ export class App {
     )
       return;
 
+    const action = SHORTCUTS[event.code];
+
+    if (action === 'mute') {
+      event.preventDefault();
+      this.handleToggleMute();
+      return;
+    }
+
+    if (this.state.status !== 'playing') return;
+
     if (this.handleIngredientKey(event.code)) {
       event.preventDefault();
       return;
     }
 
-    const action = SHORTCUTS[event.code];
     if (action === undefined) return;
 
     event.preventDefault();
@@ -422,10 +430,6 @@ export class App {
       }
       case 'help': {
         this.handleHelpOpen();
-        break;
-      }
-      case 'mute': {
-        this.handleToggleMute();
         break;
       }
     }

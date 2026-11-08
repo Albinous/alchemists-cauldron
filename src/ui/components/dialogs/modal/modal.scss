@@ -3,13 +3,13 @@
 @use '@/styles/functions' as *;
 
 .modal {
+  max-width: calc(100vw - 16px);
+  max-height: 100dvh;
   padding: 0;
+  overflow: visible;
   border: 0;
   background: transparent;
   color: $color-text-light;
-  overflow: visible;
-  width: min(520px, calc(100vw - 32px));
-  max-width: none;
 
   &::backdrop {
     background: with-alpha($color-bg, 0.72);
@@ -26,6 +26,7 @@
     position: relative;
     gap: $space-md;
     width: 100%;
+    max-height: calc(100dvh - 38px - 16px); // screen minus the raised emblem and a small gap
     box-sizing: border-box;
     margin-top: 38px;
     padding: 64px 48px 44px;
@@ -115,8 +116,17 @@
   &__content {
     @include flex-direction-horizontal;
 
+    flex: 0 1 auto;
     gap: $space-md;
-    width: 100%;
+    width: calc(100% + 8px);
+    min-height: 0; // lets the content shrink and scroll inside the panel
+    margin-inline: -4px;
+    padding: 4px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: $color-brass-dark transparent;
 
     &:empty {
       display: none; // pause has no content — no extra gap

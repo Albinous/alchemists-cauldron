@@ -52,6 +52,9 @@ const SOUND = {
     on: 'Sound on',
     muted: 'Muted',
   },
+  key: 'M',
+  hintStart: 'Press ',
+  hintEnd: ' during a game to mute or unmute.',
 };
 
 const ACTIONS = {
@@ -424,8 +427,11 @@ export class Settings {
       },
       children: volumeRows,
     });
+    const muteKey = createElement('kbd', { className: 'key', text: SOUND.key });
+    const soundHint = createElement('p', { className: 'settings__hint' });
+    soundHint.append(SOUND.hintStart, muteKey, SOUND.hintEnd);
 
-    this.soundBlock.append(head, volumes);
+    this.soundBlock.append(head, volumes, soundHint);
     return this.soundBlock;
   }
 

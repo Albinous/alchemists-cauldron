@@ -108,6 +108,28 @@ section {
   white-space: nowrap;
   border: 0;
 }
+// a keyboard key, used in Help and Settings
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 7px;
+  box-sizing: border-box;
+  border: 1px solid $color-brass;
+  border-bottom-width: 3px; // a thick bottom edge makes it look like a pressable key
+  border-radius: $radius-xs;
+  background: linear-gradient(180deg, $color-round-top, $color-panel-bottom);
+  font-family: $font-display;
+  font-size: $fs-sm;
+  font-style: normal; // the hint text around it is italic
+  font-weight: 800;
+  line-height: 1;
+  color: $color-text-light;
+  font-variant-numeric: tabular-nums;
+  vertical-align: middle;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

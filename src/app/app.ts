@@ -424,6 +424,10 @@ export class App {
         this.handleHelpOpen();
         break;
       }
+      case 'mute': {
+        this.handleToggleMute();
+        break;
+      }
     }
   }
 

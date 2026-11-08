@@ -224,6 +224,7 @@ export class App {
       playSound('tick');
       this.lastTickSecond = wholeSec;
     }
+    music.setFast(wholeSec <= DANGER_TIME);
 
     this.checkGameOver();
   }

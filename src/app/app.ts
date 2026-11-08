@@ -38,6 +38,7 @@ import {
   saveSettings,
 } from '@/storage';
 import type {
+  AudioChannel,
   Difficulty,
   GameOverReason,
   IIngredient,
@@ -264,6 +265,22 @@ export class App {
     applyTheme(theme);
     saveSettings(this.userSettings);
     this.settings.setSelectedTheme(theme);
+  }
+
+  private handleVolumeChange(channel: AudioChannel, value: number): void {
+    this.userSettings = {
+      ...this.userSettings,
+      volume: { ...this.userSettings.volume, [channel]: value },
+    };
+    audio.setVolume(channel, value);
+    saveSettings(this.userSettings);
+  }
+
+  private handleToggleMute(): void {
+    const isMuted = !this.userSettings.isMuted;
+    this.userSettings = { ...this.userSettings, isMuted };
+    audio.setMuted(isMuted);
+    this.settings.setSound(this.userSettings);
   }
 
   private handleCloseSettings(): void {

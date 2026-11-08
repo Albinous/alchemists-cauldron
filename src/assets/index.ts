@@ -15,3 +15,4 @@ export { default as pourOutSvg } from './pour-out.svg?raw';
 export { default as effectsSvg } from './effects.svg?raw';
 export { default as musicSvg } from './music.svg?raw';
 export { default as volumeSvg } from './volume.svg?raw';
+export { default as keyboardSvg } from './keyboard.svg?raw';

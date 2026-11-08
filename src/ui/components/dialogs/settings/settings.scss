@@ -7,6 +7,18 @@ $preview-panel-size: 50px;
 $preview-accent-height: 12px;
 $preview-line-height: 5px;
 
+$switch-width: 52px;
+$switch-height: 28px;
+$switch-knob-size: 18px;
+$switch-gap: 3px;
+
+$volume-icon-size: 24px;
+$volume-label-width: 110px;
+$volume-label-width-mobile: 72px;
+$volume-value-width: 48px;
+$volume-track-height: 8px;
+$volume-thumb-size: 22px;
+
 // shared look of the difficulty and theme cards
 @mixin option-card {
   display: flex;
@@ -307,6 +319,178 @@ $preview-line-height: 5px;
       width: 18px;
       height: 18px;
       color: $color-gold;
+    }
+  }
+
+  // ---------- Sound ----------
+  &__sound {
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
+    width: 100%;
+    text-align: left;
+  }
+
+  &__sound-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-md;
+  }
+
+  &__mute {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: $touch-target;
+    padding: 0 $space-xs;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    letter-spacing: 0.04em;
+    color: $color-text-light;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid $color-accent-bright;
+      outline-offset: 3px;
+      border-radius: $radius-sm;
+    }
+  }
+
+  &__mute-track {
+    position: relative;
+    flex-shrink: 0;
+    width: $switch-width;
+    height: $switch-height;
+    box-sizing: border-box;
+    border: 2px solid $color-brass-dark;
+    border-radius: $radius-pill;
+    background: $color-panel-bottom;
+    transition:
+      border-color $duration-fast $easing,
+      background $duration-fast $easing;
+
+    .settings__mute[aria-checked='true'] & {
+      border-color: $color-accent;
+      background: $color-accent-dark;
+    }
+  }
+
+  &__mute-knob {
+    position: absolute;
+    top: $switch-gap;
+    left: $switch-gap;
+    width: $switch-knob-size;
+    height: $switch-knob-size;
+    border-radius: 50%;
+    background: $color-text-inactive;
+    transition:
+      left $duration-fast $easing,
+      background $duration-fast $easing;
+
+    .settings__mute[aria-checked='true'] & {
+      left: calc(100% - #{$switch-knob-size} - #{$switch-gap});
+      background: $color-accent;
+      box-shadow: 0 0 8px with-alpha($color-accent, 0.7);
+    }
+  }
+
+  &__volumes {
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
+  }
+
+  &__volume {
+    display: grid;
+    grid-template-columns: $volume-icon-size $volume-label-width minmax(0, 1fr) $volume-value-width;
+    align-items: center;
+    gap: $space-md;
+
+    @include mobile {
+      grid-template-columns:
+        $volume-icon-size $volume-label-width-mobile minmax(0, 1fr)
+        $volume-value-width;
+      gap: 10px;
+    }
+  }
+
+  &__volume-icon {
+    display: flex;
+    color: $color-gold;
+
+    svg {
+      width: $volume-icon-size;
+      height: $volume-icon-size;
+    }
+  }
+
+  &__volume-label {
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    letter-spacing: 0.04em;
+    color: $color-text-light;
+    cursor: pointer;
+  }
+
+  &__volume-value {
+    font-size: $fs-md;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: $color-text-light;
+  }
+
+  // ---------- Range slider ----------
+  &__volume-range {
+    appearance: none;
+    width: 100%;
+    height: $volume-track-height;
+    margin: 0;
+    border-radius: $radius-pill;
+    // --fill is set from TS: the filled part of the track
+    background: linear-gradient(90deg, $color-accent var(--fill, 50%), $bar-track var(--fill, 50%));
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+      appearance: none;
+      width: $volume-thumb-size;
+      height: $volume-thumb-size;
+      border: 3px solid $color-accent;
+      border-radius: 50%;
+      background: $bar-marker;
+      box-shadow: 0 0 10px with-alpha($color-accent, 0.6);
+    }
+
+    &::-moz-range-thumb {
+      width: $volume-thumb-size;
+      height: $volume-thumb-size;
+      box-sizing: border-box;
+      border: 3px solid $color-accent;
+      border-radius: 50%;
+      background: $bar-marker;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-accent-bright;
+      outline-offset: 6px;
+    }
+  }
+
+  // ---------- Muted: everything dims, sliders still work ----------
+  &__sound--muted {
+    .settings__volume-icon,
+    .settings__volume-label,
+    .settings__volume-value {
+      color: $color-text-inactive;
+    }
+
+    .settings__volume-range {
+      filter: grayscale(1);
+      opacity: 0.45;
     }
   }
 }

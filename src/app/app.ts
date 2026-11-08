@@ -116,6 +116,8 @@ export class App {
     onNewGame: () => this.handleNewGame(),
     onLeaderboard: () => this.handleLeaderboard(),
     onSelectTheme: (theme) => this.handleSelectTheme(theme),
+    onVolumeChange: (channel, value) => this.handleVolumeChange(channel, value),
+    onToggleMute: () => this.handleToggleMute(),
     onClose: () => this.handleCloseSettings(),
   });
   private userSettings = loadSettings();

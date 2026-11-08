@@ -63,7 +63,7 @@ html {
 body {
   display: flex;
   flex-direction: column;
-  min-width: $bp-mobile;
+  min-width: $min-width;
   min-height: 100vh;
   padding: $space-xl 0 $space-2xl;
   overflow-x: hidden;

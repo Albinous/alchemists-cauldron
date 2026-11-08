@@ -2,15 +2,9 @@
 @use '@/styles/mixins' as *;
 @use '@/styles/functions' as *;
 
+$keys-caps-width: 96px;
+
 .help {
-  .modal__panel {
-    width: min(660px, calc(100vw - 32px));
-
-    @include mobile {
-      padding-inline: 16px;
-    }
-  }
-
   .modal__emblem {
     color: $color-gold;
   }
@@ -107,6 +101,92 @@
     &--magicPower {
       --tag-color: #{$color-magic};
     }
+  }
+
+  &__keys {
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
+    width: 100%;
+    box-sizing: border-box;
+    padding: $space-lg 18px;
+    background: with-alpha($color-panel-bottom, 0.28);
+    border: 1px solid $color-brass-dark;
+    border-radius: $radius-sm;
+    text-align: left;
+  }
+
+  &__keys-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__keys-icon {
+    display: flex;
+    color: $color-gold;
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  &__keys-title {
+    margin: 0;
+    font-size: $fs-lg;
+    font-weight: $fw-bold;
+    letter-spacing: 0.04em;
+    color: $color-text-light;
+  }
+
+  &__keys-note {
+    margin-left: auto;
+    font-family: $font-accent;
+    font-style: italic;
+    font-size: $fs-md;
+    font-weight: $fw-semibold;
+    color: $color-text-muted;
+  }
+
+  &__keys-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @include mobile {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__key {
+    display: flex;
+    align-items: center;
+    gap: $space-md;
+    min-width: 0;
+  }
+
+  &__key-caps {
+    display: flex;
+    flex: 0 0 $keys-caps-width;
+    align-items: center;
+    gap: $space-xs;
+  }
+
+  &__key-dash {
+    font-size: $fs-sm;
+    color: $color-text-muted;
+  }
+
+  &__key-action {
+    font-family: $font-accent;
+    font-style: italic;
+    font-size: $fs-lg;
+    font-weight: $fw-semibold;
+    color: $color-text-soft;
   }
 
   &__note {

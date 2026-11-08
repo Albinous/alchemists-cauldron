@@ -8,3 +8,7 @@
     0 50%
   );
 }
+
+@function with-alpha($color, $opacity) {
+  @return color-mix(in srgb, #{$color} #{$opacity * 100%}, transparent);
+}

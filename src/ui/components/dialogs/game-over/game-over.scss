@@ -1,7 +1,6 @@
 @use '@/styles/tokens' as *;
 @use '@/styles/mixins' as *;
-
-$danger: #ff6b5b;
+@use '@/styles/functions' as *;
 
 .game-over {
   overflow-x: clip;
@@ -21,7 +20,7 @@ $danger: #ff6b5b;
     font-size: $fs-xl;
     font-weight: $fw-semibold;
     line-height: 1.3;
-    color: #cdbf9e;
+    color: $color-text-soft;
   }
 
   &__score {
@@ -34,7 +33,7 @@ $danger: #ff6b5b;
     font-size: $fs-sm;
     font-weight: $fw-bold;
     letter-spacing: 0.16em;
-    color: #9c927c;
+    color: $color-text-muted;
   }
 
   &__score-value {
@@ -42,7 +41,7 @@ $danger: #ff6b5b;
     font-weight: $fw-extrabold;
     line-height: 1.05;
     font-variant-numeric: tabular-nums;
-    text-shadow: 0 0 20px rgba(124, 255, 79, 0.25);
+    text-shadow: 0 0 20px with-alpha($color-accent, 0.25);
   }
 
   &__form {
@@ -52,10 +51,10 @@ $danger: #ff6b5b;
     width: 100%;
     box-sizing: border-box;
     padding: 24px 28px 26px;
-    background: rgba(0, 0, 0, 0.3);
+    background: with-alpha($color-panel-bottom, 0.3);
     border: 1px solid $color-brass-dark;
-    border-radius: 10px;
-    box-shadow: inset 0 0 0 1px rgba(140, 116, 72, 0.15);
+    border-radius: $radius-md;
+    box-shadow: inset 0 0 0 1px with-alpha($color-brass-light, 0.15);
 
     @include mobile {
       padding: 18px 16px 20px;
@@ -75,9 +74,9 @@ $danger: #ff6b5b;
     height: 58px;
     box-sizing: border-box;
     padding: 0 18px;
-    background: #0b0d11;
+    background: $color-input-bg;
     border: 2px solid $color-brass;
-    border-radius: 8px;
+    border-radius: $radius-sm;
     font-family: inherit;
     font-size: $fs-xl;
     font-weight: $fw-bold;
@@ -90,7 +89,7 @@ $danger: #ff6b5b;
       box-shadow $duration-fast $easing;
 
     &::placeholder {
-      color: #5c5446;
+      color: $color-text-inactive;
     }
 
     &:focus {
@@ -98,14 +97,14 @@ $danger: #ff6b5b;
       border-color: $color-accent-bright;
       box-shadow:
         inset 0 2px 8px rgba(0, 0, 0, 0.65),
-        0 0 0 3px rgba(124, 255, 79, 0.18);
+        0 0 0 3px with-alpha($color-accent, 0.18);
     }
 
     &[aria-invalid='true'] {
-      border-color: $danger;
+      border-color: $color-danger;
       box-shadow:
         inset 0 2px 8px rgba(0, 0, 0, 0.65),
-        0 0 0 3px rgba(255, 107, 91, 0.2);
+        0 0 0 3px with-alpha($color-danger, 0.2);
     }
   }
 
@@ -115,7 +114,7 @@ $danger: #ff6b5b;
     font-style: italic;
     font-size: $fs-lg;
     font-weight: $fw-semibold;
-    color: #9c927c;
+    color: $color-text-muted;
   }
 
   &__error {
@@ -123,7 +122,7 @@ $danger: #ff6b5b;
     font-size: $fs-sm;
     font-weight: $fw-bold;
     letter-spacing: 0.04em;
-    color: $danger;
+    color: $color-danger;
   }
 
   &__submit {
@@ -166,12 +165,12 @@ $danger: #ff6b5b;
     }
 
     &::before {
-      background: linear-gradient(180deg, #2a2318, #14100a);
+      background: linear-gradient(180deg, $color-brass-deep, $color-brass-deeper);
     }
 
     &:not(:disabled):hover::before,
     &:focus-visible::before {
-      background: linear-gradient(180deg, #3a3020, #1c160d);
+      background: linear-gradient(180deg, $color-brass-deep-hover, $color-brass-deeper-hover);
     }
   }
 }

@@ -1,5 +1,6 @@
 @use '../../../styles/tokens' as *;
 @use '../../../styles/mixins' as *;
+@use '../../../styles/functions' as *;
 
 $seal-offset: 26px;
 $parchment-edge: polygon(
@@ -25,7 +26,7 @@ $parchment-edge: polygon(
   color: $color-ink;
   background: linear-gradient(170deg, $color-parchment-top, $color-parchment-bottom);
   clip-path: $parchment-edge;
-  box-shadow: inset 0 0 50px rgba(110, 80, 40, 0.5);
+  box-shadow: inset 0 0 50px with-alpha($color-ink-muted, 0.5);
   transform: rotate(1deg);
 
   &__label {
@@ -70,7 +71,7 @@ $parchment-edge: polygon(
     justify-content: space-between;
     gap: $space-sm;
     padding-bottom: 6px;
-    border-bottom: 1px dashed rgba(58, 42, 26, 0.4); // ink dashed line
+    border-bottom: 1px dashed with-alpha($color-ink, 0.4); // ink dashed line
 
     &--temperature {
       --range-color: #{$color-temperature-ink};
@@ -105,7 +106,7 @@ $parchment-edge: polygon(
     @include flex-direction-horizontal;
     gap: $space-sm;
     padding-top: $space-sm;
-    border-top: 1px solid rgba(58, 42, 26, 0.35); // ink line, as in the design
+    border-top: 1px solid with-alpha($color-ink, 0.35); // ink line, as in the design
   }
 
   &__counter {
@@ -133,7 +134,7 @@ $parchment-edge: polygon(
   &__dot {
     width: $dot-size;
     height: $dot-size;
-    border: 2px solid #8a7a66;
+    border: 2px solid $color-ink-faded;
     border-radius: $radius-round;
 
     &--filled {

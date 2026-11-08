@@ -1,12 +1,10 @@
 @use '@/styles/tokens' as *;
 @use '@/styles/mixins' as *;
+@use '@/styles/functions' as *;
 
 $medal-gold: (#f3d98a, #b8862e, #6b4a12);
 $medal-silver: (#e8eaee, #8f96a1, #4a505a);
 $medal-bronze: (#e3a774, #8c5226, #4e2a10);
-
-$danger-edge: #b5402f;
-$danger-text: #ff9a8c;
 
 @mixin medal($light, $dark, $ring) {
   background: radial-gradient(
@@ -22,14 +20,6 @@ $danger-text: #ff9a8c;
 }
 
 .leaderboard {
-  width: min(720px, calc(100vw - 32px));
-
-  .modal__panel {
-    @include mobile {
-      padding-inline: 16px;
-    }
-  }
-
   .modal__emblem {
     color: $color-gold;
   }
@@ -47,7 +37,7 @@ $danger-text: #ff9a8c;
   }
 
   &__head-row {
-    background: linear-gradient(180deg, #2a2318, #1a150e);
+    background: linear-gradient(180deg, $color-brass-deep, $color-brass-deeper);
   }
 
   &__table-title {
@@ -61,11 +51,15 @@ $danger-text: #ff9a8c;
 
   &__table-row {
     &:nth-child(odd) {
-      background: rgba(255, 255, 255, 0.02);
+      background: with-alpha($color-text, 0.03);
     }
 
     &--active {
-      background: linear-gradient(90deg, rgba(124, 255, 79, 0.16), rgba(124, 255, 79, 0.04));
+      background: linear-gradient(
+        90deg,
+        with-alpha($color-accent, 0.16),
+        with-alpha($color-accent, 0.04)
+      );
       box-shadow: inset 3px 0 0 $color-accent-bright;
     }
 
@@ -85,7 +79,7 @@ $danger-text: #ff9a8c;
   &__table-data {
     height: 40px;
     padding: 6px 12px;
-    border-bottom: 1px solid #2a2318;
+    border-bottom: 1px solid $color-brass-deep;
   }
 
   &__table-title--rank,
@@ -114,7 +108,7 @@ $danger-text: #ff9a8c;
   &__table-data--rank {
     font-size: $fs-sm;
     font-weight: $fw-bold;
-    color: #9c927c;
+    color: $color-text-muted;
   }
 
   &__table-data--name {
@@ -133,7 +127,7 @@ $danger-text: #ff9a8c;
 
   &__table-data--date {
     font-size: $fs-xs;
-    color: #9c927c;
+    color: $color-text-muted;
   }
 
   &__empty {
@@ -142,7 +136,7 @@ $danger-text: #ff9a8c;
     font-style: italic;
     font-size: $fs-xl;
     font-weight: 600;
-    color: #9c927c;
+    color: $color-text-muted;
   }
 
   &__clear {
@@ -151,8 +145,8 @@ $danger-text: #ff9a8c;
     min-width: 250px;
     min-height: 54px;
     font-size: $fs-md;
-    background: $danger-edge;
-    color: $danger-text;
+    background: $color-danger-edge;
+    color: $color-danger-text;
     text-shadow: none;
     gap: $space-sm;
 
@@ -163,12 +157,12 @@ $danger-text: #ff9a8c;
     }
 
     &::before {
-      background: linear-gradient(180deg, #2e1512, #160a08);
+      background: linear-gradient(180deg, $color-danger-top, $color-danger-bottom);
     }
 
     &:not(:disabled):hover::before,
     &:focus-visible::before {
-      background: linear-gradient(180deg, #44201a, #20100c);
+      background: linear-gradient(180deg, $color-danger-hover-top, $color-danger-hover-bottom);
     }
   }
 
@@ -186,7 +180,6 @@ $danger-text: #ff9a8c;
       padding-inline: 6px;
     }
 
-    // medal is 31px, 64px is too wide for a phone
     &__table-title--rank,
     &__table-data--rank {
       width: 40px;
@@ -200,12 +193,6 @@ $danger-text: #ff9a8c;
     &__table-title--date,
     &__table-data--date {
       width: 90px;
-    }
-
-    // each difficulty has its own table, the column is redundant on a phone
-    &__table-title--difficulty,
-    &__table-data--difficulty {
-      display: none;
     }
   }
 }

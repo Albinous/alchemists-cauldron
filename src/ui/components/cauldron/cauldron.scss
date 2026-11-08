@@ -1,11 +1,10 @@
 @use '../../../styles/tokens' as *;
 @use '../../../styles/mixins' as *;
+@use '../../../styles/functions' as *;
 
 $pot-max-width: 400px;
 $intro-max-width: 460px;
 $intro-font-size: 21px;
-$idle-liquid: #0b0d10;
-$idle-emblem: #3e5a33;
 
 .cauldron {
   @include flex-direction-horizontal;
@@ -21,7 +20,7 @@ $idle-emblem: #3e5a33;
     position: absolute;
     inset: -8px;
     border: 2px dashed transparent;
-    border-radius: 24px;
+    border-radius: calc(#{$radius-lg} * 2);
     pointer-events: none; // never catches the drag events itself
     transition:
       border-color $duration-fast $easing,
@@ -29,13 +28,13 @@ $idle-emblem: #3e5a33;
   }
 
   &--drop-target {
-    filter: drop-shadow(0 0 24px rgba(124, 255, 79, 0.45));
+    filter: drop-shadow(0 0 24px with-alpha($color-accent, 0.45));
 
     &::after {
-      border-color: rgba(124, 255, 79, 0.7);
+      border-color: with-alpha($color-accent, 0.7);
       box-shadow:
-        inset 0 0 40px rgba(124, 255, 79, 0.12),
-        0 0 24px rgba(124, 255, 79, 0.25);
+        inset 0 0 40px with-alpha($color-accent, 0.12),
+        0 0 24px with-alpha($color-accent, 0.25);
       animation: drop-ring-pulse 1.2s ease-in-out infinite;
     }
 
@@ -65,14 +64,18 @@ $idle-emblem: #3e5a33;
 
     // success glow
     &::before {
-      background: radial-gradient(circle at 50% 40%, rgba($color-accent, 0.6), transparent 65%);
+      background: radial-gradient(
+        circle at 50% 40%,
+        with-alpha($color-accent, 0.6),
+        transparent 65%
+      );
     }
 
     &::after {
       background: radial-gradient(
         circle at 50% 40%,
         $color-explosion,
-        rgba($color-temperature, 0.7) 35%,
+        with-alpha($color-temperature, 0.7) 35%,
         transparent 65%
       );
     }
@@ -122,7 +125,7 @@ $idle-emblem: #3e5a33;
   &__float-icon {
     width: $float-icon-size;
     height: $float-icon-size;
-    filter: drop-shadow(0 0 6px rgba($color-accent, 0.6));
+    filter: drop-shadow(0 0 6px with-alpha($color-accent, 0.6));
     animation: ingredient-float $duration-float ease-in-out infinite;
     // negative delay: each icon starts mid-cycle, so they move out of sync
     animation-delay: calc(var(--float-index, 0) * -0.4s);
@@ -145,7 +148,7 @@ $idle-emblem: #3e5a33;
     padding: $space-s 14px;
     font-size: $fs-sm;
     font-weight: $fw-bold;
-    background: rgba(13, 16, 21, 0.85);
+    background: with-alpha($color-panel-bottom, 0.85);
     border: 1px solid $color-brass;
     border-radius: $radius-sm;
 
@@ -184,11 +187,11 @@ $idle-emblem: #3e5a33;
   }
 
   .cauldron-svg__liquid {
-    fill: $idle-liquid;
+    fill: $color-bg;
   }
 
   .cauldron-svg__emblem {
-    color: $idle-emblem;
+    color: $color-accent-muted;
   }
 }
 
@@ -207,11 +210,11 @@ $idle-emblem: #3e5a33;
 @keyframes drop-ring-pulse {
   0%,
   100% {
-    border-color: rgba(124, 255, 79, 0.45);
+    border-color: with-alpha($color-accent, 0.45);
   }
 
   50% {
-    border-color: rgba(124, 255, 79, 0.9);
+    border-color: with-alpha($color-accent, 0.9);
   }
 }
 

@@ -2,11 +2,11 @@ import { createHeartIcon } from '@/ui/icons';
 import './header.scss';
 import { createContainer, createElement } from '@/ui/dom';
 import { formatTime } from '@/utils';
+import { DANGER_TIME } from '@/data';
 
 const INITIAL_SCORE_VALUE = 0;
 const INITIAL_TIMER_VALUE = '00:00';
 const INITIAL_LIVES_VALUE = '—';
-const DANGER_TIME = 15;
 
 export class Header {
   private readonly stats = createElement('div', {

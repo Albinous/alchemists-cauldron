@@ -44,7 +44,7 @@
   font-weight: 800;
   letter-spacing: 0.04em;
   color: $color-accent-bright;
-  text-shadow: 0 0 12px rgba(124, 255, 79, 0.8);
+  text-shadow: 0 0 12px with-alpha($color-accent, 0.8);
   cursor: pointer;
 
   // dark inner fill, $edge px inside the bright edge
@@ -53,14 +53,14 @@
     position: absolute;
     inset: $edge;
     z-index: -1;
-    background: linear-gradient(180deg, #1a2a12, #0b1208);
+    background: linear-gradient(180deg, $color-accent-dark, $color-accent-darker);
     clip-path: hexagon(calc(#{$cut} - #{$edge}));
-    transition: background 0.2s ease;
+    transition: background 0.2s $easing;
   }
 
   &:not(:disabled):hover::before,
   &:focus-visible::before {
-    background: linear-gradient(180deg, #24391a, #0f180b);
+    background: linear-gradient(180deg, $color-accent-dark-hover, $color-accent-darker-hover);
   }
 
   // outline is clipped by clip-path, so focus is shown by the fill above
@@ -75,22 +75,22 @@
 }
 
 @mixin hex-danger {
-  background: #b5402f; // red edge
-  color: #ff9a8c;
+  background: $color-danger-edge;
+  color: $color-danger-text;
   text-shadow: none;
 
   &::before {
-    background: linear-gradient(180deg, #2e1512, #160a08);
+    background: linear-gradient(180deg, $color-danger-top, $color-danger-bottom);
   }
 
   &:not(:disabled):hover::before,
   &:focus-visible::before {
-    background: linear-gradient(180deg, #44201a, #20100c);
+    background: linear-gradient(180deg, $color-danger-hover-top, $color-danger-hover-bottom);
   }
 }
 
 @mixin hex-glow {
-  filter: drop-shadow(0 0 14px rgba(124, 255, 79, 0.55));
+  filter: drop-shadow(0 0 14px with-alpha($color-accent, 0.55));
 }
 
 @mixin mobile {

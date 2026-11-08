@@ -1,0 +1,244 @@
+:root,
+:root[data-theme='alchemy'],
+.theme-option__preview[data-theme='alchemy'] {
+  color-scheme: dark;
+
+  --font-display: 'Cinzel', Georgia, serif;
+  --font-accent: 'Cormorant Garamond', Georgia, serif;
+
+  --radius-xs: 2px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --easing: ease-out;
+
+  --color-bg: #07090d;
+  --color-bg-top: #10141b;
+
+  --color-text: #e9d9b4;
+  --color-text-light: #f2ead3;
+  --color-text-soft: #cdbf9e;
+  --color-text-muted: #9c927c;
+  --color-text-disabled: #8c826e;
+  --color-text-inactive: #6e7a62;
+  --color-danger: #ff5a4f;
+  --color-danger-edge: #b5402f;
+  --color-danger-text: #ff9a8c;
+  --color-danger-top: #2e1512;
+  --color-danger-bottom: #160a08;
+  --color-danger-hover-top: #44201a;
+  --color-danger-hover-bottom: #20100c;
+  --color-danger-panel-top: #1b1714;
+  --color-danger-panel-bottom: #0f0c0a;
+
+  // ---------- Brass frames (header plaque, panels, round buttons) ----------
+  --color-panel-top: #171b23;
+  --color-panel-bottom: #0d1015;
+  --color-brass: #6b5a3a;
+  --color-brass-light: #8c7448;
+  --color-brass-dark: #3b3222;
+  --color-brass-dim: #4a3e28;
+  --color-brass-deep: #2a2318;
+  --color-brass-deeper: #14100a;
+  --color-brass-deep-hover: #3a3020;
+  --color-brass-deeper-hover: #1c160d;
+  --color-gold: #c9a45a;
+
+  // ---------- Magic green (accent) ----------
+  --color-accent: #7cff4f;
+  --color-accent-bright: #9bff5c;
+  --color-accent-soft: #8be84a;
+  --color-accent-muted: #3e5a33;
+  --color-title: #a8f06a;
+  --color-title-shadow: #1f3a12;
+  --color-title-glow: #a8f06a;
+  --color-accent-dark: #1a2a12;
+  --color-accent-dark-hover: #24391a;
+  --color-accent-darker: #0b1208;
+  --color-accent-darker-hover: #0f180b;
+  --color-in-range: #5fa83a;
+
+  // ---------- Wooden cabinet (ingredient shelf) ----------
+  --color-wood-top: #3a2716;
+  --color-wood-bottom: #22160c;
+  --color-wood-border: #5a3e22;
+  --color-wood-plank: #4a321c;
+  --color-wood-inner: #1a120a;
+  --color-stock-badge-border: #8bcb4a;
+  --color-stock-badge-bg: #0e120b;
+
+  // ---------- Parchment (recipe card) ----------
+  --color-parchment-top: #f1e4c4;
+  --color-parchment-bottom: #d9c394;
+  --color-ink: #3a2a1a;
+  --color-ink-muted: #6b5038;
+  --color-ink-soft: #5a4630;
+  --color-ink-faded: #7a6a52;
+  --color-seal: #2e7a3e;
+  --color-seal-dark: #174a24;
+
+  --color-round-top: #2a2f38;
+  --color-input-bg: #0b0d11;
+
+  --bar-track: #1b1f27;
+  --bar-marker: #f2ead3;
+}
+
+:root[data-theme='parchment'],
+.theme-option__preview[data-theme='parchment'] {
+  color-scheme: light;
+
+  --color-bg: #e8dcc0;
+  --color-bg-top: #f4ead3;
+
+  --color-text: #3a2a1a;
+  --color-text-light: #2a1d10;
+  --color-text-soft: #5a4630;
+  --color-text-muted: #7a6650;
+  --color-text-disabled: #9a8a72;
+  --color-text-inactive: #8c8a7a;
+  --color-danger: #b3261e;
+
+  // ---------- Bronze frames ----------
+  --color-panel-top: #fbf4e2;
+  --color-panel-bottom: #efe3c6;
+  --color-brass: #b0905e;
+  --color-brass-light: #8c6a3a;
+  --color-brass-dark: #d8c7a2;
+  --color-brass-dim: #c9b48a;
+  --color-gold: #8a6420;
+  --color-brass-deep: #e9dcbf;
+  --color-brass-deeper: #d9c69d;
+  --color-brass-deep-hover: #f1e6cc;
+  --color-brass-deeper-hover: #e2d1ab;
+
+  // ---------- Deep alchemical green ----------
+  --color-accent: #2f8a2b;
+  --color-accent-bright: #2c7a1f;
+  --color-accent-soft: #3d7a2a;
+  --color-title: #2e6b1f;
+  --color-title-shadow: #f4ead3;
+  --color-title-glow: #9ccf7a;
+  --color-accent-dark: #e3efd2;
+  --color-accent-darker: #cfe3b8;
+  --color-accent-dark-hover: #edf6e2;
+  --color-accent-darker-hover: #dbecc7;
+  --color-accent-muted: #a9c79a;
+  --color-in-range: #3f8f2a;
+
+  // ---------- Light oak shelf ----------
+  --color-wood-top: #c8a172;
+  --color-wood-bottom: #a8814f;
+  --color-wood-border: #7a5a32;
+  --color-wood-plank: #b38a5a;
+  --color-wood-inner: #e6d3ad;
+  --color-stock-badge-border: #3d8a2b;
+  --color-stock-badge-bg: #f7f0dc;
+
+  // ---------- Recipe card: a darker page on a light page ----------
+  --color-parchment-top: #efe0bb;
+  --color-parchment-bottom: #d6bd88;
+
+  // ---------- Red ink ----------
+  --color-danger-edge: #b3261e;
+  --color-danger-text: #9a1f17;
+  --color-danger-top: #f8dcd6;
+  --color-danger-bottom: #efc6bd;
+  --color-danger-hover-top: #fbe7e2;
+  --color-danger-hover-bottom: #f3d3cb;
+  --color-danger-panel-top: #fbf1ea;
+  --color-danger-panel-bottom: #f1e0d3;
+
+  // ---------- Controls ----------
+  --color-round-top: #fffaf0;
+  --color-input-bg: #fffaf0;
+  --bar-track: #dccfb0;
+  --bar-marker: #3a2a1a;
+}
+
+:root[data-theme='pixel'],
+.theme-option__preview[data-theme='pixel'] {
+  color-scheme: dark;
+
+  --font-display: 'Pixelify Sans', monospace;
+  --font-accent: 'Pixelify Sans', monospace;
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  // every transition and animation moves in 4 jumps, like an old game
+  --easing: steps(4, end);
+
+  --color-bg: #0d0b1f;
+  --color-bg-top: #1a1440;
+
+  --color-text: #e8e6ff;
+  --color-text-light: #ffffff;
+  --color-text-soft: #c3bff0;
+  --color-text-muted: #8f8ac2;
+  --color-text-disabled: #6f6aa0;
+  --color-text-inactive: #5d6a8a;
+  --color-danger: #ff3b6b;
+
+  // ---------- Neon frames ----------
+  --color-panel-top: #221c4d;
+  --color-panel-bottom: #151033;
+  --color-brass: #ff8a3d;
+  --color-brass-light: #ffb066;
+  --color-brass-dark: #3a2a6b;
+  --color-brass-dim: #4a3a7a;
+  --color-gold: #ffd23f;
+  --color-brass-deep: #2e2260;
+  --color-brass-deeper: #1a1240;
+  --color-brass-deep-hover: #3d2e7a;
+  --color-brass-deeper-hover: #241a55;
+
+  // ---------- Neon cyan accent ----------
+  --color-accent: #00f0ff;
+  --color-accent-bright: #6ff7ff;
+  --color-accent-soft: #3fd8e8;
+  --color-title: #ffe14d;
+  --color-title-shadow: #c2185b;
+  --color-title-glow: #ff4fd8;
+  --color-accent-dark: #0b2a3a;
+  --color-accent-darker: #061620;
+  --color-accent-dark-hover: #103a4e;
+  --color-accent-darker-hover: #0a2230;
+  --color-accent-muted: #1f5a66;
+  --color-in-range: #00c2d1;
+
+  // ---------- Shelf ----------
+  --color-wood-top: #2a1f5c;
+  --color-wood-bottom: #1c1544;
+  --color-wood-border: #ff8a3d;
+  --color-wood-plank: #3a2c78;
+  --color-wood-inner: #120e2e;
+  --color-stock-badge-border: #00f0ff;
+  --color-stock-badge-bg: #0b0820;
+
+  // ---------- Recipe card: an arcade high-score sheet ----------
+  --color-parchment-top: #fff6d6;
+  --color-parchment-bottom: #ffe08a;
+  --color-ink: #2a1a4a;
+  --color-ink-muted: #5a3a7a;
+  --color-ink-soft: #4a2f6a;
+  --color-ink-faded: #7a5a9a;
+  --color-seal: #c2185b;
+  --color-seal-dark: #7a0e3a;
+
+  // ---------- Danger ----------
+  --color-danger-edge: #ff3b6b;
+  --color-danger-text: #ff9ab4;
+  --color-danger-top: #3a0f2a;
+  --color-danger-bottom: #1f0818;
+  --color-danger-hover-top: #521638;
+  --color-danger-hover-bottom: #2c0c22;
+  --color-danger-panel-top: #24122e;
+  --color-danger-panel-bottom: #140a1c;
+
+  // ---------- Controls ----------
+  --color-round-top: #2e2866;
+  --color-input-bg: #0b0820;
+  --bar-track: #1e1a44;
+  --bar-marker: #ffffff;
+}

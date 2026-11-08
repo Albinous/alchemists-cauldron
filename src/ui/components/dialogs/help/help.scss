@@ -1,20 +1,10 @@
 @use '@/styles/tokens' as *;
 @use '@/styles/mixins' as *;
+@use '@/styles/functions' as *;
 
-// same colors as the bars
-$tag-temperature: #ff6b5b;
-$tag-density: #6fa8ff;
-$tag-magic: #c99bff;
+$keys-caps-width: 96px;
 
 .help {
-  .modal__panel {
-    width: min(660px, calc(100vw - 32px));
-
-    @include mobile {
-      padding-inline: 16px;
-    }
-  }
-
   .modal__emblem {
     color: $color-gold;
   }
@@ -35,9 +25,9 @@ $tag-magic: #c99bff;
     align-items: flex-start;
     gap: $space-md;
     padding: 14px 16px;
-    background: rgba(0, 0, 0, 0.28);
+    background: with-alpha($color-panel-bottom, 0.28);
     border: 1px solid $color-brass-dark;
-    border-radius: 8px;
+    border-radius: $radius-sm;
 
     @include mobile {
       gap: 12px;
@@ -53,11 +43,11 @@ $tag-magic: #c99bff;
     height: 34px;
     box-sizing: border-box;
     border-radius: 50%;
-    background: #1a2a12;
+    background: $color-accent-dark;
     border: 2px solid $color-accent-bright;
     font-size: $fs-md;
     font-weight: 800;
-    color: #9bff5c;
+    color: $color-accent-bright;
   }
 
   &__step-body {
@@ -80,7 +70,7 @@ $tag-magic: #c99bff;
     font-size: $fs-lg;
     font-weight: 600;
     line-height: 1.35;
-    color: #cdbf9e;
+    color: $color-text-soft;
   }
 
   &__tags {
@@ -94,23 +84,109 @@ $tag-magic: #c99bff;
   &__tag {
     padding: 2px 8px;
     border: 1px solid color-mix(in srgb, var(--tag-color) 55%, transparent);
-    border-radius: 4px;
+    border-radius: $radius-xs;
     background: color-mix(in srgb, var(--tag-color) 12%, transparent);
     font-size: $fs-xs;
     font-weight: $fw-bold;
     color: var(--tag-color);
 
     &--temperature {
-      --tag-color: #{$tag-temperature};
+      --tag-color: #{$color-temperature};
     }
 
     &--density {
-      --tag-color: #{$tag-density};
+      --tag-color: #{$color-density};
     }
 
     &--magicPower {
-      --tag-color: #{$tag-magic};
+      --tag-color: #{$color-magic};
     }
+  }
+
+  &__keys {
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
+    width: 100%;
+    box-sizing: border-box;
+    padding: $space-lg 18px;
+    background: with-alpha($color-panel-bottom, 0.28);
+    border: 1px solid $color-brass-dark;
+    border-radius: $radius-sm;
+    text-align: left;
+  }
+
+  &__keys-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__keys-icon {
+    display: flex;
+    color: $color-gold;
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  &__keys-title {
+    margin: 0;
+    font-size: $fs-lg;
+    font-weight: $fw-bold;
+    letter-spacing: 0.04em;
+    color: $color-text-light;
+  }
+
+  &__keys-note {
+    margin-left: auto;
+    font-family: $font-accent;
+    font-style: italic;
+    font-size: $fs-md;
+    font-weight: $fw-semibold;
+    color: $color-text-muted;
+  }
+
+  &__keys-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @include mobile {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__key {
+    display: flex;
+    align-items: center;
+    gap: $space-md;
+    min-width: 0;
+  }
+
+  &__key-caps {
+    display: flex;
+    flex: 0 0 $keys-caps-width;
+    align-items: center;
+    gap: $space-xs;
+  }
+
+  &__key-dash {
+    font-size: $fs-sm;
+    color: $color-text-muted;
+  }
+
+  &__key-action {
+    font-family: $font-accent;
+    font-style: italic;
+    font-size: $fs-lg;
+    font-weight: $fw-semibold;
+    color: $color-text-soft;
   }
 
   &__note {
@@ -118,15 +194,15 @@ $tag-magic: #c99bff;
     box-sizing: border-box;
     margin: 0;
     padding: 12px 16px;
-    border: 1px dashed #6b5a3a;
-    border-radius: 8px;
+    border: 1px dashed $color-brass;
+    border-radius: $radius-sm;
     font-family: $font-accent;
     font-style: italic;
     font-size: $fs-lg;
     font-weight: 600;
     line-height: 1.35;
     text-align: center;
-    color: #cdbf9e;
+    color: $color-text-soft;
   }
 
   &__close {

@@ -1,6 +1,15 @@
+@use 'functions' as *;
+
+// =============================================
+// Theme colors come from CSS custom properties (_theme.scss),
+// so they can change at runtime. Everything else stays a Sass value.
+// =============================================
+
+$min-width: 375px;
+
 // ---------- Fonts ----------
-$font-display: 'Cinzel', Georgia, serif;
-$font-accent: 'Cormorant Garamond', Georgia, serif;
+$font-display: var(--font-display);
+$font-accent: var(--font-accent);
 
 $fw-semibold: 600;
 $fw-bold: 700;
@@ -18,59 +27,74 @@ $fs-score: 64px;
 
 $letter-spacing: 0.14em;
 
-// ---------- Base colors ----------
-$color-bg: #07090d;
-$color-bg-top: #10141b;
+// ---------- Base colors (theme) ----------
+$color-bg: var(--color-bg);
+$color-bg-top: var(--color-bg-top);
 
-$color-text: #e9d9b4;
-$color-text-light: #f2ead3;
-$color-text-soft: #cdbf9e;
-$color-text-muted: #9c927c;
-$color-text-disabled: #8c826e;
-$color-text-inactive: #6e7a62;
-$color-danger: #ff5a4f;
-$color-danger-glow: rgba(255, 90, 79, 0.55);
+$color-text: var(--color-text);
+$color-text-light: var(--color-text-light);
+$color-text-soft: var(--color-text-soft);
+$color-text-muted: var(--color-text-muted);
+$color-text-disabled: var(--color-text-disabled);
+$color-text-inactive: var(--color-text-inactive);
+$color-danger: var(--color-danger);
+$color-danger-edge: var(--color-danger-edge);
+$color-danger-text: var(--color-danger-text);
+$color-danger-top: var(--color-danger-top);
+$color-danger-bottom: var(--color-danger-bottom);
+$color-danger-hover-top: var(--color-danger-hover-top);
+$color-danger-hover-bottom: var(--color-danger-hover-bottom);
+$color-danger-panel-top: var(--color-danger-panel-top);
+$color-danger-panel-bottom: var(--color-danger-panel-bottom);
+$color-danger-glow: with-alpha($color-danger, 0.55);
 
-// ---------- Brass frames (header plaque, panels, round buttons) ----------
-$color-panel-top: #171b23;
-$color-panel-bottom: #0d1015;
-$color-brass: #6b5a3a;
-$color-brass-light: #8c7448;
-$color-brass-dark: #3b3222;
-$color-brass-dim: #4a3e28;
-$color-gold: #c9a45a;
+// ---------- Brass frames (theme) ----------
+$color-panel-top: var(--color-panel-top);
+$color-panel-bottom: var(--color-panel-bottom);
+$color-brass: var(--color-brass);
+$color-brass-deep: var(--color-brass-deep);
+$color-brass-deeper: var(--color-brass-deeper);
+$color-brass-deep-hover: var(--color-brass-deep-hover);
+$color-brass-deeper-hover: var(--color-brass-deeper-hover);
+$color-brass-light: var(--color-brass-light);
+$color-brass-dark: var(--color-brass-dark);
+$color-brass-dim: var(--color-brass-dim);
+$color-gold: var(--color-gold);
 
-// ---------- Magic green (accent) ----------
-$color-accent: #7cff4f;
-$color-accent-bright: #9bff5c;
-$color-accent-soft: #8be84a;
-$color-title: #a8f06a;
-$color-title-shadow: #1f3a12;
-$color-title-glow: #a8f06a;
-$color-accent-dark: #1a2a12;
-$color-accent-darker: #0b1208;
-$color-in-range: #5fa83a;
+// ---------- Magic green accent (theme) ----------
+$color-accent: var(--color-accent);
+$color-accent-bright: var(--color-accent-bright);
+$color-accent-soft: var(--color-accent-soft);
+$color-accent-muted: var(--color-accent-muted);
+$color-title: var(--color-title);
+$color-title-shadow: var(--color-title-shadow);
+$color-title-glow: var(--color-title-glow);
+$color-accent-dark: var(--color-accent-dark);
+$color-accent-dark-hover: var(--color-accent-dark-hover);
+$color-accent-darker: var(--color-accent-darker);
+$color-accent-darker-hover: var(--color-accent-darker-hover);
+$color-in-range: var(--color-in-range);
 
-// ---------- Wooden cabinet (ingredient shelf) ----------
-$color-wood-top: #3a2716;
-$color-wood-bottom: #22160c;
-$color-wood-border: #5a3e22;
-$color-wood-plank: #4a321c;
-$color-wood-inner: #1a120a;
-$color-stock-badge-border: #8bcb4a;
-$color-stock-badge-bg: #0e120b;
+// ---------- Wooden cabinet (theme) ----------
+$color-wood-top: var(--color-wood-top);
+$color-wood-bottom: var(--color-wood-bottom);
+$color-wood-border: var(--color-wood-border);
+$color-wood-plank: var(--color-wood-plank);
+$color-wood-inner: var(--color-wood-inner);
+$color-stock-badge-border: var(--color-stock-badge-border);
+$color-stock-badge-bg: var(--color-stock-badge-bg);
 
-// ---------- Parchment (recipe card) ----------
-$color-parchment-top: #f1e4c4;
-$color-parchment-bottom: #d9c394;
-$color-ink: #3a2a1a;
-$color-ink-muted: #6b5038;
-$color-ink-soft: #5a4630;
-$color-ink-faded: #7a6a52;
-$color-seal: #2e7a3e;
-$color-seal-dark: #174a24;
+// ---------- Parchment recipe card (theme) ----------
+$color-parchment-top: var(--color-parchment-top);
+$color-parchment-bottom: var(--color-parchment-bottom);
+$color-ink: var(--color-ink);
+$color-ink-muted: var(--color-ink-muted);
+$color-ink-soft: var(--color-ink-soft);
+$color-ink-faded: var(--color-ink-faded);
+$color-seal: var(--color-seal);
+$color-seal-dark: var(--color-seal-dark);
 
-// ---------- Cauldron parameters ----------
+// ---------- Cauldron parameters (fixed: meaning, not theme) ----------
 // on dark background (bars, chips on cards)
 $color-temperature: #ff6b5b;
 $color-density: #6fa8ff;
@@ -81,29 +105,32 @@ $color-temperature-ink: #a8281e;
 $color-density-ink: #23508f;
 $color-magic-ink: #5b2e8c;
 
-// animations
+$color-round-top: var(--color-round-top);
+$color-input-bg: var(--color-input-bg);
+
+// ---------- Animations (fixed) ----------
 $color-explosion: #ffb347;
 $duration-float: 3s;
 $float-icon-size: 36px;
 
 // ---------- Bars ----------
 $bar-height: 14px;
-$bar-track: #1b1f27;
-$bar-target: rgba(124, 255, 79, 0.35);
-$bar-tolerance: rgba(124, 255, 79, 0.12);
-$bar-zero-line: rgba(233, 217, 180, 0.4);
-$bar-marker: #f2ead3;
+$bar-track: var(--bar-track);
+$bar-target: with-alpha($color-accent, 0.35);
+$bar-tolerance: with-alpha($color-accent, 0.12);
+$bar-zero-line: with-alpha($color-text, 0.4);
+$bar-marker: var(--bar-marker);
 $bar-marker-size: 16px;
 
-// ---------- Lives ----------
+// ---------- Lives (fixed) ----------
 $heart-size: 14px;
 $color-heart: #c81e33;
 $color-heart-stroke: #5e0b16;
 $color-heart-lost: #5a5246;
 
-// ---------- Glow / shadows ----------
-$glow-accent: 0 0 14px rgba(124, 255, 79, 0.55);
-$glow-text: 0 0 18px rgba(124, 255, 79, 0.55);
+// ---------- Glow / shadows (derived from theme colors) ----------
+$glow-accent: 0 0 14px with-alpha($color-accent, 0.55);
+$glow-text: 0 0 18px with-alpha($color-accent, 0.55);
 $shadow-panel: 0 16px 30px rgba(0, 0, 0, 0.55);
 $shadow-plaque-inset:
   inset 0 0 0 4px $color-panel-bottom,
@@ -119,10 +146,10 @@ $space-xl: 24px;
 $space-2xl: 32px;
 
 // ---------- Radius ----------
-$radius-xs: 2px;
-$radius-sm: 6px;
-$radius-md: 10px;
-$radius-lg: 12px;
+$radius-xs: var(--radius-xs);
+$radius-sm: var(--radius-sm);
+$radius-md: var(--radius-md);
+$radius-lg: var(--radius-lg);
 $radius-round: 50%;
 $radius-pill: 999px;
 
@@ -133,7 +160,7 @@ $round-button-size: 64px;
 $cauldron-slots-width: 280px;
 
 // ---------- Breakpoints ----------
-$bp-mobile: 375px;
+$bp-mobile: 600px;
 $bp-tablet: 768px;
 $bp-desktop: 1024px;
 
@@ -141,6 +168,6 @@ $bp-desktop: 1024px;
 $duration-fast: 0.15s;
 $duration-base: 0.3s;
 $duration-slow: 0.6s;
-$easing: ease-out;
+$easing: var(--easing);
 
 $time-min-width: 150px;

@@ -1,4 +1,6 @@
+import { audio, music, playSound } from '@/audio';
 import {
+  DANGER_TIME,
   difficultySettings,
   INGREDIENT_KEY_PATTERN,
   ingredients,
@@ -30,15 +32,19 @@ import {
   clearSave,
   loadGame,
   loadLeaderboard,
+  loadSettings,
   saveGame,
   saveLeaderboard,
+  saveSettings,
 } from '@/storage';
 import type {
+  AudioChannel,
   Difficulty,
   GameOverReason,
   IIngredient,
   ILeaderboardEntry,
   ShortcutAction,
+  ThemeId,
 } from '@/types';
 import {
   Bars,
@@ -58,10 +64,15 @@ import {
   playAnimation,
   createContainer,
   isTypingTarget,
+  applyTheme,
 } from '@/ui';
 import { formatTime } from '@/utils';
 
 const TICK_INTERVAL_MS = 250;
+
+const unlockAudio = (): void => {
+  audio.unlock();
+};
 
 export class App {
   private readonly header = new Header();
@@ -104,8 +115,12 @@ export class App {
     onContinue: () => this.handleContinue(),
     onNewGame: () => this.handleNewGame(),
     onLeaderboard: () => this.handleLeaderboard(),
+    onSelectTheme: (theme) => this.handleSelectTheme(theme),
+    onVolumeChange: (channel, value) => this.handleVolumeChange(channel, value),
+    onToggleMute: () => this.handleToggleMute(),
     onClose: () => this.handleCloseSettings(),
   });
+  private userSettings = loadSettings();
 
   private readonly layout = createContainer('game', [
     createLayout({
@@ -120,6 +135,7 @@ export class App {
   ]);
   private endTime = 0;
   private timerId: ReturnType<typeof setInterval> | undefined = undefined;
+  private lastTickSecond: number | undefined;
 
   private handleMain(): void {
     if (this.state.status === 'menu') {
@@ -130,6 +146,7 @@ export class App {
 
         const result = applyBrew(this.state);
         this.cauldron.playBrewResult(result);
+        playSound(result);
         if (result === 'fail') playAnimation(this.layout, 'layout--shake');
 
         this.endTime = getEndTime(this.state.timeLeft, Date.now());
@@ -156,10 +173,10 @@ export class App {
       const saved = loadGame();
       if (saved) {
         const continueSummary = `${saved.difficulty} · ${formatTime(saved.timeLeft)} · ${saved.score} pts`;
-        this.settings.show(this.state.difficulty, continueSummary);
+        this.settings.show(this.state.difficulty, this.userSettings, continueSummary);
         return;
       }
-      this.settings.show(this.state.difficulty);
+      this.settings.show(this.state.difficulty, this.userSettings);
     }
   }
 
@@ -167,6 +184,7 @@ export class App {
     if (!canAddIngredient(this.state, ingredient)) return;
     const previousCauldronIngredients = [...this.state.cauldronIngredients];
     addIngredient(this.state, ingredient);
+    playSound('add');
     const firedReactions = getFiredReactions(
       previousCauldronIngredients,
       this.state.cauldronIngredients,
@@ -178,6 +196,7 @@ export class App {
       for (const reaction of firedReactions) {
         applyReactionEffects(this.state, reaction);
       }
+      playSound('reaction');
       this.endTime = getEndTime(this.state.timeLeft, Date.now());
     }
 
@@ -194,11 +213,18 @@ export class App {
 
   private handleTick(): void {
     this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
+    const wholeSec = Math.ceil(this.state.timeLeft);
 
     this.header.setTimer(
       this.state.timeLeft,
       difficultySettings[this.state.difficulty].startTimeSec,
     );
+
+    if (wholeSec > 0 && wholeSec <= DANGER_TIME && wholeSec !== this.lastTickSecond) {
+      playSound('tick');
+      this.lastTickSecond = wholeSec;
+    }
+    music.setFast(wholeSec <= DANGER_TIME);
 
     this.checkGameOver();
   }
@@ -208,6 +234,7 @@ export class App {
     this.state.timeLeft = getTimeLeft(this.endTime, Date.now());
     clearCauldron(this.state);
     applyTimePenalty(this.state, POUR_OUT_PENALTY_SEC);
+    playSound('pour-out');
     this.endTime = getEndTime(this.state.timeLeft, Date.now());
     saveGame(this.state);
     this.checkGameOver();
@@ -225,6 +252,7 @@ export class App {
     this.state.status = 'paused';
     this.settings.hide();
     this.pause.show();
+    this.lastTickSecond = undefined;
     this.renderGame();
   }
 
@@ -232,6 +260,31 @@ export class App {
     if (this.state.status !== 'menu') return;
     this.settings.setSelected(difficulty);
     this.state.difficulty = difficulty;
+  }
+
+  private handleSelectTheme(theme: ThemeId): void {
+    if (this.userSettings.theme === theme) return;
+
+    this.userSettings = { ...this.userSettings, theme };
+    applyTheme(theme);
+    saveSettings(this.userSettings);
+    this.settings.setSelectedTheme(theme);
+  }
+
+  private handleVolumeChange(channel: AudioChannel, value: number): void {
+    this.userSettings = {
+      ...this.userSettings,
+      volume: { ...this.userSettings.volume, [channel]: value },
+    };
+    audio.setVolume(channel, value);
+    saveSettings(this.userSettings);
+  }
+
+  private handleToggleMute(): void {
+    const isMuted = !this.userSettings.isMuted;
+    this.userSettings = { ...this.userSettings, isMuted };
+    audio.setMuted(isMuted);
+    this.settings.setSound(this.userSettings);
   }
 
   private handleCloseSettings(): void {
@@ -278,6 +331,7 @@ export class App {
     this.pause.show();
     this.renderGame();
     saveGame(this.state);
+    audio.suspend();
   }
 
   private handleResume(): void {
@@ -288,12 +342,15 @@ export class App {
     this.pause.hide();
     this.renderGame();
     saveGame(this.state);
+    audio.resume();
+    void music.start();
   }
 
   private handleExitMenu(): void {
     this.stopTimer();
     this.pause.hide();
     this.state = createInitialState(this.state.difficulty);
+    music.stop();
     this.renderGame();
     clearSave();
   }
@@ -317,7 +374,6 @@ export class App {
 
   private handleKeydown(event: KeyboardEvent): void {
     if (
-      this.state.status !== 'playing' ||
       isTypingTarget(event.target) ||
       event.ctrlKey ||
       event.metaKey ||
@@ -326,12 +382,21 @@ export class App {
     )
       return;
 
+    const action = SHORTCUTS[event.code];
+
+    if (action === 'mute') {
+      event.preventDefault();
+      this.handleToggleMute();
+      return;
+    }
+
+    if (this.state.status !== 'playing') return;
+
     if (this.handleIngredientKey(event.code)) {
       event.preventDefault();
       return;
     }
 
-    const action = SHORTCUTS[event.code];
     if (action === undefined) return;
 
     event.preventDefault();
@@ -377,13 +442,21 @@ export class App {
   private startNewGame(): void {
     this.state = createNewGame(this.state.difficulty);
     this.startTimer();
+    this.lastTickSecond = undefined;
     this.renderGame();
     saveGame(this.state);
+    audio.resume();
+    music.stop();
+    void music.start();
   }
 
   private endGame(reason: GameOverReason): void {
     this.state.status = 'game-over';
     this.stopTimer();
+    music.stop();
+
+    playSound('game-over');
+
     this.gameOver.show(
       reason,
       this.state.score,
@@ -476,6 +549,11 @@ export class App {
         this.handlePause();
       }
     });
-    document.addEventListener('keydown', (event) => this.handleKeydown(event));
+    document.addEventListener('keydown', (event) => {
+      this.handleKeydown(event);
+    });
+
+    document.addEventListener('pointerdown', unlockAudio, { once: true });
+    document.addEventListener('keydown', unlockAudio, { once: true });
   }
 }

@@ -1,15 +1,85 @@
 @use '@/styles/tokens' as *;
 @use '@/styles/mixins' as *;
+@use '@/styles/functions' as *;
 
-.settings {
-  .modal__panel {
-    width: min(660px, calc(100vw - 32px));
+$preview-height: 72px;
+$preview-panel-size: 50px;
+$preview-accent-height: 12px;
+$preview-line-height: 5px;
 
-    @include mobile {
-      padding-inline: 16px;
-    }
+$switch-width: 52px;
+$switch-height: 28px;
+$switch-knob-size: 18px;
+$switch-gap: 3px;
+
+$volume-icon-size: 24px;
+$volume-label-width: 110px;
+$volume-label-width-mobile: 72px;
+$volume-value-width: 48px;
+$volume-track-height: 8px;
+$volume-thumb-size: 22px;
+
+// shared look of the difficulty and theme cards
+@mixin option-card {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
+  border: 2px solid $color-brass-dark;
+  border-radius: $radius-md;
+  font-family: inherit;
+  text-align: left;
+  color: $color-text-light;
+  cursor: pointer;
+  transition:
+    border-color $duration-fast $easing,
+    box-shadow $duration-fast $easing;
+
+  &:hover {
+    border-color: $color-brass;
   }
 
+  &:focus-visible {
+    outline: 2px solid $color-accent-bright;
+    outline-offset: 3px;
+  }
+
+  &[aria-pressed='true'] {
+    background: linear-gradient(180deg, $color-accent-dark, $color-accent-darker);
+    border-color: $color-accent-bright;
+    box-shadow:
+      0 0 18px with-alpha($color-accent, 0.25),
+      inset 0 0 0 1px with-alpha($color-accent, 0.15);
+  }
+}
+
+// round check mark, filled when its card is selected
+@mixin option-check($card) {
+  @include flex-center;
+
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  border: 2px solid $color-brass-dark;
+  border-radius: 50%;
+  color: transparent; // the check icon is hidden until selected
+  opacity: 0.6;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  #{$card}[aria-pressed='true'] & {
+    border: 0;
+    background: $color-accent-bright;
+    color: $color-accent-darker;
+    opacity: 1;
+  }
+}
+
+.settings {
   .modal__emblem {
     color: $color-gold;
   }
@@ -32,7 +102,7 @@
     border: 2px solid $color-brass-dark;
     border-radius: 50%;
     background: $color-panel-bottom;
-    color: #9c927c;
+    color: $color-text-muted;
     cursor: pointer;
     transition:
       color $duration-fast $easing,
@@ -63,9 +133,13 @@
     width: 100%;
     box-sizing: border-box;
     padding: 14px 18px;
-    background: linear-gradient(90deg, rgba(124, 255, 79, 0.1), rgba(124, 255, 79, 0.02));
-    border: 1px solid #3e5a33;
-    border-radius: 10px;
+    background: linear-gradient(
+      90deg,
+      with-alpha($color-accent, 0.1),
+      with-alpha($color-accent, 0.02)
+    );
+    border: 1px solid $color-accent-muted;
+    border-radius: $radius-md;
     text-align: left;
   }
 
@@ -80,7 +154,7 @@
     font-size: $fs-xs;
     font-weight: $fw-bold;
     letter-spacing: 0.14em;
-    color: #9c927c;
+    color: $color-text-muted;
   }
 
   &__continue-summary {
@@ -98,8 +172,9 @@
     font-size: $fs-md;
   }
 
-  // --- difficulty ---
-  &__difficulty {
+  // ---------- Difficulty ----------
+  &__difficulty,
+  &__themes {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -114,7 +189,8 @@
     color: $color-gold;
   }
 
-  &__levels {
+  &__levels,
+  &__theme-options {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
@@ -125,38 +201,10 @@
   }
 
   &__level {
-    display: flex;
-    flex-direction: column;
+    @include option-card;
+
     gap: 4px;
     padding: 14px 14px 12px;
-    box-sizing: border-box;
-    background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
-    border: 2px solid $color-brass-dark;
-    border-radius: 10px;
-    font-family: inherit;
-    text-align: left;
-    color: $color-text-light;
-    cursor: pointer;
-    transition:
-      border-color $duration-fast $easing,
-      box-shadow $duration-fast $easing;
-
-    &:hover {
-      border-color: $color-brass;
-    }
-
-    &:focus-visible {
-      outline: 2px solid $color-accent-bright;
-      outline-offset: 3px;
-    }
-
-    &[aria-pressed='true'] {
-      background: linear-gradient(180deg, #17220f, #0b1208);
-      border-color: $color-accent-bright;
-      box-shadow:
-        0 0 18px rgba(124, 255, 79, 0.25),
-        inset 0 0 0 1px rgba(124, 255, 79, 0.15);
-    }
   }
 
   &__level-head {
@@ -177,27 +225,7 @@
   }
 
   &__level-check {
-    @include flex-center;
-
-    width: 20px;
-    height: 20px;
-    box-sizing: border-box;
-    border: 2px solid $color-brass-dark;
-    border-radius: 50%;
-    color: transparent; // the check icon is hidden until selected
-    opacity: 0.6;
-
-    svg {
-      width: 14px;
-      height: 14px;
-    }
-
-    .settings__level[aria-pressed='true'] & {
-      border: 0;
-      background: $color-accent-bright;
-      color: #0b1208;
-      opacity: 1;
-    }
+    @include option-check('.settings__level');
   }
 
   &__level-pips {
@@ -209,8 +237,8 @@
   &__pip {
     width: 18px;
     height: 5px;
-    border-radius: 3px;
-    background: #2a2f37;
+    border-radius: $radius-xs;
+    background: $color-round-top;
 
     &--on {
       background: $color-gold;
@@ -237,7 +265,7 @@
   }
 
   &__stat-label {
-    color: #9c927c;
+    color: $color-text-muted;
   }
 
   &__stat-value {
@@ -251,7 +279,7 @@
     font-style: italic;
     font-size: $fs-md;
     font-weight: 600;
-    color: #9c927c;
+    color: $color-text-muted;
   }
 
   &__leaderboard,
@@ -266,12 +294,12 @@
     text-shadow: none;
 
     &::before {
-      background: linear-gradient(180deg, #2a2318, #14100a);
+      background: linear-gradient(180deg, $color-brass-deep, $color-brass-deeper);
     }
 
     &:not(:disabled):hover::before,
     &:focus-visible::before {
-      background: linear-gradient(180deg, #3a3020, #1c160d);
+      background: linear-gradient(180deg, $color-brass-deep-hover, $color-brass-deeper-hover);
     }
   }
 
@@ -284,5 +312,273 @@
       height: 18px;
       color: $color-gold;
     }
+  }
+
+  // ---------- Sound ----------
+  &__sound {
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
+    width: 100%;
+    text-align: left;
+  }
+
+  &__sound-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-md;
+  }
+
+  &__mute {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: $touch-target;
+    padding: 0 $space-xs;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    font-size: $fs-sm;
+    font-weight: $fw-bold;
+    letter-spacing: 0.04em;
+    color: $color-text-light;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid $color-accent-bright;
+      outline-offset: 3px;
+      border-radius: $radius-sm;
+    }
+  }
+
+  &__mute-track {
+    position: relative;
+    flex-shrink: 0;
+    width: $switch-width;
+    height: $switch-height;
+    box-sizing: border-box;
+    border: 2px solid $color-brass-dark;
+    border-radius: $radius-pill;
+    background: $color-panel-bottom;
+    transition:
+      border-color $duration-fast $easing,
+      background $duration-fast $easing;
+
+    .settings__mute[aria-checked='true'] & {
+      border-color: $color-accent;
+      background: $color-accent-dark;
+    }
+  }
+
+  &__mute-knob {
+    position: absolute;
+    top: $switch-gap;
+    left: $switch-gap;
+    width: $switch-knob-size;
+    height: $switch-knob-size;
+    border-radius: 50%;
+    background: $color-text-inactive;
+    transition:
+      left $duration-fast $easing,
+      background $duration-fast $easing;
+
+    .settings__mute[aria-checked='true'] & {
+      left: calc(100% - #{$switch-knob-size} - #{$switch-gap});
+      background: $color-accent;
+      box-shadow: 0 0 8px with-alpha($color-accent, 0.7);
+    }
+  }
+
+  &__volumes {
+    display: flex;
+    flex-direction: column;
+    gap: $space-md;
+  }
+
+  &__volume {
+    display: grid;
+    grid-template-columns: $volume-icon-size $volume-label-width minmax(0, 1fr) $volume-value-width;
+    align-items: center;
+    gap: $space-md;
+
+    @include mobile {
+      grid-template-columns:
+        $volume-icon-size $volume-label-width-mobile minmax(0, 1fr)
+        $volume-value-width;
+      gap: 10px;
+    }
+  }
+
+  &__volume-icon {
+    display: flex;
+    color: $color-gold;
+
+    svg {
+      width: $volume-icon-size;
+      height: $volume-icon-size;
+    }
+  }
+
+  &__volume-label {
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    letter-spacing: 0.04em;
+    color: $color-text-light;
+    cursor: pointer;
+  }
+
+  &__volume-value {
+    font-size: $fs-md;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    color: $color-text-light;
+  }
+
+  // ---------- Range slider ----------
+  &__volume-range {
+    appearance: none;
+    width: 100%;
+    height: $volume-track-height;
+    margin: 0;
+    border-radius: $radius-pill;
+    // --fill is set from TS: the filled part of the track
+    background: linear-gradient(90deg, $color-accent var(--fill, 50%), $bar-track var(--fill, 50%));
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+      appearance: none;
+      width: $volume-thumb-size;
+      height: $volume-thumb-size;
+      border: 3px solid $color-accent;
+      border-radius: 50%;
+      background: $bar-marker;
+      box-shadow: 0 0 10px with-alpha($color-accent, 0.6);
+    }
+
+    &::-moz-range-thumb {
+      width: $volume-thumb-size;
+      height: $volume-thumb-size;
+      box-sizing: border-box;
+      border: 3px solid $color-accent;
+      border-radius: 50%;
+      background: $bar-marker;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-accent-bright;
+      outline-offset: 6px;
+    }
+  }
+
+  // ---------- Muted: everything dims, sliders still work ----------
+  &__sound--muted {
+    .settings__volume-icon,
+    .settings__volume-label,
+    .settings__volume-value {
+      color: $color-text-inactive;
+    }
+
+    .settings__volume-range {
+      filter: grayscale(1);
+      opacity: 0.45;
+    }
+  }
+}
+
+// ---------- Theme option card ----------
+.theme-option {
+  @include option-card;
+
+  gap: 6px;
+  padding: 12px;
+
+  // mini screen painted with the colors of its own theme:
+  // data-theme on this element redefines the CSS variables for its subtree only
+  &__preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: $preview-height;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid with-alpha($color-text, 0.12);
+    border-radius: $radius-sm;
+    background: linear-gradient(180deg, $color-bg-top, $color-bg);
+  }
+
+  &__panel {
+    @include flex-center;
+
+    flex: 0 0 auto;
+    width: $preview-panel-size;
+    height: $preview-panel-size;
+    box-sizing: border-box;
+    border: 2px solid $color-brass-light;
+    border-radius: $radius-sm;
+    background: linear-gradient(180deg, $color-panel-top, $color-panel-bottom);
+    font-family: $font-display;
+    font-size: $fs-xl;
+    font-weight: $fw-bold;
+    color: $color-title;
+  }
+
+  &__lines {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  &__accent {
+    height: $preview-accent-height;
+    border-radius: $radius-sm;
+    background: $color-accent;
+    box-shadow: 0 0 8px $color-accent;
+  }
+
+  &__line {
+    width: 80%;
+    height: $preview-line-height;
+    border-radius: $radius-xs;
+    background: $color-text;
+    opacity: 0.55;
+
+    &--short {
+      width: 50%;
+      opacity: 0.35;
+    }
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  &__name {
+    font-size: $fs-lg;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+
+    .theme-option[aria-pressed='true'] & {
+      color: $color-title-glow;
+    }
+  }
+
+  &__check {
+    @include option-check('.theme-option');
+  }
+
+  &__note {
+    font-family: $font-accent;
+    font-style: italic;
+    font-size: $fs-md;
+    font-weight: $fw-semibold;
+    color: $color-text-muted;
   }
 }

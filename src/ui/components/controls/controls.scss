@@ -58,7 +58,7 @@ $round-icon-size-mobile: 24px;
     &:focus-visible {
       outline: 2px solid $color-accent-bright;
       outline-offset: 4px;
-      border-radius: 8px;
+      border-radius: $radius-sm;
     }
 
     &:disabled {
@@ -77,10 +77,10 @@ $round-icon-size-mobile: 24px;
 
       width: $round-button-size;
       height: $round-button-size;
-      background: radial-gradient(circle at 50% 35%, #2a2f38, $color-panel-bottom);
+      background: radial-gradient(circle at 50% 35%, $color-round-top, $color-panel-bottom);
       border: 3px solid $color-brass-light;
       border-radius: $radius-round;
-      box-shadow: 0 0 0 2px #2a2318;
+      box-shadow: 0 0 0 2px $color-brass-deep;
       transition:
         border-color $duration-fast $easing,
         transform $duration-fast $easing;

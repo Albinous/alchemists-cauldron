@@ -5,6 +5,8 @@
 // so they can change at runtime. Everything else stays a Sass value.
 // =============================================
 
+$min-width: 375px;
+
 // ---------- Fonts ----------
 $font-display: var(--font-display);
 $font-accent: var(--font-accent);
@@ -158,7 +160,7 @@ $round-button-size: 64px;
 $cauldron-slots-width: 280px;
 
 // ---------- Breakpoints ----------
-$bp-mobile: 375px;
+$bp-mobile: 600px;
 $bp-tablet: 768px;
 $bp-desktop: 1024px;
 

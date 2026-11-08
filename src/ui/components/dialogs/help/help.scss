@@ -5,14 +5,6 @@
 $keys-caps-width: 96px;
 
 .help {
-  .modal__panel {
-    width: min(660px, calc(100vw - 32px));
-
-    @include mobile {
-      padding-inline: 16px;
-    }
-  }
-
   .modal__emblem {
     color: $color-gold;
   }

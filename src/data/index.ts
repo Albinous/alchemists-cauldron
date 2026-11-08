@@ -8,3 +8,4 @@ export * from './game-config';
 export * from './shortcuts';
 export * from './settings';
 export * from './sounds';
+export * from './music';

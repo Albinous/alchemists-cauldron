@@ -1,4 +1,4 @@
-import { audio, playSound } from '@/audio';
+import { audio, music, playSound } from '@/audio';
 import {
   DANGER_TIME,
   difficultySettings,
@@ -224,6 +224,7 @@ export class App {
       playSound('tick');
       this.lastTickSecond = wholeSec;
     }
+
     this.checkGameOver();
   }
 
@@ -341,12 +342,14 @@ export class App {
     this.renderGame();
     saveGame(this.state);
     audio.resume();
+    void music.start();
   }
 
   private handleExitMenu(): void {
     this.stopTimer();
     this.pause.hide();
     this.state = createInitialState(this.state.difficulty);
+    music.stop();
     this.renderGame();
     clearSave();
   }
@@ -442,12 +445,17 @@ export class App {
     this.renderGame();
     saveGame(this.state);
     audio.resume();
+    music.stop();
+    void music.start();
   }
 
   private endGame(reason: GameOverReason): void {
     this.state.status = 'game-over';
     this.stopTimer();
+    music.stop();
+
     playSound('game-over');
+
     this.gameOver.show(
       reason,
       this.state.score,

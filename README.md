@@ -6,19 +6,21 @@ Built for the [RS School](https://github.com/rolling-scopes-school/qualifying-st
 
 - **Deploy:** https://alchemists-cauldron-albinous.netlify.app/
 - **Task:** [game-alchemists-cauldron](https://github.com/rolling-scopes-school/qualifying-stage/tree/main/tasks/game-alchemists-cauldron)
+- **Creative Extension:** three visual themes and synthesized sound — see [below](#creative-extension--themes--sound)
 
 ---
 
 ## Tech stack
 
-| Area         | Tools                                                |
-| ------------ | ---------------------------------------------------- |
-| Language     | TypeScript (strict mode)                             |
-| Styles       | SCSS, BEM naming, design tokens                      |
-| Bundler      | Vite                                                 |
-| Code quality | ESLint (typescript-eslint strict, unicorn), Prettier |
-| Git hooks    | Husky, lint-staged, commitlint                       |
-| Deploy       | Netlify                                              |
+| Area         | Tools                                                  |
+| ------------ | ------------------------------------------------------ |
+| Language     | TypeScript (strict mode)                               |
+| Styles       | SCSS, BEM naming, design tokens, CSS custom properties |
+| Sound        | Web Audio API (no audio files)                         |
+| Bundler      | Vite                                                   |
+| Code quality | ESLint (typescript-eslint strict, unicorn), Prettier   |
+| Git hooks    | Husky, lint-staged, commitlint                         |
+| Deploy       | Netlify                                                |
 
 ---
 
@@ -44,7 +46,7 @@ npm run dev
 
 ## How to play
 
-1. Open **Settings** to choose the difficulty (Easy, Medium or Hard), then press **Start Game**.
+1. Open **Settings** to choose the difficulty (Easy, Medium or Hard), a theme and the sound volume, then press **Start Game**.
 2. Add ingredients to the cauldron: **click** a shelf card or **drag** it onto the cauldron. Hover a card to see its Temperature, Density and Magic Power in a tooltip.
 3. Watch the three bars. Get every value into the green target zone of the current recipe.
 4. Press **Brew**:
@@ -56,24 +58,27 @@ npm run dev
 
 ### Controls
 
-| Action         | Mouse / touch              | Keyboard (during play only) |
-| -------------- | -------------------------- | --------------------------- |
-| Add ingredient | Click or drag a shelf card | `1`–`9` — N-th shelf card   |
-| Brew           | **Brew** button            | `B`                         |
-| Pour Out       | **Pour Out** button        | `O`                         |
-| Pause          | **Pause** button           | `P`                         |
-| Resume         | **Resume** in the dialog   | `Esc` or `Enter`            |
-| Help           | **Help** button            | `H`                         |
+| Action         | Mouse / touch              | Keyboard                  |
+| -------------- | -------------------------- | ------------------------- |
+| Add ingredient | Click or drag a shelf card | `1`–`9` — N-th shelf card |
+| Brew           | **Brew** button            | `B`                       |
+| Pour Out       | **Pour Out** button        | `O`                       |
+| Pause          | **Pause** button           | `P`                       |
+| Resume         | **Resume** in the dialog   | `Esc` or `Enter`          |
+| Help           | **Help** button            | `H`                       |
+| Sound on / off | Switch in **Settings**     | `M`                       |
 
 - Shortcuts use the physical key (`event.code`), so they work with any keyboard layout.
-- They are disabled on the start screen, in dialogs, on the pause and Game Over screens and while typing.
+- Game shortcuts work during play only. They are disabled on the start screen, in dialogs, on the pause and Game Over screens and while typing.
+- `M` works anywhere except while typing.
+- All shortcuts are listed in the **Help** dialog.
 - Every control is a real `<button>`, so `Tab`, `Enter` and `Space` work everywhere.
 
 ---
 
 ## Implemented features
 
-**Score: 393 / 393**
+**Score: 393 / 393** + Creative Extension
 
 ### Precondition — Project setup (58)
 
@@ -140,6 +145,53 @@ npm run dev
 
 ---
 
+## Creative Extension — Themes & Sound
+
+### Themes
+
+Three visual themes, switched in **Settings → Theme**:
+
+| Theme         | Mood                                                         |
+| ------------- | ------------------------------------------------------------ |
+| **Alchemy**   | Dark workshop — the default look                             |
+| **Parchment** | Old recipe book — light, warm paper tones                    |
+| **Pixel**     | Arcade neon — pixel font, square corners, stepped animations |
+
+- Each theme is a set of CSS custom properties (colors, fonts, radius, easing) on `:root[data-theme]`. Components use Sass tokens that point to these variables, so a theme changes the whole UI without extra styles in components.
+- Every theme card in Settings shows a live preview rendered with that theme's own variables.
+- Icons use `currentColor`, so they follow the theme too.
+- The chosen theme is saved to `localStorage` and applied before the game renders.
+
+### Sound
+
+All sound is **synthesized in real time with the Web Audio API** — the game has no audio files.
+
+| Event             | Sound                                                    |
+| ----------------- | -------------------------------------------------------- |
+| During a game     | Background music loop that speeds up in the last seconds |
+| Add an ingredient | Bubble                                                   |
+| Successful brew   | Rising four-note chord                                   |
+| Failed brew       | Fizz and a low thud                                      |
+| Reaction fires    | Shimmering chime                                         |
+| Pour Out          | Draining splash                                          |
+| Last seconds      | Clock tick every second                                  |
+| Game over         | Falling three-note motif                                 |
+
+- Audio graph: `effects` and `music` gain nodes → `master` gain → speakers.
+- **Settings → Sound**: a mute switch and three volume sliders (Master, Music, Effects). Volume changes are smoothed, so sliders don't click.
+- Background music is rendered once with `OfflineAudioContext` into a buffer and looped; in the last seconds its `playbackRate` rises smoothly.
+- The audio context starts on the first click or key press, as browsers require (autoplay policy).
+- Sound pauses with the game and resumes with it.
+- Volume and mute state are saved to `localStorage`.
+
+### Technical notes
+
+- Sound effects are described as data (`SOUND_RECIPES`): each sound is a list of tone and noise steps played by a small synth (`playTone`, `playNoise`).
+- Settings are read field by field and validated, so broken or outdated data in `localStorage` falls back to defaults.
+- No new dependencies: TypeScript, SCSS and browser APIs only.
+
+---
+
 ## Reactions
 
 Values are recalculated from the ingredient list every time. Active reactions are then applied to these values in table order, and the result is rounded.
@@ -163,17 +215,20 @@ Values are recalculated from the ingredient list every time. Active reactions ar
 src/
 ├── app/            App — owns the game state and the timer, connects logic with UI
 ├── assets/         SVG icons and the cauldron image
-├── data/           static data: ingredients, recipes, difficulty settings, reactions, shortcuts
+├── audio/          Web Audio engine, synth, sound effects and background music
+├── data/           static data: ingredients, recipes, difficulty settings, reactions,
+│                   shortcuts, themes and sound settings, sound recipes, music
 ├── logic/          game rules as pure functions (no DOM)
 ├── state/          initial and new game state
-├── storage/        localStorage: save / continue, leaderboard
-├── styles/         design tokens, mixins, base styles
+├── storage/        localStorage: save / continue, leaderboard, user settings
+├── styles/         themes, design tokens, mixins, base styles
 ├── types/          shared TypeScript types
 ├── ui/
 │   ├── components/ Header, Shelf, Cauldron, Recipe, Bars, Controls,
 │   │               Modal and dialogs: GameOver, Pause, Leaderboard, Confirm, Help, Settings
 │   ├── dom.ts      DOM helpers (createElement, createSvgFromString, playAnimation, …)
-│   └── layout.ts   page skeleton
+│   ├── layout.ts   page skeleton
+│   └── theme.ts    applies the selected theme
 ├── utils/          small helpers: formatting numbers, time and dates
 └── main.ts         entry point
 ```
@@ -191,6 +246,7 @@ user action → component callback → App handler → logic changes state → s
 - **Components** only display what they receive and report user actions through callbacks.
 - **Dialogs** are built on one `Modal` component (native `<dialog>`). The browser `alert()` and `confirm()` are not used.
 - **Timer**: the end time is stored as a timestamp. Every tick recalculates the time left from `Date.now()`.
+- **Audio** is a separate layer: App calls `playSound(name)` and `music.start()` / `music.stop()`, and the audio engine owns the `AudioContext` and the volume channels.
 
 ---
 
@@ -198,7 +254,8 @@ user action → component callback → App handler → logic changes state → s
 
 - `main` — initial commit only
 - `story-1` → `story-2` → `story-3` — one branch per level, each created from the previous one
-- `feat/*`, `fix/*`, `chore/*` — task branches, merged into the current story branch through pull requests
+- `creative-extension` — created from `story-3` for the Creative Extension
+- `feat/*`, `fix/*`, `chore/*`, `docs/*` — task branches, merged into the current story branch through pull requests
 - Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/)
 
 ---
